@@ -5,29 +5,31 @@ import { TestScene1 } from './test_scene_1';
 const engine = new Engine({
     width: 640,
     height: 360,
-    backgroundColor: Color.Black,       // dark blank background
+    backgroundColor: Color.fromHex('#282a36'),   // going for dracula color scheme
     fixedUpdateFps: 60,
-    antialiasing: false,                // good for pixel art
+    antialiasing: false,
 });
 
-// Register the scene with the key "test_scene_1"
+// register scene
 const testScene1 = new TestScene1();
 engine.add('test_scene_1', testScene1);
 engine.goToScene('test_scene_1');
 
-// Pause when tab is hidden
+/*
+// pause when tab is hidden
 engine.on('hidden', () => {
     engine.stop();
 });
 engine.on('visible', () => {
     engine.start();
 });
+*/
 
-// Start the game
+// start game
 engine.start(loader).then(() => {
     console.log('Game started → test_scene_1 (640×360)');
 });
 
-// Debug access
+// debug access
 (window as any).engine = engine;
 (window as any).test_scene_1 = testScene1;
