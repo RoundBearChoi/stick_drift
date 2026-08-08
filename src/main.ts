@@ -1,40 +1,33 @@
-import{Engine, Color, vec}from 'excalibur';
+import { Engine, Color, vec } from 'excalibur';
 import { loader } from './resources';
-import { Level } from './level';
+import { TestScene1 } from './test_scene_1';
 
 const engine = new Engine({
-    backgroundColor: Color.fromHex('#5fcde4'),
-    width: 600,
-    height: 400,
+    width: 640,
+    height: 360,
+    backgroundColor: Color.Black,       // dark blank background
     fixedUpdateFps: 60,
-    // Turn off anti-aliasing for pixel art graphics
-    antialiasing: false,
-    physics: {
-        // Set global gravity, 800 pixels/sec^2
-        gravity: vec(0, 800)
-    }
+    antialiasing: false,                // good for pixel art
 });
 
-// Setup first level as a custom scene
-const level = new Level();
-engine.add('level', level);
-engine.goToScene('level');
+// Register the scene with the key "test_scene_1"
+const testScene1 = new TestScene1();
+engine.add('test_scene_1', testScene1);
+engine.goToScene('test_scene_1');
 
-// Game events to handle
+// Pause when tab is hidden
 engine.on('hidden', () => {
-    //console.log('pause');
     engine.stop();
 });
 engine.on('visible', () => {
-    //console.log('start');
     engine.start();
 });
 
-// Start the engine
+// Start the game
 engine.start(loader).then(() => {
-    //console.log('game start');
+    console.log('Game started → test_scene_1 (640×360)');
 });
 
-// For test hook
+// Debug access
 (window as any).engine = engine;
-(window as any).level = level;
+(window as any).test_scene_1 = testScene1;
