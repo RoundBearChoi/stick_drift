@@ -64,7 +64,7 @@ export class Bot extends Actor {
 
     onPostCollision(evt: PostCollisionEvent) {
         // Bot has collided with its Top of another collider
-        console.log(evt.other.owner.name);
+        //console.log(evt.other.owner.name);
         if (evt.side === Side.Bottom) {
             this.onGround = true;
         }
