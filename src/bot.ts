@@ -1,15 +1,15 @@
-import { 
+import {
     Actor,
-    CollisionGroupManager, 
+    CollisionGroupManager,
     CollisionType,
-    Shape, 
+    Shape,
     vec,
     Vector,
     Engine,
     PostCollisionEvent,
     Side,
     Animation,
-    Keys 
+    Keys
 } from 'excalibur';
 import { botSpriteSheet, Resources } from './resources';
 import { Baddie } from './baddie';
@@ -49,7 +49,7 @@ export class Bot extends Actor {
 
         const right = Animation.fromSpriteSheet(botSpriteSheet, [3, 4, 5, 6, 7], 100);
         right.scale = vec(2, 2);
-        right.flipHorizontal = true;;
+        right.flipHorizontal = true;
 
         // Register animations with actor
         this.graphics.add("hurtleft", hurtleft);
@@ -63,7 +63,7 @@ export class Bot extends Actor {
     }
 
     onPostCollision(evt: PostCollisionEvent) {
-        // Bot has collided with it's Top of another collider
+        // Bot has collided with its Top of another collider
         console.log(evt.other.owner.name);
         if (evt.side === Side.Bottom) {
             this.onGround = true;
@@ -75,7 +75,7 @@ export class Bot extends Actor {
             evt.other.owner instanceof Baddie) {
             if (this.vel.x < 0 && !this.hurt) {
                 this.graphics.use("hurtleft");
-            } 
+            }
             if (this.vel.x >= 0 && !this.hurt) {
                 this.graphics.use("hurtright");
             }
@@ -116,7 +116,7 @@ export class Bot extends Actor {
         // Change animation based on velocity
         if (this.vel.x < 0 && !this.hurt) {
             this.graphics.use("left");
-        } 
+        }
         if (this.vel.x > 0 && !this.hurt) {
             this.graphics.use("right");
         }

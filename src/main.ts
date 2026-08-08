@@ -22,17 +22,17 @@ engine.goToScene('level');
 
 // Game events to handle
 engine.on('hidden', () => {
-    console.log('pause');
+    //console.log('pause');
     engine.stop();
 });
 engine.on('visible', () => {
-    console.log('start');
+    //console.log('start');
     engine.start();
 });
 
 // Start the engine
 engine.start(loader).then(() => {
-    console.log('game start');
+    //console.log('game start');
 });
 
 // For test hook
