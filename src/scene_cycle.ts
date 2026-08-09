@@ -22,7 +22,7 @@ export function setupSceneCycle(engine: Engine, gameContext: GameContext): void 
     }
   });
 
-  console.log('[scene_cycle] F2 = previous scene, F3 = next scene');
+  //console.log('[scene_cycle] F2 = previous scene, F3 = next scene');
 }
 
 function cycleScene(engine: Engine, gameContext: GameContext, direction: -1 | 1): void {
