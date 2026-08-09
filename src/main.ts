@@ -23,7 +23,7 @@ engine.start(loader).then(() => {
   engine.goToScene('test_scene_1', {
     sceneActivationData: gameContext,
   });
-  console.log('--- game started ---');
+  console.log('------ game started ------');
   console.log('manual fixed timestep (60 Hz)');
 });
 

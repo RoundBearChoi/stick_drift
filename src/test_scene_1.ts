@@ -10,7 +10,7 @@ export class TestScene1 extends Scene<GameContext> {
 
   onActivate(context: SceneActivationContext<GameContext>): void {
     this.ctx = context.data!;
-    console.log('--- onActivate test_scene_1 ---');
+    console.log('------ onActivate test_scene_1 ------');
   }
 
   /*
