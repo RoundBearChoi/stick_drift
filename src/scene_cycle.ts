@@ -1,12 +1,10 @@
 import { Engine, Keys } from 'excalibur';
 import { GameContext } from './game-context';
 
-/**
- * Temporary debug scene cycling (F2 = previous, F3 = next)
- * Remove this file when no longer needed.
+/*
+ * temporary debug scene cycling (F2 = previous, F3 = next)
  */
 
-// Ordered list = the "enum" order
 const SCENE_ORDER = [
   'test_scene_1',
   // 'test_scene_2',
