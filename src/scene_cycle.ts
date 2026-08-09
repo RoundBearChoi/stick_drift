@@ -17,12 +17,10 @@ export function setupSceneCycle(engine: Engine, gameContext: GameContext): void 
   engine.input.keyboard.on('press', (evt) => {
     if (evt.key === Keys.F2) {
       cycleScene(engine, gameContext, -1);
-    } else if (evt.key === Keys.F3) {
+    } else if (evt.key === Keys.F4) {
       cycleScene(engine, gameContext, +1);
     }
   });
-
-  //console.log('[scene_cycle] F2 = previous scene, F3 = next scene');
 }
 
 function cycleScene(engine: Engine, gameContext: GameContext, direction: -1 | 1): void {
