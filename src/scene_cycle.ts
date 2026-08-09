@@ -1,9 +1,9 @@
 import { Engine, Keys } from 'excalibur';
 import { GameContext } from './game-context';
 
-/*
- * temporary debug scene cycling (F2 = previous, F3 = next)
- */
+//--------------------
+// temporary debug scene cycling (F2 = previous, F3 = next)
+//--------------------
 
 const SCENE_ORDER = [
   'test_scene_1',
