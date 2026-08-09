@@ -24,7 +24,8 @@ engine.start(loader).then(() => {
   engine.goToScene('test_scene_1', {
     sceneActivationData: gameContext,
   });
-  console.log('Game started → test_scene_1 with manual fixed timestep (60 Hz)');
+  console.log('--- game started ---');
+  console.log('manual fixed timestep (60 Hz)');
 });
 
 // Debug access from browser console
