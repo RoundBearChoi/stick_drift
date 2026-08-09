@@ -7,7 +7,7 @@ import { GameContext } from './game-context';
 
 const SCENE_ORDER = [
   'test_scene_1',
-  // 'test_scene_2',
+  'test_scene_2',
   // 'test_scene_3',
 ] as const;
 
@@ -37,7 +37,7 @@ function cycleScene(engine: Engine, gameContext: GameContext, direction: -1 | 1)
   const nextIdx = (idx + direction + SCENE_ORDER.length) % SCENE_ORDER.length;
   const nextKey = SCENE_ORDER[nextIdx];
 
-  console.log(`[scene_cycle] ${direction === 1 ? 'next' : 'prev'}: ${current} → ${nextKey}`);
+  console.log(`[scene_cycle] ${direction === 1 ? 'next' : 'prev'}: ${current} \u2192 ${nextKey}`);
 
   engine.goToScene(nextKey, {
     sceneActivationData: gameContext,
