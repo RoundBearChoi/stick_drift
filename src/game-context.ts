@@ -31,11 +31,10 @@ export class GameContext {
   }
 
   /**
-   * run at stable 60 Hz.
-   * all deterministic simulation logic is here
+   * run at 60 Hz.
+   * all deterministic simulation logic is here.
    */
   private fixedUpdate(engine: Engine, dt: number): void {
-    //this.frameNumber++;
 
   }
 }

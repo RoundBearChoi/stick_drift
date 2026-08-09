@@ -16,7 +16,7 @@ const engine = new Engine({
     multiSampleAntialiasing: false,
     canvasImageRendering: 'pixelated'
   },
-  snapToPixel: true, // very important with the above settings
+  snapToPixel: true, // almost mandatory with the above settings
   pixelRatio: 1, // keep at 1 unless you want internal upscaling
 });
 
