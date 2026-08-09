@@ -16,8 +16,8 @@ const engine = new Engine({
     multiSampleAntialiasing: false,
     canvasImageRendering: 'pixelated'
   },
-  snapToPixel: true,          // very important with the above settings
-  pixelRatio: 1,           // keep at 1 unless you want internal upscaling
+  snapToPixel: true, // very important with the above settings
+  pixelRatio: 1, // keep at 1 unless you want internal upscaling
 });
 
 const gameContext = new GameContext();
@@ -35,7 +35,7 @@ engine.start(loader).then(() => {
     sceneActivationData: gameContext,
   });
 
-  // temporary debug scene cycling (F2 / F3)
+  // temporary debug scene cycling
   setupSceneCycle(engine, gameContext);
 
   console.log('------ game started ------');
