@@ -1,6 +1,6 @@
 import { Loader } from 'excalibur';
 
-// Add your new resources here later
+// add new resources here later
 // example:
 // export const Resources = {
 //     player: new ImageSource('./res/player.png'),
@@ -8,7 +8,7 @@ import { Loader } from 'excalibur';
 
 const loader = new Loader();
 
-// Later you will do:
+// later do:
 // for (const resource of Object.values(Resources)) {
 //     loader.addResource(resource);
 // }

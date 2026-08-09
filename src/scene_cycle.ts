@@ -8,7 +8,6 @@ import { GameContext } from './game-context';
 const SCENE_ORDER = [
   'test_scene_1',
   'test_scene_2',
-  // 'test_scene_3',
 ] as const;
 
 type SceneKey = (typeof SCENE_ORDER)[number];
