@@ -1,7 +1,7 @@
 import { Engine } from 'excalibur';
 
-/*
- * single source of truth (similar to RbgGameContext in CFG3)
+/**
+ * single source of truth (similar to RbgGameContext in CFG3).
  * owns the simulation and runs manual fixed timestep accumulator.
  */
 export class GameContext {
@@ -15,7 +15,7 @@ export class GameContext {
   // own entities here later
   // fighters: Fighter[] = [];
 
-  /*
+  /**
    * call this every visual frame from scene's onPostUpdate.
    * passes real elapsed time from Excalibur.
    */
@@ -30,7 +30,7 @@ export class GameContext {
     }
   }
 
-  /*
+  /**
    * run at stable 60 Hz.
    * all deterministic simulation logic is here
    */
