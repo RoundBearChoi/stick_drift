@@ -1,4 +1,4 @@
-import { Engine, Color } from 'excalibur';
+import { Engine, Color, ImageFiltering } from 'excalibur';
 import { loader } from './resources';
 import { TestScene1 } from './test_scene_1';
 import { TestScene2 } from './test_scene_2';
@@ -8,10 +8,16 @@ import { setupSceneCycle } from './scene_cycle';
 const engine = new Engine({
   width: 640,
   height: 360,
-  backgroundColor: Color.fromHex('#282a36'), // going for dracula color theme
-  antialiasing: false,
-  // we intentionally do NOT set fixedUpdateFps here.
-  // we drive fixed timestep ourselves inside GameContext.
+  backgroundColor: Color.fromHex('#282a36'),
+  antialiasing: {
+    pixelArtSampler: false,
+    filtering: ImageFiltering.Pixel,
+    nativeContextAntialiasing: false,
+    multiSampleAntialiasing: false,
+    canvasImageRendering: 'pixelated'
+  },
+  snapToPixel: true,          // very important with the above settings
+  pixelRatio: 1,           // keep at 1 unless you want internal upscaling
 });
 
 const gameContext = new GameContext();
