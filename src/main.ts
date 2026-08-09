@@ -2,6 +2,7 @@ import { Engine, Color } from 'excalibur';
 import { loader } from './resources';
 import { TestScene1 } from './test_scene_1';
 import { GameContext } from './game-context';
+import { setupSceneCycle } from './scene_cycle';
 
 const engine = new Engine({
   width: 640,
@@ -23,6 +24,10 @@ engine.start(loader).then(() => {
   engine.goToScene('test_scene_1', {
     sceneActivationData: gameContext,
   });
+
+  // temporary debug scene cycling (F2 / F3)
+  setupSceneCycle(engine, gameContext);
+
   console.log('------ game started ------');
   console.log('manual fixed timestep (60 Hz)');
 });
