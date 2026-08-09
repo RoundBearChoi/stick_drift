@@ -6,20 +6,19 @@ import { GameContext } from './game-context';
 const engine = new Engine({
   width: 640,
   height: 360,
-  backgroundColor: Color.fromHex('#282a36'), // dracula
+  backgroundColor: Color.fromHex('#282a36'), // going for dracula color theme
   antialiasing: false,
-  // Note: we intentionally do NOT set fixedUpdateFps here.
-  // We drive fixed timestep ourselves inside GameContext.
+  // we intentionally do NOT set fixedUpdateFps here.
+  // we drive fixed timestep ourselves inside GameContext.
 });
 
-// Single source of truth
 const gameContext = new GameContext();
 
-// Register scene
+// register scene
 const testScene1 = new TestScene1();
 engine.add('test_scene_1', testScene1);
 
-// Start and pass GameContext into the scene
+// start and pass GameContext into scene
 engine.start(loader).then(() => {
   engine.goToScene('test_scene_1', {
     sceneActivationData: gameContext,
@@ -28,7 +27,7 @@ engine.start(loader).then(() => {
   console.log('manual fixed timestep (60 Hz)');
 });
 
-// Debug access from browser console
+// debug access from browser console
 (window as any).engine = engine;
 (window as any).gameContext = gameContext;
 (window as any).test_scene_1 = testScene1;
