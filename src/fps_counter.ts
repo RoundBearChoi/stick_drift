@@ -7,8 +7,8 @@ export class FpsCounter {
   private fixedCount = 0;
   private elapsed = 0;
 
-  public renderFps = 0;
-  public fixedUpdateFps = 0;
+  public render_fps = 0;
+  public fixed_update_fps = 0;
 
   /**
    * call once per visual frame from GameContext.update()
@@ -18,8 +18,8 @@ export class FpsCounter {
     this.elapsed += realElapsedMs;
 
     if (this.elapsed >= 1000) {
-      this.renderFps = Math.round((this.frameCount * 1000) / this.elapsed);
-      this.fixedUpdateFps = Math.round((this.fixedCount * 1000) / this.elapsed);
+      this.render_fps = Math.round((this.frameCount * 1000) / this.elapsed);
+      this.fixed_update_fps = Math.round((this.fixedCount * 1000) / this.elapsed);
 
       this.frameCount = 0;
       this.fixedCount = 0;
@@ -35,6 +35,6 @@ export class FpsCounter {
   }
 
   get text(): string {
-    return `render fps ${this.renderFps}  fixedupdate fps ${this.fixedUpdateFps}`;
+    return `render fps ${this.render_fps}  fixedupdate fps ${this.fixed_update_fps}`;
   }
 }
