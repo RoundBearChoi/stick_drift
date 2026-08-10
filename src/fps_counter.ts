@@ -8,7 +8,7 @@ export class FpsCounter {
   private elapsed = 0;
 
   public renderFps = 0;
-public fixedUpdateFps = 0;
+  public fixedUpdateFps = 0;
 
   /**
    * call once per visual frame from GameContext.update()
@@ -35,6 +35,6 @@ public fixedUpdateFps = 0;
   }
 
   get text(): string {
-    return `FPS ${this.renderFps}  Fixed ${this.fixedUpdateFps}`;
+    return `render fps ${this.renderFps}  fixedupdate fps ${this.fixedUpdateFps}`;
   }
 }
