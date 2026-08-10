@@ -11,8 +11,11 @@ export class GameContext {
   private accumulator = 0;
   private readonly maxStepsPerFrame = 5;
 
-  /** global default font (Press Start) */
-  defaultFont!: Font;
+  /** centered text (TextAlign.Center + BaseAlign.Middle) */
+  centerFont!: Font;
+
+  /** top-left text (TextAlign.Left + BaseAlign.Top) */
+  topLeftFont!: Font;
 
   /** tracks render FPS and fixed-update FPS */
   readonly fps = new FpsCounter();
