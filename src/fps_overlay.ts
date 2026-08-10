@@ -2,17 +2,13 @@ import { Scene, Label, Color, vec } from 'excalibur';
 import { FpsCounter } from './fps_counter';
 import { createTopLeftFont } from './debug_font';
 
-/**
- * Owns the FPS counter + the shared on-screen label.
- * GameContext just drives it; scenes only call attach().
- */
 export class FpsOverlay {
   readonly counter = new FpsCounter();
   private label?: Label;
 
   /**
-   * Attach (or re-attach) the shared FPS label to a scene.
-   * Safe to call from every scene's onActivate.
+   * attach (or re-attach) shared FPS label to scene.
+   * safe to call from every scene's onActivate.
    */
   attach(scene: Scene): void {
     if (!this.label) {
@@ -27,7 +23,7 @@ export class FpsOverlay {
     scene.add(this.label);
   }
 
-  /** Call once per visual frame */
+  /** call once per visual frame */
   update(realElapsedMs: number): void {
     this.counter.update(realElapsedMs);
 
@@ -36,7 +32,7 @@ export class FpsOverlay {
     }
   }
 
-  /** Call once per fixed update */
+  /** call once per fixed update */
   tickFixed(): void {
     this.counter.tickFixed();
   }
