@@ -49,7 +49,7 @@ export class InitialScene extends Scene<GameContext> {
 
     this.ctx.unlockAudio();
 
-    console.log('[initial_scene] user gesture received → going to test_scene_1');
+    console.log('✅ first user gesture received.. going to test_scene_1');
 
     this.engine.goToScene('test_scene_1', {
       sceneActivationData: this.ctx,
