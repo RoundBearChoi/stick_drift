@@ -5,7 +5,7 @@ export type ScaleMode = 'auto' | number;
 /**
  * integer resolution scaling for pixel-perfect rendering.
  * keep logical resolution fixed at 640×360 and scale canvas via CSS to whole-number multiples only.
- * F8 cycles: Auto → 1x → 2x → 3x → 4x → Auto
+ * f8 cycles: Auto → 1x → 2x → 3x → 4x → Auto
  */
 export class ResolutionScale {
   readonly baseWidth = 640;
@@ -31,7 +31,7 @@ export class ResolutionScale {
     engine.screen.events.on('resize', () => this.apply());
     engine.screen.events.on('fullscreen', () => this.apply());
 
-    // F8 cycle (temporary debug key)
+    // f8 cycle (temporary debug key)
     engine.input.keyboard.on('press', (evt) => {
       if (evt.key === Keys.F8) {
         this.cycleScale();
@@ -91,7 +91,7 @@ export class ResolutionScale {
 
     this.currentScale = scale;
 
-    // Key:CSS size = logical resolution × integer scale
+    // CSS size = logical resolution × integer scale
     this.canvas.style.width = `${this.baseWidth * scale}px`;
     this.canvas.style.height = `${this.baseHeight * scale}px`;
 
