@@ -1,4 +1,4 @@
-import { Engine, Color, ImageFiltering } from 'excalibur';
+import { Engine, Color, ImageFiltering, TextAlign, BaseAlign } from 'excalibur';
 import { loader, pressStartFontSource } from './resources';
 import { InitialScene } from './initial_scene';
 import { TestScene1 } from './test_scene_1';
@@ -36,10 +36,19 @@ engine.add('test_scene_2', testScene2);
 
 // start and pass GameContext into scene
 engine.start(loader).then(() => {
-  // Font is now guaranteed to be loaded
-  gameContext.defaultFont = pressStartFontSource.toFont({
+  // Fonts are now guaranteed to be loaded
+  gameContext.centerFont = pressStartFontSource.toFont({
     size: 16,
     filtering: ImageFiltering.Pixel,
+    textAlign: TextAlign.Center,
+    baseAlign: BaseAlign.Middle,
+  });
+
+  gameContext.topLeftFont = pressStartFontSource.toFont({
+    size: 16,
+    filtering: ImageFiltering.Pixel,
+    textAlign: TextAlign.Left,
+    baseAlign: BaseAlign.Top,
   });
 
   engine.goToScene('initial_scene', {
