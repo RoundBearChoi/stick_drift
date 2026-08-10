@@ -28,7 +28,7 @@ export class GestureScene extends Scene<GameContext> {
 
     if (!this.press_any_key_label) {
       this.press_any_key_label = new Label({
-        text: 'press any key to start',
+        text: 'press any key',
         pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
         font: createCenterFont(),
       });
