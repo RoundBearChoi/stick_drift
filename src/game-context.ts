@@ -15,21 +15,15 @@ export class GameContext {
 
   private audioUnlocked = false;
 
-  //frameNumber = 0;
-
-  // own entities here later
-  // fighters: Fighter[] = [];
-
   /**
-   * Unlock WebAudio (must be called from a user gesture).
-   * Logs once globally when successful.
+   * unlock WebAudio (must be called from first user gesture)
    */
   unlockAudio(): void {
     if (this.audioUnlocked) return;
 
     WebAudio.unlock();
     this.audioUnlocked = true;
-    console.log('audio unlocked');
+    console.log('WebAudio unlocked');
   }
 
   /**
