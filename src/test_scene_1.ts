@@ -8,7 +8,7 @@ import {
   TextAlign,
   BaseAlign,
 } from 'excalibur';
-import { GameContext } from './game-context';
+import { GameContext } from './game_context';
 
 export class TestScene1 extends Scene<GameContext> {
   private ctx!: GameContext;

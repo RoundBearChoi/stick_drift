@@ -3,7 +3,7 @@ import { loader, pressStartFontSource } from './resources';
 import { InitialScene } from './initial_scene';
 import { TestScene1 } from './test_scene_1';
 import { TestScene2 } from './test_scene_2';
-import { GameContext } from './game-context';
+import { GameContext } from './game_context';
 import { setupSceneCycle } from './scene_cycle';
 
 const engine = new Engine({

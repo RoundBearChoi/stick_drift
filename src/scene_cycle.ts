@@ -1,5 +1,5 @@
 import { Engine, Keys } from 'excalibur';
-import { GameContext } from './game-context';
+import { GameContext } from './game_context';
 
 //--------------------
 // temporary debug scene cycling (F2 = previous, F4 = next)
