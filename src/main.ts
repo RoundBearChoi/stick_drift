@@ -1,5 +1,6 @@
 import { Engine, Color, ImageFiltering } from 'excalibur';
 import { loader, pressStartFontSource } from './resources';
+import { InitialScene } from './initial_scene';
 import { TestScene1 } from './test_scene_1';
 import { TestScene2 } from './test_scene_2';
 import { GameContext } from './game-context';
@@ -24,6 +25,9 @@ const engine = new Engine({
 const gameContext = new GameContext();
 
 // register scenes
+const initialScene = new InitialScene();
+engine.add('initial_scene', initialScene);
+
 const testScene1 = new TestScene1();
 engine.add('test_scene_1', testScene1);
 
@@ -38,11 +42,11 @@ engine.start(loader).then(() => {
     filtering: ImageFiltering.Pixel,
   });
 
-  engine.goToScene('test_scene_1', {
+  engine.goToScene('initial_scene', {
     sceneActivationData: gameContext,
   });
 
-  // temporary debug scene cycling
+  // temporary debug scene cycling (F2 / F4)
   setupSceneCycle(engine, gameContext);
 
   console.log('------ game started ------');
@@ -52,5 +56,6 @@ engine.start(loader).then(() => {
 // debug access from browser console
 (window as any).engine = engine;
 (window as any).gameContext = gameContext;
+(window as any).initial_scene = initialScene;
 (window as any).test_scene_1 = testScene1;
 (window as any).test_scene_2 = testScene2;
