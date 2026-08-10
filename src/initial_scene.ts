@@ -51,7 +51,6 @@ export class InitialScene extends Scene<GameContext> {
 
     this.hasStarted = true;
 
-    // unlock audio via GameContext (logs globally once)
     this.ctx.unlockAudio();
 
     console.log('[initial_scene] user gesture received → going to test_scene_1');
