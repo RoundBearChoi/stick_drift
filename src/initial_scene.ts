@@ -8,7 +8,7 @@ import {
   TextAlign,
   BaseAlign,
   WebAudio,
-  Keys,
+  //Keys,
 } from 'excalibur';
 import { GameContext } from './game-context';
 
