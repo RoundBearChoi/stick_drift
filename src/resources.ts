@@ -1,7 +1,7 @@
-import { Loader } from 'excalibur';
+import { TerminalLoader } from './terminal_loader';
 import { debugFontSource } from './debug_font';
 
-const loader = new Loader();
+const loader = new TerminalLoader();
 loader.addResource(debugFontSource);
 
 export { loader };
