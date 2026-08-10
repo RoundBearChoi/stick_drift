@@ -1,4 +1,4 @@
-import { Engine, Font } from 'excalibur';
+import { Engine, Font, WebAudio } from 'excalibur';
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).
@@ -13,10 +13,24 @@ export class GameContext {
   /** Global default font (Press Start). Set once after the loader finishes. */
   defaultFont!: Font;
 
+  private audioUnlocked = false;
+
   //frameNumber = 0;
 
   // own entities here later
   // fighters: Fighter[] = [];
+
+  /**
+   * Unlock WebAudio (must be called from a user gesture).
+   * Logs once globally when successful.
+   */
+  unlockAudio(): void {
+    if (this.audioUnlocked) return;
+
+    WebAudio.unlock();
+    this.audioUnlocked = true;
+    console.log('audio unlocked');
+  }
 
   /**
    * call this every visual frame from scene's onPostUpdate.
