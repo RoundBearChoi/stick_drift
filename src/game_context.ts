@@ -1,4 +1,5 @@
 import { Engine, Font, WebAudio } from 'excalibur';
+import { FpsCounter } from './fps_counter';
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).
@@ -12,6 +13,9 @@ export class GameContext {
 
   /** Global default font (Press Start). Set once after the loader finishes. */
   defaultFont!: Font;
+
+  /** Tracks render FPS and fixed-update FPS */
+  readonly fps = new FpsCounter();
 
   private audioUnlocked = false;
 
@@ -31,6 +35,8 @@ export class GameContext {
    * passes real elapsed time from Excalibur.
    */
   update(engine: Engine, realElapsed: number): void {
+    this.fps.update(realElapsed);
+
     this.accumulator += realElapsed;
 
     let steps = 0;
@@ -46,6 +52,6 @@ export class GameContext {
    * all deterministic simulation logic is here.
    */
   private fixedUpdate(engine: Engine, dt: number): void {
-
+    this.fps.tickFixed();
   }
 }
