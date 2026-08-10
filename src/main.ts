@@ -43,7 +43,7 @@ engine.start(loader).then(() => {
   // temporary debug scene cycling (F2 / F4)
   setupSceneCycle(engine, game_context);
 
-  console.log('------ game started ------');
+  console.log('🚀 game started');
   console.log('manual fixed timestep (60 Hz)');
 });
 
