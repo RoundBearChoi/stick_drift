@@ -39,7 +39,7 @@ export class TestScene1 extends Scene<GameContext> {
 
     if (!this.fpsLabel) {
       this.fpsLabel = new Label({
-        text: 'FPS --  Fixed --',
+        text: 'render fps --  fixedupdate fps --',
         pos: vec(8, 8),
         font: this.ctx.defaultFont,
       });
