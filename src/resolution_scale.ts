@@ -16,7 +16,7 @@ export class ResolutionScale {
   private engine: Engine | null = null;
   private canvas: HTMLCanvasElement | null = null;
 
-  private readonly SCALE_CYCLE: ScaleMode[] = ['auto', 1, 2, 3];
+  private readonly SCALE_CYCLE: ScaleMode[] = ['auto', 1, 2, 3, 4];
 
   /** call once after Engine is created */
   attach(engine: Engine): void {
