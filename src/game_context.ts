@@ -10,7 +10,7 @@ export class GameContext {
   private readonly fixed = new FixedTimestep(60, 5);
 
   /** FPS counter + shared on-screen overlay */
-  readonly fps = new FpsOverlay();
+  readonly fps_overlay = new FpsOverlay();
 
   private audio_unlocked = false;
 
@@ -30,7 +30,7 @@ export class GameContext {
    * passes real elapsed time from Excalibur.
    */
   update(engine: Engine, realElapsed: number): void {
-    this.fps.update(realElapsed);
+    this.fps_overlay.update(realElapsed);
 
     this.fixed.step(realElapsed, (dt) => {
       this.fixedUpdate(engine, dt);
@@ -42,6 +42,6 @@ export class GameContext {
    * all deterministic simulation logic is here.
    */
   private fixedUpdate(engine: Engine, dt: number): void {
-    this.fps.tickFixed();
+    this.fps_overlay.tickFixed();
   }
 }
