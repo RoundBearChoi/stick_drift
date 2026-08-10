@@ -7,6 +7,7 @@ import {
   vec,
 } from 'excalibur';
 import { GameContext } from './game_context';
+import { createCenterFont, createTopLeftFont } from './resources';
 
 export class TestScene1 extends Scene<GameContext> {
   private ctx!: GameContext;
@@ -24,7 +25,7 @@ export class TestScene1 extends Scene<GameContext> {
       this.titleLabel = new Label({
         text: 'test_scene_1',
         pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
-        font: this.ctx.center_font,
+        font: createCenterFont(),
       });
 
       this.titleLabel.color = Color.White;
@@ -35,7 +36,7 @@ export class TestScene1 extends Scene<GameContext> {
       this.fpsLabel = new Label({
         text: 'render fps: --  fixed update fps: --',
         pos: vec(8, 8),
-        font: this.ctx.top_left_font,
+        font: createTopLeftFont(),
       });
 
       this.fpsLabel.color = Color.White;

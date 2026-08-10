@@ -1,4 +1,4 @@
-import { Engine, Font, WebAudio } from 'excalibur';
+import { Engine, WebAudio } from 'excalibur';
 import { FpsCounter } from './fps_counter';
 
 /**
@@ -10,12 +10,6 @@ export class GameContext {
   readonly fixedDt = 1000 / 60; // ~16.6667 ms → 60 Hz
   private accumulator = 0;
   private readonly maxStepsPerFrame = 5;
-
-  /** centered text (TextAlign.Center + BaseAlign.Middle) */
-  center_font!: Font;
-
-  /** top-left text (TextAlign.Left + BaseAlign.Top) */
-  top_left_font!: Font;
 
   /** tracks render FPS and fixed-update FPS */
   readonly fps = new FpsCounter();
