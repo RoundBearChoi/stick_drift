@@ -1,16 +1,14 @@
 import { Engine, WebAudio, Label, Color, vec, Scene } from 'excalibur';
 import { FpsCounter } from './fps_counter';
 import { createTopLeftFont } from './debug_font';
+import { FixedTimestep } from './fixed_timestep';
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).
- * owns the simulation and runs manual fixed timestep accumulator.
+ * owns the simulation and runs manual fixed timestep.
  */
 export class GameContext {
-  // fixed timestep
-  readonly fixedDt = 1000 / 60; // ~16.6667 ms → 60 Hz
-  private accumulator = 0;
-  private readonly maxStepsPerFrame = 5;
+  private readonly fixed = new FixedTimestep(60, 5);
 
   /** tracks render FPS and fixed-update FPS */
   readonly fps = new FpsCounter();
@@ -56,14 +54,9 @@ export class GameContext {
   update(engine: Engine, realElapsed: number): void {
     this.fps.update(realElapsed);
 
-    this.accumulator += realElapsed;
-
-    let steps = 0;
-    while (this.accumulator >= this.fixedDt && steps < this.maxStepsPerFrame) {
-      this.fixedUpdate(engine, this.fixedDt);
-      this.accumulator -= this.fixedDt;
-      steps++;
-    }
+    this.fixed.step(realElapsed, (dt) => {
+      this.fixedUpdate(engine, dt);
+    });
 
     // keep the shared label text up to date
     if (this.fpsLabel) {
