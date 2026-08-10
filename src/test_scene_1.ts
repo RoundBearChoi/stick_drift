@@ -14,6 +14,7 @@ export class TestScene1 extends Scene<GameContext> {
   private titleLabel?: Label;
 
   onInitialize(_engine: Engine): void {
+
   }
 
   onActivate(context: SceneActivationContext<GameContext>): void {
