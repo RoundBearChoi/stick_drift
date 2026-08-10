@@ -17,7 +17,7 @@ export class GameContext {
 
   private audio_unlocked = false;
 
-  /** shared FPS overlay label (created lazily) */
+  /** shared FPS overlay label */
   private fpsLabel?: Label;
 
   /**
@@ -32,9 +32,9 @@ export class GameContext {
   }
 
   /**
-   * Attach the shared FPS label to the given scene.
-   * Call this from a scene's onActivate if you want the FPS overlay.
-   * The label is created once and moved between scenes as needed.
+   * attach shared fps label to given scene.
+   * call this from a scene's onActivate if you want the FPS overlay.
+   * for now there's only one shared fps label, so we reuse it across scenes.
    */
   attachFpsLabel(scene: Scene): void {
     if (!this.fpsLabel) {
@@ -46,7 +46,6 @@ export class GameContext {
       this.fpsLabel.color = Color.White;
     }
 
-    // Excalibur moves the actor if it already belongs to another scene
     scene.add(this.fpsLabel);
   }
 
