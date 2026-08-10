@@ -1,20 +1,17 @@
 /**
- * Tracks both visual (render) FPS and fixed-update FPS
- * using a simple 1-second rolling window.
+ * track both visual (render) FPS and fixed-update FPS.
+ * 1-second rolling window.
  */
 export class FpsCounter {
   private frameCount = 0;
   private fixedCount = 0;
   private elapsed = 0;
 
-  /** Visual frames per second (onPostUpdate rate) */
   public renderFps = 0;
-
-  /** Fixed updates per second (fixedUpdate rate) */
-  public fixedUpdateFps = 0;
+public fixedUpdateFps = 0;
 
   /**
-   * Call once per visual frame from GameContext.update()
+   * call once per visual frame from GameContext.update()
    */
   update(realElapsedMs: number): void {
     this.frameCount++;
@@ -31,7 +28,7 @@ export class FpsCounter {
   }
 
   /**
-   * Call once every time fixedUpdate runs
+   * call once per fixedUpdate
    */
   tickFixed(): void {
     this.fixedCount++;

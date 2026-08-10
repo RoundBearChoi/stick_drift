@@ -11,10 +11,10 @@ export class GameContext {
   private accumulator = 0;
   private readonly maxStepsPerFrame = 5;
 
-  /** Global default font (Press Start). Set once after the loader finishes. */
+  /** global default font (Press Start) */
   defaultFont!: Font;
 
-  /** Tracks render FPS and fixed-update FPS */
+  /** tracks render FPS and fixed-update FPS */
   readonly fps = new FpsCounter();
 
   private audioUnlocked = false;
