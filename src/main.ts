@@ -1,6 +1,6 @@
 import { Engine, Color, ImageFiltering } from 'excalibur';
 import { loader } from './resources';
-import { InitialScene } from './gesture_scene';
+import { GestureScene } from './gesture_scene';
 import { TestScene1 } from './test_scene_1';
 import { TestScene2 } from './test_scene_2';
 import { GameContext } from './game_context';
@@ -25,7 +25,7 @@ const engine = new Engine({
 const game_context = new GameContext();
 
 // register scenes
-const gesture_scene = new InitialScene();
+const gesture_scene = new GestureScene();
 engine.add('gesture_scene', gesture_scene);
 
 const test_scene_1 = new TestScene1();
