@@ -1,5 +1,6 @@
-import { Engine, WebAudio } from 'excalibur';
+import { Engine, WebAudio, Label, Color, vec, Scene } from 'excalibur';
 import { FpsCounter } from './fps_counter';
+import { createTopLeftFont } from './debug_font';
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).
@@ -16,6 +17,9 @@ export class GameContext {
 
   private audio_unlocked = false;
 
+  /** shared FPS overlay label (created lazily) */
+  private fpsLabel?: Label;
+
   /**
    * unlock WebAudio (must be called from first user gesture)
    */
@@ -25,6 +29,25 @@ export class GameContext {
     WebAudio.unlock();
     this.audio_unlocked = true;
     console.log('✅ WebAudio unlocked');
+  }
+
+  /**
+   * Attach the shared FPS label to the given scene.
+   * Call this from a scene's onActivate if you want the FPS overlay.
+   * The label is created once and moved between scenes as needed.
+   */
+  attachFpsLabel(scene: Scene): void {
+    if (!this.fpsLabel) {
+      this.fpsLabel = new Label({
+        text: 'render fps: --  fixed update fps: --',
+        pos: vec(8, 8),
+        font: createTopLeftFont(),
+      });
+      this.fpsLabel.color = Color.White;
+    }
+
+    // Excalibur moves the actor if it already belongs to another scene
+    scene.add(this.fpsLabel);
   }
 
   /**
@@ -41,6 +64,11 @@ export class GameContext {
       this.fixedUpdate(engine, this.fixedDt);
       this.accumulator -= this.fixedDt;
       steps++;
+    }
+
+    // keep the shared label text up to date
+    if (this.fpsLabel) {
+      this.fpsLabel.text = this.fps.text;
     }
   }
 
