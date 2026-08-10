@@ -38,7 +38,7 @@ export class ResolutionScale {
       }
     });
 
-    console.log('[scale] ResolutionScale attached (F8 to cycle)');
+    console.log('[scale] resolutionScale attached (f8 to cycle)');
   }
 
   setMode(mode: ScaleMode): void {

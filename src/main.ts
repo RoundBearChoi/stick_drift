@@ -51,7 +51,7 @@ engine.start(loader).then(() => {
 
   console.log('🚀 game started');
   console.log('manual fixed timestep (60 Hz)');
-  console.log('integer resolution scaling ready (F8 to cycle)');
+  console.log('integer resolution scaling ready (f8 to cycle)');
 });
 
 // debug access from browser console
