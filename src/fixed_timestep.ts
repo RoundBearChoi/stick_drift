@@ -1,7 +1,5 @@
 /**
- * Manual fixed-timestep clock.
- * Owns the accumulator and spiral-of-death protection.
- * Does not know about Excalibur or game logic.
+ * manual fixed-timestep clock.
  */
 export class FixedTimestep {
   readonly fixedDt: number;
@@ -14,9 +12,9 @@ export class FixedTimestep {
   }
 
   /**
-   * Advance the clock with real elapsed time (ms).
-   * Calls `onFixedUpdate` zero or more times at exactly `fixedDt`.
-   * Returns the leftover accumulator (useful later for interpolation alpha).
+   * advance the clock with real elapsed time (ms).
+   * calls onFixedUpdate 0 or more times at exactly fixedDt.
+   * return the leftover accumulator (useful for interpolation).
    */
   step(realElapsedMs: number, onFixedUpdate: (dt: number) => void): number {
     this.accumulator += realElapsedMs;
@@ -40,7 +38,7 @@ export class FixedTimestep {
     return this.accumulator;
   }
 
-  /** Optional: hard reset (scene transitions, pause, etc.) */
+  /** optional: hard reset (scene transitions, pause, etc.) */
   reset(): void {
     this.accumulator = 0;
   }
