@@ -39,7 +39,7 @@ engine.add('test_scene_2', test_scene_2);
 
 // start and pass game context into scene
 engine.start(loader).then(() => {
-  // Attach integer scaling after engine is ready
+  // attach integer scaling after engine is ready
   resolution_scale.attach(engine);
 
   engine.goToScene('gesture_scene', {

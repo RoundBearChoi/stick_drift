@@ -3,10 +3,8 @@ import { Engine, Keys } from 'excalibur';
 export type ScaleMode = 'auto' | number;
 
 /**
- * Integer resolution scaling for pixel-perfect rendering.
- * Keeps logical resolution fixed at 640×360 and scales the
- * canvas via CSS to whole-number multiples only.
- *
+ * integer resolution scaling for pixel-perfect rendering.
+ * keep logical resolution fixed at 640×360 and scale canvas via CSS to whole-number multiples only.
  * F8 cycles: Auto → 1x → 2x → 3x → 4x → Auto
  */
 export class ResolutionScale {
@@ -20,15 +18,15 @@ export class ResolutionScale {
 
   private readonly SCALE_CYCLE: ScaleMode[] = ['auto', 1, 2, 3, 4];
 
-  /** Call once after the Engine is created */
+  /** call once after Engine is created */
   attach(engine: Engine): void {
     this.engine = engine;
     this.canvas = engine.canvas;
 
-    // Initial apply
+    // initial apply
     this.apply();
 
-    // React to browser resize + Excalibur screen changes + fullscreen
+    // react to browser resize + Excalibur screen changes + fullscreen
     window.addEventListener('resize', () => this.apply());
     engine.screen.events.on('resize', () => this.apply());
     engine.screen.events.on('fullscreen', () => this.apply());
@@ -68,7 +66,7 @@ export class ResolutionScale {
 
   private cycleScale(): void {
     const currentIdx = this.SCALE_CYCLE.indexOf(this.mode);
-    // If mode somehow not in list (shouldn't happen), start from beginning
+    // if mode not in list (shouldn't happen), start from beginning
     const nextIdx = currentIdx === -1 ? 0 : (currentIdx + 1) % this.SCALE_CYCLE.length;
     this.setMode(this.SCALE_CYCLE[nextIdx]);
   }
@@ -87,11 +85,11 @@ export class ResolutionScale {
 
     this.currentScale = scale;
 
-    // Key: CSS size = logical resolution × integer scale
+    // Key:CSS size = logical resolution × integer scale
     this.canvas.style.width = `${this.baseWidth * scale}px`;
     this.canvas.style.height = `${this.baseHeight * scale}px`;
 
-    // Expose for potential future HTML UI scaling
+    // expose for potential future HTML UI scaling
     document.documentElement.style.setProperty('--game-scale', String(scale));
   }
 }
