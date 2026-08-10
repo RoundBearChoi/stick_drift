@@ -16,7 +16,7 @@ export const debugFontSource = new FontSource(
   'QuinqueFive',
   {
     filtering: ImageFiltering.Pixel,
-    size: 10,
+    size: 5,
   }
 );
 
@@ -24,7 +24,7 @@ export const debugFontSource = new FontSource(
 // 5 → 10 → 15 → 20, etc.
 export function createCenterFont(): Font {
   return debugFontSource.toFont({
-    size: 10,
+    size: 5,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Center,
     baseAlign: BaseAlign.Middle,
@@ -33,7 +33,7 @@ export function createCenterFont(): Font {
 
 export function createTopLeftFont(): Font {
   return debugFontSource.toFont({
-    size: 10,
+    size: 5,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Left,
     baseAlign: BaseAlign.Top,
