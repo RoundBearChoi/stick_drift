@@ -10,8 +10,8 @@ import { GameContext } from './game_context';
 import { createCenterFont } from './debug_font';
 
 /**
- * initial bootstrap
- * "press any key to start" to unlock WebAudio on first user gesture
+ * "press any key"
+ * unlock WebAudio on first user gesture
  */
 export class GestureScene extends Scene<GameContext> {
   private ctx!: GameContext;
