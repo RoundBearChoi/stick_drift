@@ -1,13 +1,7 @@
 import { DefaultLoader } from 'excalibur';
 
 /**
- * Custom loader that mimics a Linux Mint Cinnamon terminal style.
- *
- * Looks like:
- *
- *           loading
- *
- * [████████████░░░░░░░░]  62%
+ * custom loader that mimics a linux terminal style.
  */
 export class TerminalLoader extends DefaultLoader {
   private readonly bg = '#282a36';
@@ -18,7 +12,7 @@ export class TerminalLoader extends DefaultLoader {
     const h = this.engine.drawHeight;
     const progress = this.progress; // 0 → 1
 
-    // solid dark background (same as engine / test_scene_1)
+    // solid dark background (same as engine)
     ctx.fillStyle = this.bg;
     ctx.fillRect(0, 0, w, h);
 
@@ -48,9 +42,11 @@ export class TerminalLoader extends DefaultLoader {
     ctx.fillText(`${Math.floor(progress * 100)}%`, w / 2, h / 2 + 32);
   }
 
-  // Already using suppressPlayButton: true on the Engine,
-  // so resolve immediately and start as soon as assets are ready.
-  // (If audio is added later, consider requiring a real user click here.)
+  /**
+   * must resolve. otherwise engine.start(loader) never finishes and game never starts.
+   * built-in loader gets a free pass when suppressPlayButton:true is set. custom loader does not.
+   * user-gesture + WebAudio unlock is handled later gesture_scene ("press any key").
+   */
   override async onUserAction(): Promise<void> {
     return;
   }
