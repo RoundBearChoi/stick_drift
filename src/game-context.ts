@@ -1,4 +1,4 @@
-import { Engine } from 'excalibur';
+import { Engine, Font } from 'excalibur';
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).
@@ -9,6 +9,9 @@ export class GameContext {
   readonly fixedDt = 1000 / 60; // ~16.6667 ms → 60 Hz
   private accumulator = 0;
   private readonly maxStepsPerFrame = 5;
+
+  /** Global default font (Press Start). Set once after the loader finishes. */
+  defaultFont!: Font;
 
   //frameNumber = 0;
 
