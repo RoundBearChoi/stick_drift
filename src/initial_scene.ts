@@ -29,7 +29,7 @@ export class InitialScene extends Scene<GameContext> {
       this.promptLabel = new Label({
         text: 'press any key to start',
         pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
-        font: this.ctx.centerFont,
+        font: this.ctx.center_font,
       });
 
       this.promptLabel.color = Color.White;

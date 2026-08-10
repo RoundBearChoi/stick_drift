@@ -37,14 +37,14 @@ engine.add('test_scene_2', testScene2);
 // start and pass GameContext into scene
 engine.start(loader).then(() => {
   // Fonts are now guaranteed to be loaded
-  gameContext.centerFont = pressStartFontSource.toFont({
+  gameContext.center_font = pressStartFontSource.toFont({
     size: 16,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Center,
     baseAlign: BaseAlign.Middle,
   });
 
-  gameContext.topLeftFont = pressStartFontSource.toFont({
+  gameContext.top_left_font = pressStartFontSource.toFont({
     size: 16,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Left,

@@ -24,7 +24,7 @@ export class TestScene1 extends Scene<GameContext> {
       this.titleLabel = new Label({
         text: 'test_scene_1',
         pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
-        font: this.ctx.centerFont,
+        font: this.ctx.center_font,
       });
 
       this.titleLabel.color = Color.White;
@@ -33,9 +33,9 @@ export class TestScene1 extends Scene<GameContext> {
 
     if (!this.fpsLabel) {
       this.fpsLabel = new Label({
-        text: 'render fps --  fixedupdate fps --',
+        text: 'render fps: --  fixed update fps: --',
         pos: vec(8, 8),
-        font: this.ctx.topLeftFont,
+        font: this.ctx.top_left_font,
       });
 
       this.fpsLabel.color = Color.White;

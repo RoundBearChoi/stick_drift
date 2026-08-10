@@ -35,6 +35,6 @@ export class FpsCounter {
   }
 
   get text(): string {
-    return `render fps ${this.render_fps}  fixedupdate fps ${this.fixed_update_fps}`;
+    return `render fps: ${this.render_fps}  fixed update fps: ${this.fixed_update_fps}`;
   }
 }

@@ -12,10 +12,10 @@ export class GameContext {
   private readonly maxStepsPerFrame = 5;
 
   /** centered text (TextAlign.Center + BaseAlign.Middle) */
-  centerFont!: Font;
+  center_font!: Font;
 
   /** top-left text (TextAlign.Left + BaseAlign.Top) */
-  topLeftFont!: Font;
+  top_left_font!: Font;
 
   /** tracks render FPS and fixed-update FPS */
   readonly fps = new FpsCounter();
