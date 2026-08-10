@@ -13,10 +13,8 @@ import {
 import { GameContext } from './game-context';
 
 /**
- * Bootstrap scene.
- * - Shows "press any key to start"
- * - Unlocks WebAudio on first user gesture
- * - Then transitions to test_scene_1
+ * initial bootstrap
+ * "press any key to start" to unlock WebAudio on first user gesture
  */
 export class InitialScene extends Scene<GameContext> {
   private ctx!: GameContext;
@@ -24,7 +22,6 @@ export class InitialScene extends Scene<GameContext> {
   private hasStarted = false;
 
   onInitialize(_engine: Engine): void {
-    // non-context setup if needed later
   }
 
   onActivate(context: SceneActivationContext<GameContext>): void {
@@ -46,7 +43,7 @@ export class InitialScene extends Scene<GameContext> {
       this.add(this.promptLabel);
     }
 
-    // Listen for first user gesture
+    // listen for first user gesture
     this.engine.input.keyboard.on('press', this.onUserGesture);
     this.engine.input.pointers.primary.on('down', this.onUserGesture);
   }
@@ -55,7 +52,7 @@ export class InitialScene extends Scene<GameContext> {
     if (this.hasStarted) return;
     this.hasStarted = true;
 
-    // Unlock audio context (silences the Chrome warning)
+    // request audio context unlock
     WebAudio.unlock();
 
     console.log('[initial_scene] user gesture received → going to test_scene_1');
@@ -66,13 +63,13 @@ export class InitialScene extends Scene<GameContext> {
   };
 
   onDeactivate(): void {
-    // Clean up listeners so they don't fire again later
+    // clean up listeners so they don't fire again later
     this.engine.input.keyboard.off('press', this.onUserGesture);
     this.engine.input.pointers.primary.off('down', this.onUserGesture);
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
-    // Still drive the fixed timestep even on the bootstrap scene
+    // still drive fixed timestep even on the bootstrap scene
     this.ctx.update(engine, elapsed);
   }
 }
