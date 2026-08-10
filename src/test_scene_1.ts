@@ -41,7 +41,7 @@ export class TestScene1 extends Scene<GameContext> {
       this.fpsLabel = new Label({
         text: 'render fps --  fixedupdate fps --',
         pos: vec(8, 8),
-        font: this.ctx.defaultFont,
+        font: this.ctx.defaultFont.clone(), // clone so we don’t affect other labels
       });
 
       this.fpsLabel.font.textAlign = TextAlign.Left;
