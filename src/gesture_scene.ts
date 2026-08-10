@@ -24,7 +24,7 @@ export class InitialScene extends Scene<GameContext> {
   onActivate(context: SceneActivationContext<GameContext>): void {
     this.ctx = context.data!;
     this.first_user_gesture_received = false;
-    console.log('------ onActivate initial_scene ------');
+    console.log('------ onActivate gesture_scene ------');
 
     if (!this.press_any_key_label) {
       this.press_any_key_label = new Label({

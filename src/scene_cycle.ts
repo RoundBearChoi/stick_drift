@@ -6,7 +6,7 @@ import { GameContext } from './game_context';
 //--------------------
 
 const SCENE_ORDER = [
-  // initial_scene isn't included because we only use it once for that first user gesture
+  // gesture_scene isn't included because we only use it once for that first user gesture
   'test_scene_1',
   'test_scene_2',
 ] as const;
