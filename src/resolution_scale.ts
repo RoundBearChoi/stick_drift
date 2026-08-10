@@ -16,7 +16,7 @@ export class ResolutionScale {
   private engine: Engine | null = null;
   private canvas: HTMLCanvasElement | null = null;
 
-  private readonly SCALE_CYCLE: ScaleMode[] = ['auto', 1, 2, 3, 4];
+  private readonly SCALE_CYCLE: ScaleMode[] = ['auto', 1, 2, 3];
 
   /** call once after Engine is created */
   attach(engine: Engine): void {
@@ -47,8 +47,14 @@ export class ResolutionScale {
 
     const max = this.calculateMaxScale();
     const modeLabel = mode === 'auto' ? 'Auto' : `${mode}x`;
+
+    const appliedW = this.baseWidth * this.currentScale;
+    const appliedH = this.baseHeight * this.currentScale;
+    const maxW = this.baseWidth * max;
+    const maxH = this.baseHeight * max;
+
     console.log(
-      `[scale] mode: ${modeLabel}  →  applied: ${this.currentScale}x  (max possible: ${max}x)`
+      `[scale] mode: ${modeLabel}  →  ${appliedW}×${appliedH} (${this.currentScale}x)  |  max possible: ${maxW}×${maxH} (${max}x)`
     );
   }
 
