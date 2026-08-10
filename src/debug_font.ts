@@ -7,24 +7,24 @@ import {
 } from 'excalibur';
 
 /**
- * QuinqueFive — 5×5 monospaced pixel font
- * Use only at multiples of 5 (5, 10, 15, 20...) with Pixel filtering for maximum crispness.
- * .woff2 is the recommended format: smallest file size + full browser support.
+ * mem mono 4x4 — 4×4 monospaced pixel font (from the mem font family)
+ * Use only at multiples of 4 (4, 8, 12, 16...) with Pixel filtering for maximum crispness.
+ * Currently only .ttf is available in the repo.
  */
 export const debugFontSource = new FontSource(
-  './res/fonts/QuinqueFive.woff2',
-  'QuinqueFive',
+  './res/fonts/mem_mono_4x4.ttf',
+  'mem mono 4x4',
   {
     filtering: ImageFiltering.Pixel,
-    size: 5,
+    size: 8,
   }
 );
 
-// designed size or integer multiple of 5
-// 5 → 10 → 15 → 20, etc.
+// designed size or integer multiple of 4
+// 4 → 8 → 12 → 16, etc.
 export function createCenterFont(): Font {
   return debugFontSource.toFont({
-    size: 5,
+    size: 8,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Center,
     baseAlign: BaseAlign.Middle,
@@ -33,7 +33,7 @@ export function createCenterFont(): Font {
 
 export function createTopLeftFont(): Font {
   return debugFontSource.toFont({
-    size: 5,
+    size: 8,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Left,
     baseAlign: BaseAlign.Top,
