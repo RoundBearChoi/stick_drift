@@ -22,26 +22,26 @@ const engine = new Engine({
   suppressPlayButton: true, // skip excalibur's default start screen
 });
 
-const gameContext = new GameContext();
+const game_context = new GameContext();
 
 // register scenes
-const initialScene = new InitialScene();
-engine.add('initial_scene', initialScene);
+const initial_scene = new InitialScene();
+engine.add('initial_scene', initial_scene);
 
-const testScene1 = new TestScene1();
-engine.add('test_scene_1', testScene1);
+const test_scene_1 = new TestScene1();
+engine.add('test_scene_1', test_scene_1);
 
-const testScene2 = new TestScene2();
-engine.add('test_scene_2', testScene2);
+const test_scene_2 = new TestScene2();
+engine.add('test_scene_2', test_scene_2);
 
-// start and pass GameContext into scene
+// start and pass game context into scene
 engine.start(loader).then(() => {
   engine.goToScene('initial_scene', {
-    sceneActivationData: gameContext,
+    sceneActivationData: game_context,
   });
 
   // temporary debug scene cycling (F2 / F4)
-  setupSceneCycle(engine, gameContext);
+  setupSceneCycle(engine, game_context);
 
   console.log('------ game started ------');
   console.log('manual fixed timestep (60 Hz)');
@@ -49,7 +49,7 @@ engine.start(loader).then(() => {
 
 // debug access from browser console
 (window as any).engine = engine;
-(window as any).gameContext = gameContext;
-(window as any).initial_scene = initialScene;
-(window as any).test_scene_1 = testScene1;
-(window as any).test_scene_2 = testScene2;
+(window as any).game_context = game_context;
+(window as any).initial_scene = initial_scene;
+(window as any).test_scene_1 = test_scene_1;
+(window as any).test_scene_2 = test_scene_2;
