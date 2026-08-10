@@ -48,6 +48,7 @@ export class InitialScene extends Scene<GameContext> {
 
   private onUserGesture = (_evt?: unknown): void => {
     if (this.hasStarted) return;
+
     this.hasStarted = true;
 
     // unlock audio via GameContext (logs globally once)
