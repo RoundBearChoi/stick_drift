@@ -12,7 +12,12 @@ const SCENE_ORDER = [
 
 type SceneKey = (typeof SCENE_ORDER)[number];
 
+/**
+ * setting up for the event system
+ * only used once in the intial scene so it's reliable enough
+ */
 export function setupSceneCycle(engine: Engine, gameContext: GameContext): void {
+  // hard coded for now
   engine.input.keyboard.on('press', (evt) => {
     if (evt.key === Keys.F2) {
       cycleScene(engine, gameContext, -1);

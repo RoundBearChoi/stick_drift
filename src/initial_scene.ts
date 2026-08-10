@@ -37,7 +37,7 @@ export class InitialScene extends Scene<GameContext> {
       this.add(this.promptLabel);
     }
 
-    // listen for first user gesture
+    // register listeners for that first user gesture
     this.engine.input.keyboard.on('press', this.onUserGesture);
     this.engine.input.pointers.primary.on('down', this.onUserGesture);
   }
