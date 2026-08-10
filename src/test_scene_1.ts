@@ -7,7 +7,7 @@ import {
   vec,
 } from 'excalibur';
 import { GameContext } from './game_context';
-import { createCenterFont, createTopLeftFont } from './resources';
+import { createCenterFont, createTopLeftFont } from './debug_font';
 
 export class TestScene1 extends Scene<GameContext> {
   private ctx!: GameContext;

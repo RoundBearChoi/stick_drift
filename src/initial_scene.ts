@@ -7,7 +7,7 @@ import {
   vec,
 } from 'excalibur';
 import { GameContext } from './game_context';
-import { createCenterFont } from './resources';
+import { createCenterFont } from './debug_font';
 
 /**
  * initial bootstrap
