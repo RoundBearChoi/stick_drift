@@ -28,12 +28,19 @@ export class TerminalLoader extends DefaultLoader {
     const filled = Math.round(progress * barWidth);
     const empty = barWidth - filled;
 
-    const bar =
+     const bar =
       '[' +
       '█'.repeat(filled) +
       '░'.repeat(empty) +
       ']';
 
+     /*
+    const bar =
+      '[' +
+      '#'.repeat(filled) +
+      '-'.repeat(empty) +
+      ']';
+      */
     ctx.font = '14px monospace';
     ctx.fillText(bar, w / 2, h / 2 + 8);
 
