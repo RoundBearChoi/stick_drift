@@ -15,26 +15,26 @@ import { createCenterFont } from './debug_font';
  */
 export class InitialScene extends Scene<GameContext> {
   private ctx!: GameContext;
-  private promptLabel?: Label;
-  private hasStarted = false;
+  private press_any_key_label?: Label;
+  private first_user_gesture_received = false;
 
   onInitialize(_engine: Engine): void {
   }
 
   onActivate(context: SceneActivationContext<GameContext>): void {
     this.ctx = context.data!;
-    this.hasStarted = false;
+    this.first_user_gesture_received = false;
     console.log('------ onActivate initial_scene ------');
 
-    if (!this.promptLabel) {
-      this.promptLabel = new Label({
+    if (!this.press_any_key_label) {
+      this.press_any_key_label = new Label({
         text: 'press any key to start',
         pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
         font: createCenterFont(),
       });
 
-      this.promptLabel.color = Color.White;
-      this.add(this.promptLabel);
+      this.press_any_key_label.color = Color.White;
+      this.add(this.press_any_key_label);
     }
 
     // register listeners for that first user gesture
@@ -43,9 +43,9 @@ export class InitialScene extends Scene<GameContext> {
   }
 
   private onUserGesture = (_evt?: unknown): void => {
-    if (this.hasStarted) return;
+    if (this.first_user_gesture_received) return;
 
-    this.hasStarted = true;
+    this.first_user_gesture_received = true;
 
     this.ctx.unlockAudio();
 
