@@ -18,6 +18,7 @@ const engine = new Engine({
   },
   snapToPixel: true, // almost mandatory with the above settings
   pixelRatio: 1, // keep at 1 unless you want internal upscaling
+  suppressPlayButton: true, // skip excalibur's default start screen
 });
 
 const gameContext = new GameContext();
