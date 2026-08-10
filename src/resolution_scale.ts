@@ -89,7 +89,9 @@ export class ResolutionScale {
     this.canvas.style.width = `${this.baseWidth * scale}px`;
     this.canvas.style.height = `${this.baseHeight * scale}px`;
 
-    // expose for potential future HTML UI scaling
+    // expose for potential future HTML UI scaling.
+    // every time integer scale changes it updates --game-scale.
+    // you can then use the value anywhere in CSS or inline styles.
     document.documentElement.style.setProperty('--game-scale', String(scale));
   }
 }
