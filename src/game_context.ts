@@ -20,16 +20,16 @@ export class GameContext {
   /** tracks render FPS and fixed-update FPS */
   readonly fps = new FpsCounter();
 
-  private audioUnlocked = false;
+  private audio_unlocked = false;
 
   /**
    * unlock WebAudio (must be called from first user gesture)
    */
   unlockAudio(): void {
-    if (this.audioUnlocked) return;
+    if (this.audio_unlocked) return;
 
     WebAudio.unlock();
-    this.audioUnlocked = true;
+    this.audio_unlocked = true;
     console.log('✅ WebAudio unlocked');
   }
 
