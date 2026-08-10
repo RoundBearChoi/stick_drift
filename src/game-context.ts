@@ -23,7 +23,7 @@ export class GameContext {
 
     WebAudio.unlock();
     this.audioUnlocked = true;
-    console.log('WebAudio unlocked');
+    console.log('✅ WebAudio unlocked');
   }
 
   /**
