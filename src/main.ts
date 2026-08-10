@@ -1,5 +1,5 @@
 import { Engine, Color, ImageFiltering } from 'excalibur';
-import { loader } from './resources';
+import { loader, pressStartFontSource } from './resources';
 import { TestScene1 } from './test_scene_1';
 import { TestScene2 } from './test_scene_2';
 import { GameContext } from './game-context';
@@ -31,6 +31,12 @@ engine.add('test_scene_2', testScene2);
 
 // start and pass GameContext into scene
 engine.start(loader).then(() => {
+  // Font is now guaranteed to be loaded
+  gameContext.defaultFont = pressStartFontSource.toFont({
+    size: 16,
+    filtering: ImageFiltering.Pixel,
+  });
+
   engine.goToScene('test_scene_1', {
     sceneActivationData: gameContext,
   });
