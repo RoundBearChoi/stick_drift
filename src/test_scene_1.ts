@@ -28,9 +28,9 @@ export class TestScene1 extends Scene<GameContext> {
         font: this.ctx.defaultFont,
       });
 
-      // Center both axes
-      this.titleLabel.font.textAlign = TextAlign.Center;
-      this.titleLabel.font.baseAlign = BaseAlign.Middle;
+      // center both axes
+      this.titleLabel.font.textAlign = TextAlign.Center; //x
+      this.titleLabel.font.baseAlign = BaseAlign.Middle; //y
       this.titleLabel.color = Color.White;
 
       this.add(this.titleLabel);
