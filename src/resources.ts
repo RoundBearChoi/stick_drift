@@ -1,16 +1,15 @@
-import { Loader } from 'excalibur';
+import { Loader, FontSource, ImageFiltering } from 'excalibur';
 
-// add new resources here later
-// example:
-// export const Resources = {
-//     player: new ImageSource('./res/player.png'),
-// };
+export const pressStartFontSource = new FontSource(
+  './res/fonts/press_start.ttf',
+  'press_start',
+  {
+    filtering: ImageFiltering.Pixel,
+    size: 16,
+  }
+);
 
 const loader = new Loader();
-
-// later do:
-// for (const resource of Object.values(Resources)) {
-//     loader.addResource(resource);
-// }
+loader.addResource(pressStartFontSource);
 
 export { loader };
