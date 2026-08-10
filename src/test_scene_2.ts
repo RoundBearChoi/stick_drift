@@ -19,7 +19,7 @@ export class TestScene2 extends Scene<GameContext> {
 
   onActivate(context: SceneActivationContext<GameContext>): void {
     this.ctx = context.data!;
-    console.log('------ onActivate test_scene_2 ------');
+    console.log('🌊 onActivate test_scene_2');
 
     // shared FPS overlay
     this.ctx.fps_overlay.attach(this);
