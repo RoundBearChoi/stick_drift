@@ -6,10 +6,6 @@ import {
   BaseAlign,
 } from 'excalibur';
 
-/**
- * Debug / UI font helpers.
- * Not game content — just for labels, FPS, prompts, etc.
- */
 export const debugFontSource = new FontSource(
   './res/fonts/press_start.ttf',
   'press_start',
@@ -19,7 +15,6 @@ export const debugFontSource = new FontSource(
   }
 );
 
-/** centered text (TextAlign.Center + BaseAlign.Middle) */
 export function createCenterFont(): Font {
   return debugFontSource.toFont({
     size: 16,
@@ -29,7 +24,6 @@ export function createCenterFont(): Font {
   });
 }
 
-/** top-left text (TextAlign.Left + BaseAlign.Top) */
 export function createTopLeftFont(): Font {
   return debugFontSource.toFont({
     size: 16,
