@@ -15,7 +15,6 @@ export class TestScene1 extends Scene<GameContext> {
   private titleLabel?: Label;
 
   onInitialize(_engine: Engine): void {
-    // keep non-context-dependent setup here if needed
   }
 
   onActivate(context: SceneActivationContext<GameContext>): void {
