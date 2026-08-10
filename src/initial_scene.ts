@@ -5,8 +5,6 @@ import {
   Color,
   Label,
   vec,
-  TextAlign,
-  BaseAlign,
 } from 'excalibur';
 import { GameContext } from './game_context';
 
@@ -31,13 +29,10 @@ export class InitialScene extends Scene<GameContext> {
       this.promptLabel = new Label({
         text: 'press any key to start',
         pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
-        font: this.ctx.defaultFont,
+        font: this.ctx.centerFont,
       });
 
-      this.promptLabel.font.textAlign = TextAlign.Center;
-      this.promptLabel.font.baseAlign = BaseAlign.Middle;
       this.promptLabel.color = Color.White;
-
       this.add(this.promptLabel);
     }
 
