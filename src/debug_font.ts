@@ -15,9 +15,12 @@ export const debugFontSource = new FontSource(
   }
 );
 
+
+// use the designed size or an integer multiple
+// 8 → 16 → 24 → 32, etc.
 export function createCenterFont(): Font {
   return debugFontSource.toFont({
-    size: 12,
+    size: 8,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Center,
     baseAlign: BaseAlign.Middle,
