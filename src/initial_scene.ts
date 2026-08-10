@@ -7,8 +7,6 @@ import {
   vec,
   TextAlign,
   BaseAlign,
-  WebAudio,
-  //Keys,
 } from 'excalibur';
 import { GameContext } from './game-context';
 
@@ -52,8 +50,8 @@ export class InitialScene extends Scene<GameContext> {
     if (this.hasStarted) return;
     this.hasStarted = true;
 
-    // request audio context unlock
-    WebAudio.unlock();
+    // unlock audio via GameContext (logs globally once)
+    this.ctx.unlockAudio();
 
     console.log('[initial_scene] user gesture received → going to test_scene_1');
 
