@@ -6,21 +6,25 @@ import {
   BaseAlign,
 } from 'excalibur';
 
+/**
+ * QuinqueFive — 5×5 monospaced pixel font
+ * Use only at multiples of 5 (5, 10, 15, 20...) with Pixel filtering for maximum crispness.
+ * .woff2 is the recommended format: smallest file size + full browser support.
+ */
 export const debugFontSource = new FontSource(
-  './res/fonts/press_start.ttf',
-  'press_start',
+  './res/fonts/QuinqueFive.woff2',
+  'QuinqueFive',
   {
     filtering: ImageFiltering.Pixel,
-    size: 16,
+    size: 10,
   }
 );
 
-
-// use the designed size or an integer multiple
-// 8 → 16 → 24 → 32, etc.
+// designed size or integer multiple of 5
+// 5 → 10 → 15 → 20, etc.
 export function createCenterFont(): Font {
   return debugFontSource.toFont({
-    size: 8,
+    size: 10,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Center,
     baseAlign: BaseAlign.Middle,
@@ -29,7 +33,7 @@ export function createCenterFont(): Font {
 
 export function createTopLeftFont(): Font {
   return debugFontSource.toFont({
-    size: 8,
+    size: 10,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Left,
     baseAlign: BaseAlign.Top,
