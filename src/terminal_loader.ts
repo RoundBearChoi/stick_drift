@@ -1,4 +1,4 @@
-import { DefaultLoader, Engine } from 'excalibur';
+import { DefaultLoader } from 'excalibur';
 
 /**
  * Custom loader that mimics a Linux Mint Cinnamon terminal style.
