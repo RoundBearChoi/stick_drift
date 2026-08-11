@@ -2,7 +2,6 @@ import {
   Scene,
   Engine,
   SceneActivationContext,
-  Color,
   Actor,
   vec,
 } from 'excalibur';
