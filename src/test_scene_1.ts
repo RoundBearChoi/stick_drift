@@ -4,18 +4,19 @@ import {
   SceneActivationContext,
   Color,
   Label,
+  Actor,
   vec,
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { createCenterFont } from './debug_font';
+import { Resources } from './resources';
 
 export class TestScene1 extends Scene<GameContext> {
   private ctx!: GameContext;
   private titleLabel?: Label;
+  private runner?: Actor;
 
-  onInitialize(_engine: Engine): void {
-
-  }
+  onInitialize(_engine: Engine): void {}
 
   onActivate(context: SceneActivationContext<GameContext>): void {
     this.ctx = context.data!;
@@ -24,6 +25,7 @@ export class TestScene1 extends Scene<GameContext> {
     // shared FPS overlay
     this.ctx.fps_overlay.attach(this);
 
+    // Center title
     if (!this.titleLabel) {
       this.titleLabel = new Label({
         text: 'test_scene_1',
@@ -34,12 +36,27 @@ export class TestScene1 extends Scene<GameContext> {
       this.titleLabel.color = Color.White;
       this.add(this.titleLabel);
     }
+
+    // Runner sprite — horizontally centered, placed below the title
+    if (!this.runner) {
+      const sprite = Resources.Runner.toSprite();
+      const gap = 28; // pixels between text center and top of sprite
+
+      this.runner = new Actor({
+        pos: vec(
+          this.engine.halfDrawWidth,
+          this.engine.halfDrawHeight + gap + sprite.height / 2
+        ),
+      });
+
+      this.runner.graphics.use(sprite);
+      this.add(this.runner);
+    }
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
     this.ctx.update(engine, elapsed);
   }
 
-  onDeactivate(): void {
-  }
+  onDeactivate(): void {}
 }
