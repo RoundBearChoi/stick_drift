@@ -25,6 +25,9 @@ export class TestScene1 extends Scene<GameContext> {
     // shared FPS overlay
     this._game_ctx.fps_overlay.attach(this);
 
+    // shared resolution debug (slightly below FPS)
+    this._game_ctx.resolution_debug.attach(this);
+
     // center title
     if (!this._title_label) {
       this._title_label = new Label({

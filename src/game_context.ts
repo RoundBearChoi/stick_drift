@@ -1,6 +1,7 @@
 import { Engine, WebAudio } from 'excalibur';
 import { FixedTimestep } from './fixed_timestep';
 import { FpsOverlay } from './fps_overlay';
+import { ResolutionDebug } from './resolution_debug';
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).
@@ -11,6 +12,9 @@ export class GameContext {
 
   /** FPS counter + shared on-screen overlay */
   readonly fps_overlay = new FpsOverlay();
+
+  /** shared on-screen resolution / scale debug label */
+  readonly resolution_debug = new ResolutionDebug();
 
   private audio_unlocked = false;
 

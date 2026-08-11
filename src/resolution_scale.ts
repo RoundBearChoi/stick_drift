@@ -18,6 +18,9 @@ export class ResolutionScale {
 
   private readonly SCALE_CYCLE: ScaleMode[] = ['auto', 1, 2, 3, 4];
 
+  /** optional callback so on-screen debug can refresh when scale changes */
+  private debugRefresh: (() => void) | null = null;
+
   /** call once after Engine is created */
   attach(engine: Engine): void {
     this.engine = engine;
@@ -41,21 +44,16 @@ export class ResolutionScale {
     console.log('[scale] resolutionScale attached (f8 to cycle)');
   }
 
+  /**
+   * let ResolutionDebug register so the label updates when scale changes.
+   */
+  setDebugRefresh(fn: () => void): void {
+    this.debugRefresh = fn;
+  }
+
   setMode(mode: ScaleMode): void {
     this.mode = mode;
     this.apply();
-
-    const max = this.calculateMaxScale();
-    const modeLabel = mode === 'auto' ? 'Auto' : `${mode}x`;
-
-    const appliedW = this.baseWidth * this.currentScale;
-    const appliedH = this.baseHeight * this.currentScale;
-    const maxW = this.baseWidth * max;
-    const maxH = this.baseHeight * max;
-
-    console.log(
-      `[scale] mode: ${modeLabel}  →  ${appliedW}×${appliedH} (${this.currentScale}x)  |  max possible: ${maxW}×${maxH} (${max}x)`
-    );
   }
 
   getCurrentScale(): number {
@@ -68,6 +66,21 @@ export class ResolutionScale {
 
   getMaxPossibleScale(): number {
     return this.calculateMaxScale();
+  }
+
+  /**
+   * short text for the on-screen debug label (replaces the old console log).
+   */
+  getDebugText(): string {
+    const mode = this.mode;
+    const current = this.currentScale;
+    const max = this.calculateMaxScale();
+    const modeLabel = mode === 'auto' ? 'AUTO' : `${mode}x`;
+
+    const appliedW = this.baseWidth * current;
+    const appliedH = this.baseHeight * current;
+
+    return `RES: ${appliedW}x${appliedH} (${current}x ${modeLabel})  MAX:${max}x`;
   }
 
   private cycleScale(): void {
@@ -99,5 +112,8 @@ export class ResolutionScale {
     // every time integer scale changes it updates --game-scale.
     // you can then use the value anywhere in CSS or inline styles.
     document.documentElement.style.setProperty('--game-scale', String(scale));
+
+    // keep on-screen debug label in sync (resize, f8, setMode, etc.)
+    this.debugRefresh?.();
   }
 }

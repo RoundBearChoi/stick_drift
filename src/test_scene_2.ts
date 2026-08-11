@@ -24,6 +24,9 @@ export class TestScene2 extends Scene<GameContext> {
     // shared FPS overlay
     this.ctx.fps_overlay.attach(this);
 
+    // shared resolution debug (slightly below FPS)
+    this.ctx.resolution_debug.attach(this);
+
     if (!this.titleLabel) {
       this.titleLabel = new Label({
         text: 'TEST_SCENE_2',
