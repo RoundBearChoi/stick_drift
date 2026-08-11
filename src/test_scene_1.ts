@@ -59,11 +59,10 @@ export class TestScene1 extends Scene<GameContext> {
       }
     }
 
-    // runner animation — moved lower to make room under the WIP text
+    // idle animation test
     if (!this._runner) {
       // getAnimation() with no argument uses all frames in the .aseprite file.
-      // If you later add a Frame Tag in Aseprite (e.g. "run"), switch to:
-      //   Resources.sprite_runner.getAnimation('run')
+      // if you later add a Frame Tag in Aseprite (e.g. "run"), switch to Resources.sprite_runner.getAnimation('run')
       const runAnim = Resources.sprite_runner.getAnimation();
 
       if (!runAnim) {
