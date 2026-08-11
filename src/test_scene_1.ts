@@ -39,27 +39,38 @@ export class TestScene1 extends Scene<GameContext> {
 
     // runner sprite — horizontally centered
     if (!this._runner) {
-      const sheet = Resources.sprite_runner.getSpriteSheet();
-      if (!sheet) {
+      const sprite_runner_sheet = Resources.sprite_runner.getSpriteSheet();
+      if (!sprite_runner_sheet) {
         console.warn('Runner spritesheet not loaded yet');
         return;
       }
 
-      const sprite = sheet.getSprite(0, 0);
+      // debugging sprite position. checking pixel perfect
+      // for this specific example, pivot is at center of sprite
+
+      const spr = sprite_runner_sheet.getSprite(0, 0);
       const gap = 28; // pixels between text center and top of sprite
 
-      const half_width: number = this.engine.halfDrawWidth;
-      const half_height: number = this.engine.halfDrawHeight;
-      const sprite_height_center = sprite.height / 2;
+      const screen_half_width: number = this.engine.halfDrawWidth;
+      const screen_half_height: number = this.engine.halfDrawHeight;
+      const spr_height_center = spr.height / 2;
+
+      console.log("------ position test ------")
+      console.log({
+        half_width: screen_half_width,
+        half_height: screen_half_height,
+        sprite_height_center: spr_height_center,
+        final_y: screen_half_height + 28 + spr_height_center
+      });
 
       this._runner = new Actor({
         pos: vec(
-          this.engine.halfDrawWidth,
-          this.engine.halfDrawHeight + gap + sprite.height / 2
+          screen_half_width,
+          screen_half_height + gap + spr_height_center
         ),
       });
 
-      this._runner.graphics.use(sprite);
+      this._runner.graphics.use(spr);
       this.add(this._runner);
     }
   }
