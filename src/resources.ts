@@ -1,7 +1,13 @@
 import { TerminalLoader } from './terminal_loader';
 import { debugFontSource } from './debug_font';
+import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
+
+export const Resources = {
+  Runner: new AsepriteResource('./res/sprites/runner_untitled_1.aseprite'),
+} as const;
 
 const loader = new TerminalLoader();
 loader.addResource(debugFontSource);
+loader.addResource(Resources.Runner);
 
 export { loader };
