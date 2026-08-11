@@ -2,7 +2,7 @@
  * track both visual (render) FPS and fixed-update FPS.
  * 1-second rolling window.
  */
-export class FpsCounter {
+export class FpsDebug {
   private _frame_count = 0;
   private _fixed_update_count = 0;
   private _elapsed = 0;
