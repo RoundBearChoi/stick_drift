@@ -4,9 +4,8 @@ import { ResolutionScale } from './resolution_scale';
 
 /**
  * shared on-screen resolution / scale debug label.
- * placed slightly below the FPS overlay.
- * the actor is shared and can be attached to multiple scenes
- * (same pattern as FpsOverlay).
+ * placed slightly below the FPS text.
+ * actor is shared and can be attached to multiple scenes (same pattern as fps_debug).
  */
 export class ResolutionDebug {
   private label?: Label;
@@ -28,8 +27,8 @@ export class ResolutionDebug {
   attach(scene: Scene): void {
     if (!this.label) {
       this.label = new Label({
-        text: 'RES: --',
-        pos: vec(8, 16), // slightly below FPS text at (8, 8)
+        text: 'RESOLUTION: --',
+        pos: vec(8, 8 + 8 + 2), // slightly below FPS text at (8, 8)
         font: createTopLeftFont(),
       });
       this.label.color = Color.White;

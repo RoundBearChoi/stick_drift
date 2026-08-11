@@ -80,7 +80,8 @@ export class ResolutionScale {
     const appliedW = this.baseWidth * current;
     const appliedH = this.baseHeight * current;
 
-    return `RES: ${appliedW}x${appliedH} (${current}x ${modeLabel})  MAX:${max}x`;
+    //return `RESOLUTION: ${appliedW}x${appliedH} (${current}x${modeLabel})  MAX:${max}x`;
+    return `RESOLUTION: ${appliedW}x${appliedH}  (${modeLabel})  MAX:${max}x`;
   }
 
   private cycleScale(): void {
