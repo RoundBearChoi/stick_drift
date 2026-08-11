@@ -33,31 +33,30 @@ export class TestScene1 extends Scene<GameContext> {
       const sheet = Resources.sprite_wip_text.getSpriteSheet();
       if (!sheet) {
         console.warn('WIP text spritesheet not loaded yet');
-        return;
+      } else {
+        const spr = sheet.getSprite(0, 0);
+        // place center of sprite a bit above the horizontal center line
+        // so the tall text sits mostly in the upper half and leaves room below
+        const above_center_offset = 24;
+
+        this._wip_text = new Actor({
+          pos: vec(
+            screen_half_width,
+            screen_half_height - above_center_offset
+          ),
+        });
+
+        this._wip_text.graphics.use(spr);
+        this.add(this._wip_text);
+
+        console.log('------ wip_text position ------');
+        console.log({
+          sprite_size: { w: spr.width, h: spr.height },
+          pos: this._wip_text.pos,
+          top: this._wip_text.pos.y - spr.height / 2,
+          bottom: this._wip_text.pos.y + spr.height / 2,
+        });
       }
-
-      const spr = sheet.getSprite(0, 0);
-      // place center of sprite a bit above the horizontal center line
-      // so the tall text sits mostly in the upper half and leaves room below
-      const above_center_offset = 24;
-
-      this._wip_text = new Actor({
-        pos: vec(
-          screen_half_width,
-          screen_half_height - above_center_offset
-        ),
-      });
-
-      this._wip_text.graphics.use(spr);
-      this.add(this._wip_text);
-
-      console.log('------ wip_text position ------');
-      console.log({
-        sprite_size: { w: spr.width, h: spr.height },
-        pos: this._wip_text.pos,
-        top: this._wip_text.pos.y - spr.height / 2,
-        bottom: this._wip_text.pos.y + spr.height / 2,
-      });
     }
 
     // runner sprite — moved lower to make room under the WIP text
@@ -65,35 +64,34 @@ export class TestScene1 extends Scene<GameContext> {
       const sprite_runner_sheet = Resources.sprite_runner.getSpriteSheet();
       if (!sprite_runner_sheet) {
         console.warn('Runner spritesheet not loaded yet');
-        return;
+      } else {
+        // debugging sprite position. checking pixel perfect
+        // for this specific example, pivot is at center of sprite
+
+        const spr = sprite_runner_sheet.getSprite(0, 0);
+        // larger gap so the 32px runner sits clearly below the WIP text
+        const gap_from_center = 110; // pixels from screen center down to runner center
+
+        this._runner = new Actor({
+          pos: vec(
+            screen_half_width,
+            screen_half_height + gap_from_center
+          ),
+        });
+
+        this._runner.graphics.use(spr);
+        this.add(this._runner);
+
+        console.log('------ runner position ------');
+        console.log({
+          half_width: screen_half_width,
+          half_height: screen_half_height,
+          sprite_height_center: spr.height / 2,
+          final_y: screen_half_height + gap_from_center,
+          top: this._runner.pos.y - spr.height / 2,
+          bottom: this._runner.pos.y + spr.height / 2,
+        });
       }
-
-      // debugging sprite position. checking pixel perfect
-      // for this specific example, pivot is at center of sprite
-
-      const spr = sprite_runner_sheet.getSprite(0, 0);
-      // larger gap so the 32px runner sits clearly below the WIP text
-      const gap_from_center = 110; // pixels from screen center down to runner center
-
-      this._runner = new Actor({
-        pos: vec(
-          screen_half_width,
-          screen_half_height + gap_from_center
-        ),
-      });
-
-      this._runner.graphics.use(spr);
-      this.add(this._runner);
-
-      console.log('------ runner position ------');
-      console.log({
-        half_width: screen_half_width,
-        half_height: screen_half_height,
-        sprite_height_center: spr.height / 2,
-        final_y: screen_half_height + gap_from_center,
-        top: this._runner.pos.y - spr.height / 2,
-        bottom: this._runner.pos.y + spr.height / 2,
-      });
     }
   }
 
