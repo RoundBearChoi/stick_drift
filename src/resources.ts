@@ -4,7 +4,7 @@ import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
 
 export const Resources = {
   sprite_runner: new AsepriteResource('./res/sprites/runner_untitled_1.aseprite'),
-  sprite_wip_text: new AsepriteResource('./res/sprites/wip_text.aseprite'),
+  sprite_wip_text: new AsepriteResource('./res/sprites/wip_text_528_158.aseprite'),
 } as const;
 
 const loader = new TerminalLoader();
