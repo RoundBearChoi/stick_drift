@@ -25,7 +25,7 @@ export class TestScene1 extends Scene<GameContext> {
     // shared FPS overlay
     this.ctx.fps_overlay.attach(this);
 
-    // Center title
+    // center title
     if (!this.titleLabel) {
       this.titleLabel = new Label({
         text: 'test_scene_1',
@@ -37,9 +37,9 @@ export class TestScene1 extends Scene<GameContext> {
       this.add(this.titleLabel);
     }
 
-    // Runner sprite — horizontally centered, placed below the title
+    // runner sprite — horizontally centered
     if (!this.runner) {
-      const sheet = Resources.Runner.getSpriteSheet();
+      const sheet = Resources.sprite_runner.getSpriteSheet();
       if (!sheet) {
         console.warn('Runner spritesheet not loaded yet');
         return;
