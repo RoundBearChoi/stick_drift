@@ -8,6 +8,7 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@excaliburjs/plugin-aseprite": "^0.32.1",
     "excalibur": "0.32.0"
   },
   "devDependencies": {
