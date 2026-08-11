@@ -65,8 +65,7 @@ export class TestScene1 extends Scene<GameContext> {
       if (!sprite_runner_sheet) {
         console.warn('Runner spritesheet not loaded yet');
       } else {
-        // debugging sprite position. checking pixel perfect
-        // for this specific example, pivot is at center of sprite
+        // debugging sprite position. checking pixel perfect. for this specific example, pivot is at center of sprite.
 
         const spr = sprite_runner_sheet.getSprite(0, 0);
         // larger gap so the 32px runner sits clearly below the WIP text
