@@ -1,5 +1,5 @@
 import { Scene, Label, Color, vec } from 'excalibur';
-import { FpsCounter } from './fps_counter';
+import { FpsCounter } from './fps_debug';
 import { createTopLeftFont } from './debug_font';
 
 export class FpsOverlay {
