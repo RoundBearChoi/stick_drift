@@ -39,7 +39,8 @@ export class TestScene1 extends Scene<GameContext> {
 
     // Runner sprite — horizontally centered, placed below the title
     if (!this.runner) {
-      const sprite = Resources.Runner.toSprite();
+      // AsepriteResource exposes .image (ImageSource)
+      const sprite = Resources.Runner.image.toSprite();
       const gap = 28; // pixels between text center and top of sprite
 
       this.runner = new Actor({
