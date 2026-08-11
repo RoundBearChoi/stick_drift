@@ -26,7 +26,7 @@ export class TestScene2 extends Scene<GameContext> {
 
     if (!this.titleLabel) {
       this.titleLabel = new Label({
-        text: 'test_scene_2',
+        text: 'TEST_SCENE_2',
         pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
         font: createCenterFont(),
       });

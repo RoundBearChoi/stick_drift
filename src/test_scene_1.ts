@@ -28,7 +28,7 @@ export class TestScene1 extends Scene<GameContext> {
     // center title
     if (!this._title_label) {
       this._title_label = new Label({
-        text: 'test_scene_1',
+        text: 'TEST_SCENE_1',
         pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
         font: createCenterFont(),
       });

@@ -13,7 +13,7 @@ export class FpsOverlay {
   attach(scene: Scene): void {
     if (!this.label) {
       this.label = new Label({
-        text: 'render fps: --  fixed update fps: --',
+        text: 'RENDER FPS: --  FIXED UPDATE FPS: --',
         pos: vec(8, 8),
         font: createTopLeftFont(),
       });

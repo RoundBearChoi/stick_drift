@@ -16,14 +16,13 @@ export class TerminalLoader extends DefaultLoader {
     ctx.fillStyle = this.bg;
     ctx.fillRect(0, 0, w, h);
 
-    // centered "loading"
+    // centered "LOADING"
+    // terminal-style block progress bar
     ctx.fillStyle = this.fg;
     ctx.font = '16px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('loading', w / 2, h / 2 - 24);
-
-    // terminal-style block progress bar
+    ctx.fillText('LOADING', w / 2, h / 2 - 24); // don't need pixel perfect for this scene
     const barWidth = 20; // number of characters inside the brackets
     const filled = Math.round(progress * barWidth);
     const empty = barWidth - filled;
