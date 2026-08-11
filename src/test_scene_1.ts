@@ -59,16 +59,17 @@ export class TestScene1 extends Scene<GameContext> {
       }
     }
 
-    // runner sprite — moved lower to make room under the WIP text
+    // runner animation — moved lower to make room under the WIP text
     if (!this._runner) {
-      const sprite_runner_sheet = Resources.sprite_runner.getSpriteSheet();
-      if (!sprite_runner_sheet) {
-        console.warn('Runner spritesheet not loaded yet');
-      } else {
-        // debugging sprite position. checking pixel perfect. for this specific example, pivot is at center of sprite.
+      // getAnimation() with no argument uses all frames in the .aseprite file.
+      // If you later add a Frame Tag in Aseprite (e.g. "run"), switch to:
+      //   Resources.sprite_runner.getAnimation('run')
+      const runAnim = Resources.sprite_runner.getAnimation();
 
-        const spr = sprite_runner_sheet.getSprite(0, 0);
-        // larger gap so the 32px runner sits clearly below the WIP text
+      if (!runAnim) {
+        console.warn('Runner animation not loaded yet');
+      } else {
+        // larger gap so the runner sits clearly below the WIP text
         const gap_from_center = 110; // pixels from screen center down to runner center
 
         this._runner = new Actor({
@@ -78,17 +79,14 @@ export class TestScene1 extends Scene<GameContext> {
           ),
         });
 
-        this._runner.graphics.use(spr);
+        this._runner.graphics.use(runAnim);
         this.add(this._runner);
 
-        console.log('------ runner position ------');
+        console.log('------ runner animation position ------');
         console.log({
           half_width: screen_half_width,
           half_height: screen_half_height,
-          sprite_height_center: spr.height / 2,
           final_y: screen_half_height + gap_from_center,
-          top: this._runner.pos.y - spr.height / 2,
-          bottom: this._runner.pos.y + spr.height / 2,
         });
       }
     }
