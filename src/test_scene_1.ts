@@ -27,7 +27,7 @@ export class TestScene1 extends Scene<GameContext> {
     // shared resolution debug
     this._game_ctx.resolution_debug.attach(this);
 
-    // add WIP text sprite
+    // add WIP text sprite (temp)
     if (!this._wip_text) {
       const sheet = Resources.sprite_wip_text.getSpriteSheet();
       if (!sheet) {
