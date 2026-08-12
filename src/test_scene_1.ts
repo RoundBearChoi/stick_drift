@@ -7,13 +7,12 @@ import {
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { Resources } from './resources';
-import { FixedFrameAnimation } from './fixed_frame_animation';
+import { Runner } from './stick_runner';
 
 export class TestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _wip_text?: Actor;
-  private _runner?: Actor;
-  private _runnerAnim?: FixedFrameAnimation;
+  private _runner?: Runner;
 
   onInitialize(_engine: Engine): void {}
 
@@ -61,39 +60,28 @@ export class TestScene1 extends Scene<GameContext> {
       }
     }
 
-    // idle animation test — pure fixed-frame driven
+    // Runner — scene owns it, class owns its animation
     if (!this._runner) {
-      const sourceAnim = Resources.sprite_runner.getAnimation();
+      const gap_from_center = 110; // pixels from screen center down to runner center
 
-      if (!sourceAnim) {
-        console.warn('Runner animation not loaded yet');
-      } else {
-        // larger gap so the runner sits clearly below the WIP text
-        const gap_from_center = 110; // pixels from screen center down to runner center
+      this._runner = new Runner({
+        pos: vec(
+          screen_half_width,
+          screen_half_height + gap_from_center
+        ),
+        advancesPerFrame: 4,
+      });
 
-        this._runner = new Actor({
-          pos: vec(
-            screen_half_width,
-            screen_half_height + gap_from_center
-          ),
-        });
+      this._runner.register(this._game_ctx);
+      this.add(this._runner);
 
-        this._runnerAnim = new FixedFrameAnimation(sourceAnim, 4);
-        this._runnerAnim.attach(this._runner);
-
-        // register so GameContext ticks it automatically every fixed step
-        this._game_ctx.registerFixedAnim(this._runnerAnim);
-
-        this.add(this._runner);
-
-        console.log('------ runner animation position ------');
-        console.log({
-          half_width: screen_half_width,
-          half_height: screen_half_height,
-          final_y: screen_half_height + gap_from_center,
-          advances_per_frame: 2,
-        });
-      }
+      console.log('------ runner created ------');
+      console.log({
+        half_width: screen_half_width,
+        half_height: screen_half_height,
+        final_y: screen_half_height + gap_from_center,
+        advances_per_frame: 4,
+      });
     }
   }
 
@@ -103,8 +91,8 @@ export class TestScene1 extends Scene<GameContext> {
 
   onDeactivate(): void {
     // clean up so the animation stops being ticked after leaving the scene
-    if (this._runnerAnim) {
-      this._game_ctx.unregisterFixedAnim(this._runnerAnim);
+    if (this._runner) {
+      this._runner.unregister(this._game_ctx);
     }
   }
 }
