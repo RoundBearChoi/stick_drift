@@ -29,7 +29,7 @@ export class TestScene1 extends Scene<GameContext> {
     const screen_half_width = this.engine.halfDrawWidth;
     const screen_half_height = this.engine.halfDrawHeight;
 
-    // WIP text sprite
+    // add WIP text sprite
     if (!this._wip_text) {
       const sheet = Resources.sprite_wip_text.getSpriteSheet();
       if (!sheet) {
