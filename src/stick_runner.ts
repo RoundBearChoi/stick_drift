@@ -8,13 +8,6 @@ export interface RunnerOptions {
   advancesPerFrame?: number;
 }
 
-/**
- * Stick figure runner.
- * Owns its own FixedFrameAnimation.
- * Scene owns the Runner instance.
- *
- * Future: this class will also own a state machine.
- */
 export class Runner extends Actor {
   private readonly anim: FixedFrameAnimation;
 
@@ -38,12 +31,12 @@ export class Runner extends Actor {
     this.anim.attach(this);
   }
 
-  /** Register so GameContext can tick the animation on the fixed timestep */
+  /** register so game context can tick the animation on the fixed timestep. no need to manually update every frame */
   register(gameCtx: GameContext): void {
     gameCtx.registerFixedAnim(this.anim);
   }
 
-  /** Unregister when leaving the scene */
+  /** unregister when leaving the scene. stop updating the animation */
   unregister(gameCtx: GameContext): void {
     gameCtx.unregisterFixedAnim(this.anim);
   }

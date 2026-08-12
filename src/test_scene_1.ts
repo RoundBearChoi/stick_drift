@@ -60,7 +60,7 @@ export class TestScene1 extends Scene<GameContext> {
       }
     }
 
-    // Runner — scene owns it, class owns its animation
+    // add stick runner to scene
     if (!this._runner) {
       const gap_from_center = 110; // pixels from screen center down to runner center
 
