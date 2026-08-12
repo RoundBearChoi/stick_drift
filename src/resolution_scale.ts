@@ -5,7 +5,6 @@ export type ScaleMode = 'auto' | number;
 
 /**
  * integer resolution scaling for pixel-perfect rendering.
- * keep logical resolution fixed (from RESOLUTION) and scale canvas via CSS to whole-number multiples only.
  * f8 cycles: Auto → 1x → 2x → 3x → 4x → Auto
  */
 export class ResolutionScale {
