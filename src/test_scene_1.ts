@@ -8,6 +8,7 @@ import {
 import { GameContext } from './game_context';
 import { Resources } from './resources';
 import { StickRunner } from './stick_runner';
+import { createStickRunner } from './stick_runner_creator';
 
 export class TestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -60,28 +61,11 @@ export class TestScene1 extends Scene<GameContext> {
       }
     }
 
-    // add stick runner to scene
+    // create + add stick runner
     if (!this._runner) {
-      const gap_from_center = 110; // pixels from screen center down to runner center
-
-      this._runner = new StickRunner({
-        pos: vec(
-          screen_half_width,
-          screen_half_height + gap_from_center
-        ),
-        advancesPerFrame: 4,
-      });
-
+      this._runner = createStickRunner(this.engine);
       this._runner.register(this._game_ctx);
       this.add(this._runner);
-
-      console.log('------ runner created ------');
-      console.log({
-        half_width: screen_half_width,
-        half_height: screen_half_height,
-        final_y: screen_half_height + gap_from_center,
-        advances_per_frame: 4,
-      });
     }
   }
 
