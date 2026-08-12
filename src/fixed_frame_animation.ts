@@ -1,26 +1,28 @@
 import { Actor, Animation, AnimationStrategy } from 'excalibur';
 
 /**
- * Drives an Excalibur Animation purely from fixed updates.
- * Ignores Aseprite / Animation frame durations.
- * Speed is controlled by how many fixed updates = 1 frame advance.
+ * advance animation frame purely based on fixed updates.
+ * play speed is customized by how many fixed updates = 1 frame advance.
  */
 export class FixedFrameAnimation {
   readonly anim: Animation;
   private owner?: Actor;
 
-  /** How many fixed updates must pass before we advance 1 frame */
+  /** how many fixed updates = advance 1 animation frame */
   private advancesPerFrame: number;
   private counter = 0;
 
-  /** Local direction for PingPong strategy */
+  /**
+   * not using ping pong strategy for now.
+   * pretty much everything is simply looping. can't think of a ping pong style animation rn.
+   */
   private pingPongDirection = 1;
 
   constructor(source: Animation, advancesPerFrame = 1) {
     this.anim = source.clone(); // always clone so each instance is independent
     this.advancesPerFrame = Math.max(1, advancesPerFrame);
 
-    // Make sure we start at frame 0 and are in a clean state
+    // start at frame 0 by default
     this.anim.goToFrame(0);
   }
 
@@ -29,7 +31,7 @@ export class FixedFrameAnimation {
     this.syncGraphic();
   }
 
-  /** Call once per fixed update. No dt needed. */
+  /** call once per fixed update. no other factors needed in animation speed. */
   tick(): void {
     this.counter++;
 
@@ -73,7 +75,7 @@ export class FixedFrameAnimation {
 
       case AnimationStrategy.End:
       default:
-        // Advance until the end, then stay past the last frame (currentFrame becomes null)
+        // advance until the end, then stay past the last frame (currentFrame becomes null)
         next = next + 1;
         break;
     }
