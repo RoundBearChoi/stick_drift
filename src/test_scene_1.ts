@@ -7,12 +7,12 @@ import {
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { Resources } from './resources';
-import { Runner } from './stick_runner';
+import { StickRunner } from './stick_runner';
 
 export class TestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _wip_text?: Actor;
-  private _runner?: Runner;
+  private _runner?: StickRunner;
 
   onInitialize(_engine: Engine): void {}
 
@@ -64,7 +64,7 @@ export class TestScene1 extends Scene<GameContext> {
     if (!this._runner) {
       const gap_from_center = 110; // pixels from screen center down to runner center
 
-      this._runner = new Runner({
+      this._runner = new StickRunner({
         pos: vec(
           screen_half_width,
           screen_half_height + gap_from_center

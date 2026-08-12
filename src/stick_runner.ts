@@ -8,7 +8,7 @@ export interface RunnerOptions {
   advancesPerFrame?: number;
 }
 
-export class Runner extends Actor {
+export class StickRunner extends Actor {
   private readonly _sprite_animation: FixedFrameAnimation;
 
   constructor(options: RunnerOptions = {}) {
