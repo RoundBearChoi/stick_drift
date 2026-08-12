@@ -54,7 +54,6 @@ engine.start(loader).then(() => {
   setupSceneCycle(engine, game_context);
 
   console.log('🚀 game started');
-  console.log('manual fixed timestep (60 Hz)');
   console.log('integer resolution scaling ready (f8 to cycle)');
 });
 

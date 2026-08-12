@@ -40,8 +40,6 @@ export class ResolutionScale {
         this.cycleScale();
       }
     });
-
-    console.log('[scale] resolutionScale attached (f8 to cycle)');
   }
 
   /**
