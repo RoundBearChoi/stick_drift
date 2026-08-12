@@ -31,12 +31,16 @@ export class Runner extends Actor {
     this._sprite_animation.attach(this);
   }
 
-  /** register so game context can tick the animation on the fixed timestep. no need to manually update every frame */
+  /**
+   * register so game context can tick the animation on the fixed timestep. no need to manually update every frame
+   */
   register(gameCtx: GameContext): void {
     gameCtx.registerFixedAnim(this._sprite_animation);
   }
 
-  /** unregister when leaving the scene. stop updating the animation */
+  /**
+   * unregister when leaving the scene. stop updating the animation
+   */
   unregister(gameCtx: GameContext): void {
     gameCtx.unregisterFixedAnim(this._sprite_animation);
   }

@@ -20,16 +20,16 @@ export class TestScene1 extends Scene<GameContext> {
     this._game_ctx = context.data!;
     console.log('🌊 onActivate test_scene_1');
 
-    // shared FPS overlay
+    // shared FPS debug
     this._game_ctx.fps_overlay.attach(this);
 
-    // shared resolution debug (slightly below FPS)
+    // shared resolution debug
     this._game_ctx.resolution_debug.attach(this);
 
     const screen_half_width = this.engine.halfDrawWidth;
     const screen_half_height = this.engine.halfDrawHeight;
 
-    // WIP text sprite — slightly above the center line
+    // WIP text sprite
     if (!this._wip_text) {
       const sheet = Resources.sprite_wip_text.getSpriteSheet();
       if (!sheet) {
