@@ -8,6 +8,8 @@ export const Resources = {
 } as const;
 
 const loader = new TerminalLoader();
+
+// added resources load during excalibur's initial screen
 loader.addResource(debugFontSource);
 loader.addResource(Resources.sprite_runner);
 loader.addResource(Resources.sprite_wip_text);
