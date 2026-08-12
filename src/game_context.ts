@@ -2,6 +2,7 @@ import { Engine, WebAudio } from 'excalibur';
 import { FixedTimestep } from './fixed_timestep';
 import { FpsOverlay } from './fps_overlay';
 import { ResolutionDebug } from './resolution_debug';
+import { FixedFrameAnimation } from './fixed_frame_animation';
 
 /**
  * single source of truth for native game resolution
@@ -31,6 +32,9 @@ export class GameContext {
 
   private audio_unlocked = false;
 
+  /** Animations that should advance on every fixed update */
+  private readonly fixed_anims = new Set<FixedFrameAnimation>();
+
   /**
    * unlock WebAudio (must be called from first user gesture)
    */
@@ -40,6 +44,20 @@ export class GameContext {
     WebAudio.unlock();
     this.audio_unlocked = true;
     console.log('✅ WebAudio unlocked');
+  }
+
+  /**
+   * Register a FixedFrameAnimation so it gets ticked automatically every fixed step.
+   */
+  registerFixedAnim(anim: FixedFrameAnimation): void {
+    this.fixed_anims.add(anim);
+  }
+
+  /**
+   * Unregister when the animation is no longer needed (scene exit, actor destroyed, etc.)
+   */
+  unregisterFixedAnim(anim: FixedFrameAnimation): void {
+    this.fixed_anims.delete(anim);
   }
 
   /**
@@ -60,5 +78,10 @@ export class GameContext {
    */
   private fixedUpdate(engine: Engine, dt: number): void {
     this.fps_overlay.tickFixed();
+
+    // advance all registered fixed-frame animations
+    for (const anim of this.fixed_anims) {
+      anim.tick();
+    }
   }
 }

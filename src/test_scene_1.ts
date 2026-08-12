@@ -7,11 +7,13 @@ import {
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { Resources } from './resources';
+import { FixedFrameAnimation } from './fixed_frame_animation';
 
 export class TestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _wip_text?: Actor;
   private _runner?: Actor;
+  private _runnerAnim?: FixedFrameAnimation;
 
   onInitialize(_engine: Engine): void {}
 
@@ -59,13 +61,11 @@ export class TestScene1 extends Scene<GameContext> {
       }
     }
 
-    // idle animation test
+    // idle animation test — pure fixed-frame driven
     if (!this._runner) {
-      // getAnimation() with no argument uses all frames in the .aseprite file.
-      // if you later add a Frame Tag in Aseprite (e.g. "run"), switch to Resources.sprite_runner.getAnimation('run')
-      const runAnim = Resources.sprite_runner.getAnimation();
+      const sourceAnim = Resources.sprite_runner.getAnimation();
 
-      if (!runAnim) {
+      if (!sourceAnim) {
         console.warn('Runner animation not loaded yet');
       } else {
         // larger gap so the runner sits clearly below the WIP text
@@ -78,7 +78,13 @@ export class TestScene1 extends Scene<GameContext> {
           ),
         });
 
-        this._runner.graphics.use(runAnim);
+        // advancesPerFrame = 2 → half speed (every 2 fixed updates = 1 frame)
+        this._runnerAnim = new FixedFrameAnimation(sourceAnim, 2);
+        this._runnerAnim.attach(this._runner);
+
+        // register so GameContext ticks it automatically every fixed step
+        this._game_ctx.registerFixedAnim(this._runnerAnim);
+
         this.add(this._runner);
 
         console.log('------ runner animation position ------');
@@ -86,6 +92,7 @@ export class TestScene1 extends Scene<GameContext> {
           half_width: screen_half_width,
           half_height: screen_half_height,
           final_y: screen_half_height + gap_from_center,
+          advances_per_frame: 2,
         });
       }
     }
@@ -95,5 +102,10 @@ export class TestScene1 extends Scene<GameContext> {
     this._game_ctx.update(engine, elapsed);
   }
 
-  onDeactivate(): void {}
+  onDeactivate(): void {
+    // clean up so the animation stops being ticked after leaving the scene
+    if (this._runnerAnim) {
+      this._game_ctx.unregisterFixedAnim(this._runnerAnim);
+    }
+  }
 }
