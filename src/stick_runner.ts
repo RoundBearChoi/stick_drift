@@ -9,47 +9,47 @@ export interface RunnerOptions {
 }
 
 export class Runner extends Actor {
-  private readonly anim: FixedFrameAnimation;
+  private readonly _sprite_animation: FixedFrameAnimation;
 
   constructor(options: RunnerOptions = {}) {
     super({
       pos: options.pos ?? vec(0, 0),
     });
 
-    const sourceAnim = Resources.sprite_runner.getAnimation();
+    const source_sprite = Resources.sprite_runner.getAnimation();
 
-    if (!sourceAnim) {
+    if (!source_sprite) {
       console.warn('Runner animation not loaded yet');
     }
 
     // FixedFrameAnimation always clones the source so each runner is independent
-    this.anim = new FixedFrameAnimation(
-      sourceAnim!,
+    this._sprite_animation = new FixedFrameAnimation(
+      source_sprite!,
       options.advancesPerFrame ?? 4
     );
 
-    this.anim.attach(this);
+    this._sprite_animation.attach(this);
   }
 
   /** register so game context can tick the animation on the fixed timestep. no need to manually update every frame */
   register(gameCtx: GameContext): void {
-    gameCtx.registerFixedAnim(this.anim);
+    gameCtx.registerFixedAnim(this._sprite_animation);
   }
 
   /** unregister when leaving the scene. stop updating the animation */
   unregister(gameCtx: GameContext): void {
-    gameCtx.unregisterFixedAnim(this.anim);
+    gameCtx.unregisterFixedAnim(this._sprite_animation);
   }
 
   setSpeed(advancesPerFrame: number): void {
-    this.anim.setSpeed(advancesPerFrame);
+    this._sprite_animation.setSpeed(advancesPerFrame);
   }
 
   reset(): void {
-    this.anim.reset();
+    this._sprite_animation.reset();
   }
 
   get currentFrameIndex(): number {
-    return this.anim.currentFrameIndex;
+    return this._sprite_animation.currentFrameIndex;
   }
 }
