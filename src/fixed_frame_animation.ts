@@ -41,8 +41,10 @@ export class FixedFrameAnimation {
     const frameCount = this.anim.frames.length;
     if (frameCount === 0) return;
 
-    // Currently only supporting Loop.
-    // PingPong / Freeze / End can be re-added when needed.
+    // currently only supporting loop.
+    // looping: 0 -> 1 -> 2 -> 3 -> 0 -> 1 -> 2 -> 3 ...
+    // pingpong: 0 -> 1 -> 2 -> 3 -> 2 -> 1 -> 0 -> 1 ...
+    // pingPong / freeze / end can be re-added when needed.
     const next = (this.anim.currentFrameIndex + 1) % frameCount;
     this.anim.goToFrame(next);
   }
