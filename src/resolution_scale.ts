@@ -1,15 +1,16 @@
 import { Engine, Keys } from 'excalibur';
+import { RESOLUTION } from './game_context';
 
 export type ScaleMode = 'auto' | number;
 
 /**
  * integer resolution scaling for pixel-perfect rendering.
- * keep logical resolution fixed at 640×360 and scale canvas via CSS to whole-number multiples only.
+ * keep logical resolution fixed (from RESOLUTION) and scale canvas via CSS to whole-number multiples only.
  * f8 cycles: Auto → 1x → 2x → 3x → 4x → Auto
  */
 export class ResolutionScale {
-  readonly baseWidth = 640;
-  readonly baseHeight = 360;
+  readonly baseWidth = RESOLUTION.width;
+  readonly baseHeight = RESOLUTION.height;
 
   private mode: ScaleMode = 'auto';
   private currentScale = 1;
