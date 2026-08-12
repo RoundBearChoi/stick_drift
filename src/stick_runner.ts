@@ -14,6 +14,8 @@ export class StickRunner extends Actor {
   constructor(options: RunnerOptions = {}) {
     super({
       pos: options.pos ?? vec(0, 0),
+      // bottom-center pivot — standard for game characters (feet stay planted)
+      anchor: vec(0.5, 1),
     });
 
     const source_sprite = Resources.sprite_runner.getAnimation();
