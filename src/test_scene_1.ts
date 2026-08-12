@@ -13,7 +13,7 @@ import { createStickRunner } from './stick_runner_creator';
 export class TestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _wip_text?: Actor;
-  private _runner?: StickRunner;
+  private _stick_runner?: StickRunner;
 
   onInitialize(_engine: Engine): void {}
 
@@ -26,9 +26,6 @@ export class TestScene1 extends Scene<GameContext> {
 
     // shared resolution debug
     this._game_ctx.resolution_debug.attach(this);
-
-    const screen_half_width = this.engine.halfDrawWidth;
-    const screen_half_height = this.engine.halfDrawHeight;
 
     // add WIP text sprite
     if (!this._wip_text) {
@@ -43,8 +40,8 @@ export class TestScene1 extends Scene<GameContext> {
 
         this._wip_text = new Actor({
           pos: vec(
-            screen_half_width,
-            screen_half_height - above_center_offset
+            this.engine.halfDrawWidth,
+            this.engine.halfDrawHeight - above_center_offset
           ),
         });
 
@@ -61,11 +58,11 @@ export class TestScene1 extends Scene<GameContext> {
       }
     }
 
-    // create + add stick runner
-    if (!this._runner) {
-      this._runner = createStickRunner(this.engine);
-      this._runner.register(this._game_ctx);
-      this.add(this._runner);
+    // add runner
+    if (!this._stick_runner) {
+      this._stick_runner = createStickRunner(this.engine);
+      this._stick_runner.register(this._game_ctx); // register so runner ticks during fixed updates
+      this.add(this._stick_runner);
     }
   }
 
@@ -75,8 +72,8 @@ export class TestScene1 extends Scene<GameContext> {
 
   onDeactivate(): void {
     // clean up so the animation stops being ticked after leaving the scene
-    if (this._runner) {
-      this._runner.unregister(this._game_ctx);
+    if (this._stick_runner) {
+      this._stick_runner.unregister(this._game_ctx);
     }
   }
 }

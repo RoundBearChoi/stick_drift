@@ -7,8 +7,7 @@ export interface StickRunnerCreateOptions {
 }
 
 /**
- * Creates a StickRunner centered horizontally and offset downward from screen center.
- * Scene still owns the runner and is responsible for register / add / unregister.
+ * scene still owns the runner and is responsible for register / add / unregister.
  */
 export function createStickRunner(
   engine: Engine,
