@@ -78,8 +78,7 @@ export class TestScene1 extends Scene<GameContext> {
           ),
         });
 
-        // advancesPerFrame = 2 → half speed (every 2 fixed updates = 1 frame)
-        this._runnerAnim = new FixedFrameAnimation(sourceAnim, 2);
+        this._runnerAnim = new FixedFrameAnimation(sourceAnim, 4);
         this._runnerAnim.attach(this._runner);
 
         // register so GameContext ticks it automatically every fixed step
