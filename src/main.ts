@@ -3,13 +3,13 @@ import { loader } from './resources';
 import { GestureScene } from './gesture_scene';
 import { TestScene1 } from './test_scene_1';
 import { TestScene2 } from './test_scene_2';
-import { GameContext } from './game_context';
+import { GameContext, RESOLUTION } from './game_context';
 import { setupSceneCycle } from './scene_cycle';
 import { ResolutionScale } from './resolution_scale';
 
 const engine = new Engine({
-  width: 640,
-  height: 360,
+  width: RESOLUTION.width,
+  height: RESOLUTION.height,
   backgroundColor: Color.fromHex('#282a36'),
   displayMode: DisplayMode.Fixed, // important for clean integer CSS scaling
   antialiasing: {
