@@ -19,7 +19,6 @@ export type Resolution = typeof NATIVE_RESOLUTION;
  * owns the simulation and runs manual fixed timestep.
  */
 export class GameContext {
-  /** Logical resolution (read-only). Use this anywhere that needs width/height. */
   readonly native_resolution = NATIVE_RESOLUTION;
 
   private readonly fixed_timestep = new FixedTimestep(60, 5);
@@ -32,8 +31,7 @@ export class GameContext {
 
   private audio_unlocked = false;
 
-  /** Animations that should advance on every fixed update */
-  private readonly fixed_anims = new Set<FixedFrameAnimation>();
+  private readonly fixed_anims = new Set<FixedFrameAnimation>(); // animations advance based on fixed updates
 
   /**
    * unlock WebAudio (must be called from first user gesture)
@@ -47,14 +45,14 @@ export class GameContext {
   }
 
   /**
-   * Register a FixedFrameAnimation so it gets ticked automatically every fixed step.
+   * register so that animations can advance automatically based on fixed updates.
    */
   registerFixedAnim(anim: FixedFrameAnimation): void {
     this.fixed_anims.add(anim);
   }
 
   /**
-   * Unregister when the animation is no longer needed (scene exit, actor destroyed, etc.)
+   * unregister when the animation is no longer needed.
    */
   unregisterFixedAnim(anim: FixedFrameAnimation): void {
     this.fixed_anims.delete(anim);
