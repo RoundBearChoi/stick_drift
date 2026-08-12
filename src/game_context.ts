@@ -21,8 +21,6 @@ export type Resolution = typeof NATIVE_RESOLUTION;
 export class GameContext {
   readonly native_resolution = NATIVE_RESOLUTION;
 
-  private readonly fixed_timestep = new FixedTimestep(60, 5);
-
   /** FPS counter + shared on-screen overlay */
   readonly fps_overlay = new FpsOverlay();
 
@@ -30,7 +28,7 @@ export class GameContext {
   readonly resolution_debug = new ResolutionDebug();
 
   private audio_unlocked = false;
-
+  private readonly _fixed_timestep = new FixedTimestep(60, 5);
   private readonly fixed_anims = new Set<FixedFrameAnimation>(); // animations advance based on fixed updates
 
   /**
@@ -65,7 +63,7 @@ export class GameContext {
   update(engine: Engine, realElapsed: number): void {
     this.fps_overlay.update(realElapsed);
 
-    this.fixed_timestep.step(realElapsed, (dt) => {
+    this._fixed_timestep.step(realElapsed, (dt) => {
       this.fixedUpdate(engine, dt);
     });
   }
