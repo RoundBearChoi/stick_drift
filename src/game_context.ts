@@ -4,15 +4,14 @@ import { FpsOverlay } from './fps_overlay';
 import { ResolutionDebug } from './resolution_debug';
 
 /**
- * Logical game resolution — single source of truth.
- * Keep this the only place that defines 640×360.
+ * single source of truth for native game resolution
  */
-export const RESOLUTION = {
+export const NATIVE_RESOLUTION = {
   width: 640,
   height: 360,
 } as const;
 
-export type Resolution = typeof RESOLUTION;
+export type Resolution = typeof NATIVE_RESOLUTION;
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).
@@ -20,7 +19,7 @@ export type Resolution = typeof RESOLUTION;
  */
 export class GameContext {
   /** Logical resolution (read-only). Use this anywhere that needs width/height. */
-  readonly resolution = RESOLUTION;
+  readonly native_resolution = NATIVE_RESOLUTION;
 
   private readonly fixed_timestep = new FixedTimestep(60, 5);
 

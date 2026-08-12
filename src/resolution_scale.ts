@@ -1,5 +1,5 @@
 import { Engine, Keys } from 'excalibur';
-import { RESOLUTION } from './game_context';
+import { NATIVE_RESOLUTION } from './game_context';
 
 export type ScaleMode = 'auto' | number;
 
@@ -9,8 +9,8 @@ export type ScaleMode = 'auto' | number;
  * f8 cycles: Auto → 1x → 2x → 3x → 4x → Auto
  */
 export class ResolutionScale {
-  readonly baseWidth = RESOLUTION.width;
-  readonly baseHeight = RESOLUTION.height;
+  readonly baseWidth = NATIVE_RESOLUTION.width;
+  readonly baseHeight = NATIVE_RESOLUTION.height;
 
   private mode: ScaleMode = 'auto';
   private currentScale = 1;
