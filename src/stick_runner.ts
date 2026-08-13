@@ -1,6 +1,6 @@
 import { Actor, Vector, vec } from 'excalibur';
 import { Resources } from './resources';
-import { FixedFrameAnimation } from './fixed_frame_animation';
+import { FrameBasedAnimation } from './frame_based_animation';
 import { GameContext } from './game_context';
 import { Tickable } from './tickable';
 
@@ -10,7 +10,7 @@ export interface RunnerOptions {
 }
 
 export class StickRunner extends Actor implements Tickable {
-  private readonly _sprite_animation: FixedFrameAnimation;
+  private readonly _sprite_animation: FrameBasedAnimation;
 
   constructor(options: RunnerOptions = {}) {
     super({
@@ -25,8 +25,8 @@ export class StickRunner extends Actor implements Tickable {
       console.warn('Runner animation not loaded yet');
     }
 
-    /** FixedFrameAnimation always clones the source so each runner is independent */
-    this._sprite_animation = new FixedFrameAnimation(
+    /** clone source so each runner is independent */
+    this._sprite_animation = new FrameBasedAnimation(
       source_sprite!,
       options.advancesPerFrame ?? 4
     );

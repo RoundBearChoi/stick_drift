@@ -4,7 +4,7 @@ import { Actor, Animation } from 'excalibur';
  * advance animation frame purely based on fixed updates.
  * play speed is customized by how many fixed updates = 1 frame advance.
  */
-export class FixedFrameAnimation {
+export class FrameBasedAnimation {
   readonly anim: Animation;
   private owner?: Actor;
 
