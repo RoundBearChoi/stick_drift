@@ -1,6 +1,3 @@
-/**
- * manual fixed-timestep clock.
- */
 export class FixedTimestep {
   readonly fixedDt: number;
   private accumulator = 0;
