@@ -45,7 +45,6 @@ export class TestScene1 extends Scene<GameContext> {
           ),
         });
 
-        // sprites already baked with Dracula foreground (#f8f8f2)
         this._wip_text.graphics.use(spr);
 
         this.add(this._wip_text);
@@ -63,7 +62,6 @@ export class TestScene1 extends Scene<GameContext> {
     // add runner
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
-      // sprites already baked with Dracula foreground (#f8f8f2) — no tint needed
       this._stick_runner.register(this._game_ctx);
       this.add(this._stick_runner);
     }
