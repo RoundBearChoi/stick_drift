@@ -1,4 +1,4 @@
-import { Actor, Vector, vec } from 'excalibur';
+import { Actor, Vector, vec, Color } from 'excalibur';
 import { Resources } from './resources';
 import { FrameBasedAnimation } from './frame_based_animation';
 import { GameContext } from './game_context';
@@ -32,6 +32,18 @@ export class StickRunner extends Actor implements Tickable {
     );
 
     this._sprite_animation.attach(this);
+  }
+
+  /**
+   * Apply a multiplicative tint to every frame graphic.
+   * Source sprites should be pure white (#FFFFFF) for clean results.
+   */
+  applyTint(color: Color): void {
+    for (const frame of this._sprite_animation.anim.frames) {
+      if (frame.graphic) {
+        frame.graphic.tint = color;
+      }
+    }
   }
 
   fixedUpdate(_dt: number): void {
