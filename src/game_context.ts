@@ -12,8 +12,8 @@ export const NATIVE_RESOLUTION = {
 export type Resolution = typeof NATIVE_RESOLUTION;
 
 /**
- * single source of truth (similar to RbgGameContext in CFG3).
- * owns the simulation and runs manual fixed timestep.
+ * game ctx is thesingle source of truth (similar to RbgGameContext in CFG3).
+ * owns the simulation and runs fixed timesteps.
  */
 export class GameContext {
   readonly native_resolution = NATIVE_RESOLUTION;
@@ -39,17 +39,16 @@ export class GameContext {
     console.log('✅ WebAudio unlocked');
   }
 
-  /** register tickable so it can do fixed updates */
+  /** register for fixed updates */
   register(tickable: Tickable): void {
     this._tickables.add(tickable);
   }
 
-  /** unregister when it should no longer be ticked */
   unregister(tickable: Tickable): void {
     this._tickables.delete(tickable);
   }
 
-  /** call this every visual frame from scene's onPostUpdate. pass real elapsed time from Excalibur. */
+  /** this gets called on every visual frame from scene's onPostUpdate. passes real elapsed time from Excalibur for fixed updates. */
   update(engine: Engine, realElapsed: number): void {
     this.fps_overlay.update(realElapsed);
 
