@@ -2,6 +2,7 @@ import { Engine, WebAudio } from 'excalibur';
 import { FixedTimestep } from './fixed_timestep';
 import { FpsOverlay } from './fps_overlay';
 import { ResolutionDebug } from './resolution_debug';
+import { Tickable } from './tickable';
 
 export const NATIVE_RESOLUTION = {
   width: 640,
@@ -9,13 +10,6 @@ export const NATIVE_RESOLUTION = {
 } as const;
 
 export type Resolution = typeof NATIVE_RESOLUTION;
-
-/**
- * tickable is anything that needs to advance on the fixed timestep (60 Hz).
- */
-export interface Tickable {
-  fixedUpdate(dt: number): void;
-}
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).

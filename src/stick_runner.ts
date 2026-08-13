@@ -1,7 +1,8 @@
 import { Actor, Vector, vec } from 'excalibur';
 import { Resources } from './resources';
 import { FixedFrameAnimation } from './fixed_frame_animation';
-import { GameContext, Tickable } from './game_context';
+import { GameContext } from './game_context';
+import { Tickable } from './tickable';
 
 export interface RunnerOptions {
   pos?: Vector;
