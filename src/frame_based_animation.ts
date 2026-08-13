@@ -20,7 +20,7 @@ export class FrameBasedAnimation {
     this._animation.goToFrame(0);
   }
 
-  setOwner(actor: Actor): void {
+  attachToActor(actor: Actor): void {
     this._owner = actor;
     this.syncGraphic();
   }

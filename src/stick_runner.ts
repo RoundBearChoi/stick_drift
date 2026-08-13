@@ -33,7 +33,7 @@ export class StickRunner extends Actor implements Tickable {
 
     // StickRunner (the Actor)
     //  └── owns → FrameBasedAnimation (the component)
-    this._frame_based_animation.setOwner(this);
+    this._frame_based_animation.attachToActor(this);
   }
 
   fixedUpdate(_dt: number): void {
