@@ -1,14 +1,14 @@
 import { Actor, Vector, vec } from 'excalibur';
 import { Resources } from './resources';
 import { FixedFrameAnimation } from './fixed_frame_animation';
-import { GameContext } from './game_context';
+import { GameContext, Tickable } from './game_context';
 
 export interface RunnerOptions {
   pos?: Vector;
   advancesPerFrame?: number;
 }
 
-export class StickRunner extends Actor {
+export class StickRunner extends Actor implements Tickable {
   private readonly _sprite_animation: FixedFrameAnimation;
 
   constructor(options: RunnerOptions = {}) {
@@ -34,17 +34,25 @@ export class StickRunner extends Actor {
   }
 
   /**
-   * register so game context can tick the animation on the fixed timestep. no need to manually update every frame
+   * called by GameContext every fixed frame (60 Hz).
+   * later this is where state machine, physics, timers, etc. will live.
    */
-  register(gameCtx: GameContext): void {
-    gameCtx.registerFixedAnim(this._sprite_animation);
+  fixedUpdate(_dt: number): void {
+    this._sprite_animation.tick();
   }
 
   /**
-   * unregister when leaving the scene. stop updating the animation
+   * register so game context can tick this runner on the fixed timestep.
+   */
+  register(gameCtx: GameContext): void {
+    gameCtx.register(this);
+  }
+
+  /**
+   * unregister when leaving the scene.
    */
   unregister(gameCtx: GameContext): void {
-    gameCtx.unregisterFixedAnim(this._sprite_animation);
+    gameCtx.unregister(this);
   }
 
   setSpeed(advancesPerFrame: number): void {

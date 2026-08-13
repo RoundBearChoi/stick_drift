@@ -61,7 +61,7 @@ export class TestScene1 extends Scene<GameContext> {
     // add runner
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
-      this._stick_runner.register(this._game_ctx); // register so runner ticks during fixed updates
+      this._stick_runner.register(this._game_ctx); // register so it receives fixedUpdate
       this.add(this._stick_runner);
     }
   }
@@ -71,7 +71,7 @@ export class TestScene1 extends Scene<GameContext> {
   }
 
   onDeactivate(): void {
-    // clean up so the animation stops being ticked after leaving the scene
+    // clean up so the runner stops being ticked after leaving the scene
     if (this._stick_runner) {
       this._stick_runner.unregister(this._game_ctx);
     }

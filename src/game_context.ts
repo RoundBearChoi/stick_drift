@@ -2,7 +2,6 @@ import { Engine, WebAudio } from 'excalibur';
 import { FixedTimestep } from './fixed_timestep';
 import { FpsOverlay } from './fps_overlay';
 import { ResolutionDebug } from './resolution_debug';
-import { FixedFrameAnimation } from './fixed_frame_animation';
 
 export const NATIVE_RESOLUTION = {
   width: 640,
@@ -10,6 +9,15 @@ export const NATIVE_RESOLUTION = {
 } as const;
 
 export type Resolution = typeof NATIVE_RESOLUTION;
+
+/**
+ * Anything that needs to advance on the fixed timestep (60 Hz).
+ * Actors that have animation, state machines, physics, timers, etc. should implement this.
+ */
+export interface Tickable {
+  /** called once per fixed update */
+  fixedUpdate(dt: number): void;
+}
 
 /**
  * single source of truth (similar to RbgGameContext in CFG3).
@@ -27,8 +35,8 @@ export class GameContext {
   private audio_unlocked = false;
   private readonly _fixed_timestep = new FixedTimestep(60, 5);
 
-  /** set of registered animations. cycle through and advance based on fixed updates. */
-  private readonly _fixed_anims = new Set<FixedFrameAnimation>();
+  /** things that advance every fixed frame (actors, systems, etc.) */
+  private readonly _tickables = new Set<Tickable>();
 
   /** unlock WebAudio (must be called from first user gesture) */
   unlockAudio(): void {
@@ -39,14 +47,14 @@ export class GameContext {
     console.log('✅ WebAudio unlocked');
   }
 
-  /** register so that animations can advance automatically based on fixed updates. */
-  registerFixedAnim(anim: FixedFrameAnimation): void {
-    this._fixed_anims.add(anim);
+  /** register something so it receives fixedUpdate every frame */
+  register(tickable: Tickable): void {
+    this._tickables.add(tickable);
   }
 
-  /** unregister when the animation is no longer needed. */
-  unregisterFixedAnim(anim: FixedFrameAnimation): void {
-    this._fixed_anims.delete(anim);
+  /** unregister when it should no longer be ticked */
+  unregister(tickable: Tickable): void {
+    this._tickables.delete(tickable);
   }
 
   /** call this every visual frame from scene's onPostUpdate. pass real elapsed time from Excalibur. */
@@ -62,9 +70,9 @@ export class GameContext {
   private fixedUpdate(engine: Engine, dt: number): void {
     this.fps_overlay.tickFixed();
 
-    // advance all registered fixed-frame animations
-    for (const anim of this._fixed_anims) {
-      anim.tick();
+    // advance every registered tickable
+    for (const t of this._tickables) {
+      t.fixedUpdate(dt);
     }
   }
 }
