@@ -46,7 +46,7 @@ export class StickRunner extends Actor implements Tickable {
     gameCtx.unregister(this);
   }
 
-  setSpeed(advancesPerFrame: number): void {
+  setAnimationSpeed(advancesPerFrame: number): void {
     this._sprite_animation.setSpeed(advancesPerFrame);
   }
 
