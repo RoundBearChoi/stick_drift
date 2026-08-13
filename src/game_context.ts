@@ -29,7 +29,11 @@ export class GameContext {
 
   private audio_unlocked = false;
   private readonly _fixed_timestep = new FixedTimestep(60, 5);
-  private readonly _fixed_anims = new Set<FixedFrameAnimation>(); // set of registered animations. this is used to advance animations based on fixed updates.
+
+  /**
+   * set of registered animations. cycle through and advance based on fixed updates.
+   */
+  private readonly _fixed_anims = new Set<FixedFrameAnimation>();
 
   /**
    * unlock WebAudio (must be called from first user gesture)
