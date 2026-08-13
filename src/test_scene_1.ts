@@ -46,6 +46,7 @@ export class TestScene1 extends Scene<GameContext> {
         });
 
         this._wip_text.graphics.use(spr);
+
         this.add(this._wip_text);
 
         console.log('------ wip_text position ------');

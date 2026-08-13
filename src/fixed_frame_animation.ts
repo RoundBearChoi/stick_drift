@@ -52,6 +52,7 @@ export class FixedFrameAnimation {
   private syncGraphic(): void {
     const frame = this.anim.currentFrame;
     if (this.owner && frame?.graphic) {
+      /** attach graphics obj to actor so excalibur can render */
       this.owner.graphics.use(frame.graphic);
     }
   }
