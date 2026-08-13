@@ -46,6 +46,8 @@ export class TestScene1 extends Scene<GameContext> {
         });
 
         this._wip_text.graphics.use(spr);
+        // pure white source × Dracula foreground
+        this._wip_text.graphics.tint = this._game_ctx.dracula_colors.white;
 
         this.add(this._wip_text);
 
@@ -62,6 +64,8 @@ export class TestScene1 extends Scene<GameContext> {
     // add runner
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
+      // pure white source × Dracula foreground
+      this._stick_runner.graphics.tint = this._game_ctx.dracula_colors.white;
       this._stick_runner.register(this._game_ctx);
       this.add(this._stick_runner);
     }
