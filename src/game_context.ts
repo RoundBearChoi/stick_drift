@@ -12,7 +12,7 @@ export const NATIVE_RESOLUTION = {
 export type Resolution = typeof NATIVE_RESOLUTION;
 
 /**
- * game ctx is thesingle source of truth (similar to RbgGameContext in CFG3).
+ * game ctx is the single source of truth (similar to RbgGameContext in CFG3).
  * owns the simulation and runs fixed timesteps.
  */
 export class GameContext {
