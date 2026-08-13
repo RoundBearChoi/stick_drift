@@ -34,7 +34,7 @@ export class TestScene2 extends Scene<GameContext> {
         font: createCenterFont(),
       });
 
-      this.titleLabel.color = this.ctx.colors.white;
+      this.titleLabel.color = this.ctx.dracula_colors.white;
       this.add(this.titleLabel);
     }
   }

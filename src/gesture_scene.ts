@@ -32,7 +32,7 @@ export class GestureScene extends Scene<GameContext> {
         font: createCenterFont(),
       });
 
-      this.press_any_key_label.color = this.ctx.colors.white;
+      this.press_any_key_label.color = this.ctx.dracula_colors.white;
       this.add(this.press_any_key_label);
     }
 

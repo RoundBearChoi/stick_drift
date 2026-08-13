@@ -20,7 +20,7 @@ export class GameContext {
   readonly native_resolution = NATIVE_RESOLUTION;
 
   /** single source of truth for game colors (Dracula) */
-  readonly colors = DraculaColorScheme;
+  readonly dracula_colors = DraculaColorScheme;
 
   /** FPS counter + shared on-screen overlay */
   readonly fps_overlay = new FpsOverlay();
