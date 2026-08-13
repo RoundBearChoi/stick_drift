@@ -11,11 +11,9 @@ export const NATIVE_RESOLUTION = {
 export type Resolution = typeof NATIVE_RESOLUTION;
 
 /**
- * Anything that needs to advance on the fixed timestep (60 Hz).
- * Actors that have animation, state machines, physics, timers, etc. should implement this.
+ * tickable is anything that needs to advance on the fixed timestep (60 Hz).
  */
 export interface Tickable {
-  /** called once per fixed update */
   fixedUpdate(dt: number): void;
 }
 
@@ -35,7 +33,7 @@ export class GameContext {
   private audio_unlocked = false;
   private readonly _fixed_timestep = new FixedTimestep(60, 5);
 
-  /** things that advance every fixed frame (actors, systems, etc.) */
+  /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();
 
   /** unlock WebAudio (must be called from first user gesture) */
@@ -47,7 +45,7 @@ export class GameContext {
     console.log('✅ WebAudio unlocked');
   }
 
-  /** register something so it receives fixedUpdate every frame */
+  /** register tickable so it can do fixed updates */
   register(tickable: Tickable): void {
     this._tickables.add(tickable);
   }

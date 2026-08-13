@@ -61,7 +61,7 @@ export class TestScene1 extends Scene<GameContext> {
     // add runner
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
-      this._stick_runner.register(this._game_ctx); // register so it receives fixedUpdate
+      this._stick_runner.register(this._game_ctx);
       this.add(this._stick_runner);
     }
   }
