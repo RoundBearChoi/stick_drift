@@ -68,7 +68,7 @@ export class GameContext {
   private fixedUpdate(engine: Engine, dt: number): void {
     this.fps_overlay.tickFixed();
 
-    // advance every registered tickable
+    /** fixed update every tickable */
     for (const t of this._tickables) {
       t.fixedUpdate(dt);
     }

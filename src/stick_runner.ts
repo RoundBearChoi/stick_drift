@@ -24,7 +24,7 @@ export class StickRunner extends Actor implements Tickable {
       console.warn('Runner animation not loaded yet');
     }
 
-    // FixedFrameAnimation always clones the source so each runner is independent
+    /** FixedFrameAnimation always clones the source so each runner is independent */
     this._sprite_animation = new FixedFrameAnimation(
       source_sprite!,
       options.advancesPerFrame ?? 4
@@ -33,24 +33,14 @@ export class StickRunner extends Actor implements Tickable {
     this._sprite_animation.attach(this);
   }
 
-  /**
-   * called by GameContext every fixed frame (60 Hz).
-   * later this is where state machine, physics, timers, etc. will live.
-   */
   fixedUpdate(_dt: number): void {
     this._sprite_animation.tick();
   }
 
-  /**
-   * register so game context can tick this runner on the fixed timestep.
-   */
   register(gameCtx: GameContext): void {
     gameCtx.register(this);
   }
 
-  /**
-   * unregister when leaving the scene.
-   */
   unregister(gameCtx: GameContext): void {
     gameCtx.unregister(this);
   }
