@@ -45,8 +45,7 @@ export class TestScene1 extends Scene<GameContext> {
           ),
         });
 
-        // pure white source × Dracula foreground (tint lives on the Graphic)
-        spr.tint = this._game_ctx.dracula_colors.white;
+        // sprites already baked with Dracula foreground (#f8f8f2)
         this._wip_text.graphics.use(spr);
 
         this.add(this._wip_text);
@@ -64,8 +63,7 @@ export class TestScene1 extends Scene<GameContext> {
     // add runner
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
-      // pure white source × Dracula foreground
-      this._stick_runner.applyTint(this._game_ctx.dracula_colors.white);
+      // sprites already baked with Dracula foreground (#f8f8f2) — no tint needed
       this._stick_runner.register(this._game_ctx);
       this.add(this._stick_runner);
     }
