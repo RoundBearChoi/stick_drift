@@ -3,6 +3,7 @@ import { FixedTimestep } from './fixed_timestep';
 import { FpsOverlay } from './fps_overlay';
 import { ResolutionDebug } from './resolution_debug';
 import { Tickable } from './tickable';
+import { DraculaColorScheme } from './dracula_color_scheme';
 
 export const NATIVE_RESOLUTION = {
   width: 640,
@@ -17,6 +18,9 @@ export type Resolution = typeof NATIVE_RESOLUTION;
  */
 export class GameContext {
   readonly native_resolution = NATIVE_RESOLUTION;
+
+  /** single source of truth for game colors (Dracula) */
+  readonly colors = DraculaColorScheme;
 
   /** FPS counter + shared on-screen overlay */
   readonly fps_overlay = new FpsOverlay();

@@ -2,7 +2,6 @@ import {
   Scene,
   Engine,
   SceneActivationContext,
-  Color,
   Label,
   vec,
 } from 'excalibur';
@@ -33,7 +32,7 @@ export class GestureScene extends Scene<GameContext> {
         font: createCenterFont(),
       });
 
-      this.press_any_key_label.color = Color.White;
+      this.press_any_key_label.color = this.ctx.colors.white;
       this.add(this.press_any_key_label);
     }
 

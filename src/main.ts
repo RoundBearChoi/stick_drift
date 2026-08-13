@@ -1,4 +1,4 @@
-import { Engine, Color, ImageFiltering, DisplayMode } from 'excalibur';
+import { Engine, ImageFiltering, DisplayMode } from 'excalibur';
 import { loader } from './resources';
 import { GestureScene } from './gesture_scene';
 import { TestScene1 } from './test_scene_1';
@@ -6,11 +6,12 @@ import { TestScene2 } from './test_scene_2';
 import { GameContext, NATIVE_RESOLUTION } from './game_context';
 import { setupSceneCycle } from './scene_cycle';
 import { ResolutionScale } from './resolution_scale';
+import { DraculaColorScheme } from './dracula_color_scheme';
 
 const engine = new Engine({
   width: NATIVE_RESOLUTION.width,
   height: NATIVE_RESOLUTION.height,
-  backgroundColor: Color.fromHex('#282a36'),
+  backgroundColor: DraculaColorScheme.background,
   displayMode: DisplayMode.Fixed, // important for clean integer CSS scaling
   antialiasing: {
     pixelArtSampler: false,

@@ -2,19 +2,19 @@ import {
   Scene,
   Engine,
   SceneActivationContext,
-  Color,
   Label,
   vec,
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { createCenterFont } from './debug_font';
+import { DraculaColorScheme } from './dracula_color_scheme';
 
 export class TestScene2 extends Scene<GameContext> {
   private ctx!: GameContext;
   private titleLabel?: Label;
 
   onInitialize(engine: Engine): void {
-    this.backgroundColor = Color.fromHex('#ff69b4');
+    this.backgroundColor = DraculaColorScheme.pink;
   }
 
   onActivate(context: SceneActivationContext<GameContext>): void {
@@ -34,7 +34,7 @@ export class TestScene2 extends Scene<GameContext> {
         font: createCenterFont(),
       });
 
-      this.titleLabel.color = Color.White;
+      this.titleLabel.color = this.ctx.colors.white;
       this.add(this.titleLabel);
     }
   }
