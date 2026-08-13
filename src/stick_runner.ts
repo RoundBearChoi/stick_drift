@@ -35,8 +35,9 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   /**
-   * multiplicative tint to every frame graphic.
-   * source sprites should be pure white (#FFFFFF) for clean results.
+   * multiplicative tint applied to every frame graphic.
+   * Best results when source sprites are pure white (#FFFFFF);
+   * also usable as a general color multiplier on pre-colored assets.
    */
   applyTint(color: Color): void {
     for (const frame of this._sprite_animation.anim.frames) {
