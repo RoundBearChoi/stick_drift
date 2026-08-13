@@ -1,6 +1,6 @@
 /**
- * Anything that needs to advance on the fixed timestep (60 Hz).
- * Actors with animation, state, physics, timers, etc. implement this.
+ * this is anything that needs to advance (tick) on fixed timesteps.
+ * actors with animation, state, physics, timers, etc. implement this.
  */
 export interface Tickable {
   fixedUpdate(dt: number): void;
