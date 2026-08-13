@@ -22,7 +22,7 @@ export class ResolutionScale {
   private debugRefresh: (() => void) | null = null;
 
   /** call once after Engine is created */
-  attach(engine: Engine): void {
+  attachToEngine(engine: Engine): void {
     this.engine = engine;
     this.canvas = engine.canvas;
 

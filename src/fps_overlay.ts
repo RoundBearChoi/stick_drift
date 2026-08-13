@@ -35,6 +35,6 @@ export class FpsOverlay {
 
   /** call once per fixed update */
   tickFixed(): void {
-    this.counter.tickFixed();
+    this.counter.advanceFixedUpdateCount();
   }
 }

@@ -25,7 +25,7 @@ export class TestScene1 extends Scene<GameContext> {
     this._game_ctx.fps_overlay.attach(this);
 
     // shared resolution debug
-    this._game_ctx.resolution_debug.attach(this);
+    this._game_ctx.resolution_debug.attachToScene(this);
 
     // add WIP text sprite (temp)
     if (!this._wip_text) {

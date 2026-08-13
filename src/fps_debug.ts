@@ -30,7 +30,7 @@ export class FpsDebug {
   /**
    * call once per fixedUpdate
    */
-  tickFixed(): void {
+  advanceFixedUpdateCount(): void {
     this._fixed_update_count++;
   }
 

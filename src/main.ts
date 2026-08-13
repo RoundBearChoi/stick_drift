@@ -41,7 +41,7 @@ engine.add('test_scene_2', test_scene_2);
 // start and pass game context into scene
 engine.start(loader).then(() => {
   // attach integer scaling after engine is ready
-  resolution_scale.attach(engine);
+  resolution_scale.attachToEngine(engine);
 
   // wire resolution debug so the on-screen label stays in sync
   game_context.resolution_debug.setScale(resolution_scale);

@@ -22,10 +22,9 @@ export class ResolutionDebug {
   }
 
   /**
-   * attach (or re-attach) shared resolution label to scene.
    * safe to call from every scene's onActivate.
    */
-  attach(scene: Scene): void {
+  attachToScene(scene: Scene): void {
     if (!this.label) {
       this.label = new Label({
         text: 'RESOLUTION: --',

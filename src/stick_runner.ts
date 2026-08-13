@@ -10,7 +10,7 @@ export interface RunnerOptions {
 }
 
 export class StickRunner extends Actor implements Tickable {
-  private readonly _sprite_animation: FrameBasedAnimation;
+  private readonly _frame_based_animation: FrameBasedAnimation;
 
   constructor(options: RunnerOptions = {}) {
     super({
@@ -25,17 +25,19 @@ export class StickRunner extends Actor implements Tickable {
       console.warn('Runner animation not loaded yet');
     }
 
-    /** clone source so each runner is independent */
-    this._sprite_animation = new FrameBasedAnimation(
+    // clone from source so each runner is independent
+    this._frame_based_animation = new FrameBasedAnimation(
       source_sprite!,
       options.advancesPerFrame ?? 4
     );
 
-    this._sprite_animation.attach(this);
+    // StickRunner (the Actor)
+    //  └── owns → FrameBasedAnimation (the component)
+    this._frame_based_animation.setOwner(this);
   }
 
   fixedUpdate(_dt: number): void {
-    this._sprite_animation.tick();
+    this._frame_based_animation.tick();
   }
 
   register(gameCtx: GameContext): void {
@@ -47,14 +49,14 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   setAnimationSpeed(advancesPerFrame: number): void {
-    this._sprite_animation.setSpeed(advancesPerFrame);
+    this._frame_based_animation.setSpeed(advancesPerFrame);
   }
 
   reset(): void {
-    this._sprite_animation.reset();
+    this._frame_based_animation.reset();
   }
 
   get currentFrameIndex(): number {
-    return this._sprite_animation.currentFrameIndex;
+    return this._frame_based_animation.currentFrameIndex;
   }
 }
