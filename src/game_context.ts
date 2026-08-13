@@ -29,7 +29,7 @@ export class GameContext {
 
   private audio_unlocked = false;
   private readonly _fixed_timestep = new FixedTimestep(60, 5);
-  private readonly fixed_anims = new Set<FixedFrameAnimation>(); // animations advance based on fixed updates
+  private readonly _fixed_anims = new Set<FixedFrameAnimation>(); // set of registered animations. this is used to advance animations based on fixed updates.
 
   /**
    * unlock WebAudio (must be called from first user gesture)
@@ -46,14 +46,14 @@ export class GameContext {
    * register so that animations can advance automatically based on fixed updates.
    */
   registerFixedAnim(anim: FixedFrameAnimation): void {
-    this.fixed_anims.add(anim);
+    this._fixed_anims.add(anim);
   }
 
   /**
    * unregister when the animation is no longer needed.
    */
   unregisterFixedAnim(anim: FixedFrameAnimation): void {
-    this.fixed_anims.delete(anim);
+    this._fixed_anims.delete(anim);
   }
 
   /**
@@ -76,7 +76,7 @@ export class GameContext {
     this.fps_overlay.tickFixed();
 
     // advance all registered fixed-frame animations
-    for (const anim of this.fixed_anims) {
+    for (const anim of this._fixed_anims) {
       anim.tick();
     }
   }
