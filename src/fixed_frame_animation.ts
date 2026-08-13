@@ -54,7 +54,7 @@ export class FixedFrameAnimation {
 
     if (this.owner && frame?.graphic) {
       /** attach graphics obj to actor so excalibur can render
-       * “sprite for this actor has changed so use that sprite.”
+       * every time we advance one animation frame we're telling excalibur “sprite for this actor has changed so use that sprite.”
        */
       this.owner.graphics.use(frame.graphic);
     }
