@@ -53,7 +53,9 @@ export class FixedFrameAnimation {
     const frame = this.anim.currentFrame;
 
     if (this.owner && frame?.graphic) {
-      /** attach graphics obj to actor so excalibur can render */
+      /** attach graphics obj to actor so excalibur can render
+       * “sprite for this actor has changed so use that sprite.”
+       */
       this.owner.graphics.use(frame.graphic);
     }
   }
