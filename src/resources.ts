@@ -4,8 +4,8 @@ import { debugFontSource } from './debug_font';
 import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
 
 export const Resources = {
-  sprite_runner: new AsepriteResource('./res/sprites/runner_test_pure_white.aseprite'),
-  sprite_wip_text: new AsepriteResource('./res/sprites/wip_text_pure_white.aseprite'),
+  sprite_runner: new AsepriteResource('./res/sprites/stick_runner_f8f8f2.aseprite'),
+  sprite_wip_text: new AsepriteResource('./res/sprites/wiptext_f8f8f2.aseprite'),
 } as const;
 
 const loader = new TerminalLoader();
