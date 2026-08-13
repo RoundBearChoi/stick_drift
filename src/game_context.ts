@@ -4,9 +4,6 @@ import { FpsOverlay } from './fps_overlay';
 import { ResolutionDebug } from './resolution_debug';
 import { FixedFrameAnimation } from './fixed_frame_animation';
 
-/**
- * single source of truth for native game resolution
- */
 export const NATIVE_RESOLUTION = {
   width: 640,
   height: 360,
@@ -33,9 +30,7 @@ export class GameContext {
   /** set of registered animations. cycle through and advance based on fixed updates. */
   private readonly _fixed_anims = new Set<FixedFrameAnimation>();
 
-  /**
-   * unlock WebAudio (must be called from first user gesture)
-   */
+  /** unlock WebAudio (must be called from first user gesture) */
   unlockAudio(): void {
     if (this.audio_unlocked) return;
 
@@ -44,24 +39,17 @@ export class GameContext {
     console.log('✅ WebAudio unlocked');
   }
 
-  /**
-   * register so that animations can advance automatically based on fixed updates.
-   */
+  /** register so that animations can advance automatically based on fixed updates. */
   registerFixedAnim(anim: FixedFrameAnimation): void {
     this._fixed_anims.add(anim);
   }
 
-  /**
-   * unregister when the animation is no longer needed.
-   */
+  /** unregister when the animation is no longer needed. */
   unregisterFixedAnim(anim: FixedFrameAnimation): void {
     this._fixed_anims.delete(anim);
   }
 
-  /**
-   * call this every visual frame from scene's onPostUpdate.
-   * passes real elapsed time from Excalibur.
-   */
+  /** call this every visual frame from scene's onPostUpdate. pass real elapsed time from Excalibur. */
   update(engine: Engine, realElapsed: number): void {
     this.fps_overlay.update(realElapsed);
 
@@ -70,10 +58,7 @@ export class GameContext {
     });
   }
 
-  /**
-   * run at 60 Hz.
-   * all deterministic simulation logic is here.
-   */
+  /** run at 60 Hz. all deterministic simulation logic is here. */
   private fixedUpdate(engine: Engine, dt: number): void {
     this.fps_overlay.tickFixed();
 
