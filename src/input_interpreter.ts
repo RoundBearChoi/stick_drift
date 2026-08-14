@@ -60,9 +60,10 @@ export class InputInterpreter {
     for (const action of this.pressed) {
       console.log(`${action} pressed`);
     }
-    for (const action of this.released) {
-      console.log(`${action} released`);
-    }
+
+    // for (const action of this.released) {
+    //   console.log(`${action} released`);
+    // }
   }
 
   /** called after all fixed steps of the frame are done. clears edge flags. */
