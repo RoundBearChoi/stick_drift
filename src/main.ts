@@ -29,6 +29,9 @@ const engine = new Engine({
 const game_context = new GameContext();
 const resolution_scale = new ResolutionScale();
 
+// create input interpreter once the Engine exists
+game_context.createInput(engine);
+
 // register scenes
 const gesture_scene = new GestureScene();
 engine.add('gesture_scene', gesture_scene);
