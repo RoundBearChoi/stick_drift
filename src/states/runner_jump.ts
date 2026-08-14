@@ -2,7 +2,7 @@ import { InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
 import { RunnerState, RunnerStateName } from './runner_state';
 
-export class JumpState implements RunnerState {
+export class RunnerJump implements RunnerState {
   readonly state_name = RunnerStateName.JUMP;
 
   onEnter(runner: StickRunner): void {

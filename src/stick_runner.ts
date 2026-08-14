@@ -5,7 +5,7 @@ import { FrameBasedAnimation } from './frame_based_animation';
 import { GameContext } from './game_context';
 import { Tickable } from './tickable';
 import { RunnerState, RunnerStateName } from './states/runner_state';
-import { IdleState } from './states/runner_idle';
+import { RunnerIdle } from './states/runner_idle';
 
 export interface RunnerOptions {
   pos?: Vector;
@@ -17,7 +17,7 @@ export interface RunnerOptions {
  * does not read input itself — runner controller feeds input to the current state.
  */
 export class StickRunner extends Actor implements Tickable {
-  private _runner_state: RunnerState = new IdleState(); // starting state
+  private _runner_state: RunnerState = new RunnerIdle(); // starting state
   private _frame_based_animation!: FrameBasedAnimation;
   private readonly _default_visual_frames_per_tick: number;
 
@@ -100,7 +100,7 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   reset(): void {
-    this.setState(new IdleState());
+    this.setState(new RunnerIdle());
     this._frame_based_animation.reset();
   }
 

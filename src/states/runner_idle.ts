@@ -1,10 +1,10 @@
 import { InputAction, InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
 import { RunnerState, RunnerStateName } from './runner_state';
-import { RunState } from './runner_run';
-import { JumpState } from './runner_jump';
+import { RunnerRun } from './runner_run';
+import { RunnerJump } from './runner_jump';
 
-export class IdleState implements RunnerState {
+export class RunnerIdle implements RunnerState {
   readonly state_name = RunnerStateName.IDLE;
 
   onEnter(runner: StickRunner): void {
@@ -18,7 +18,7 @@ export class IdleState implements RunnerState {
     }
 
     if (input.isHeld(InputAction.MOVE_LEFT) || input.isHeld(InputAction.MOVE_RIGHT)) {
-      runner.setState(new RunState());
+      runner.setState(new RunnerRun());
     }
   }
 }
