@@ -21,6 +21,9 @@ export class StickRunner extends Actor implements Tickable {
   private _frame_based_animation!: FrameBasedAnimation;
   private readonly _default_visual_frames_per_tick: number;
 
+  /** true = facing right (default). used to mirror the sprite. */
+  private _isFacingRightSide = true;
+
   constructor(options: RunnerOptions = {}) {
     super({
       pos: options.pos ?? vec(0, 0),
@@ -40,6 +43,21 @@ export class StickRunner extends Actor implements Tickable {
 
   get stateName(): RunnerStateName {
     return this._runner_state.state_name;
+  }
+
+  get isFacingRightSide(): boolean {
+    return this._isFacingRightSide;
+  }
+
+  /**
+   * sets facing direction and applies horizontal mirror via scale.x.
+   * scale.x = -1 flips around the bottom-center anchor.
+   */
+  setFacingRightSide(facingRight: boolean): void {
+    if (this._isFacingRightSide === facingRight) return;
+
+    this._isFacingRightSide = facingRight;
+    this.scale.x = facingRight ? 1 : -1;
   }
 
   /** states call this to transition. */
@@ -102,6 +120,7 @@ export class StickRunner extends Actor implements Tickable {
   reset(): void {
     this.setState(new RunnerIdle());
     this._frame_based_animation.reset();
+    this.setFacingRightSide(true);
   }
 
   get currentFrameIndex(): number {

@@ -19,6 +19,18 @@ export class RunnerRun implements RunnerState {
 
     if (!input.isHeld(InputAction.MOVE_LEFT) && !input.isHeld(InputAction.MOVE_RIGHT)) {
       runner.setState(new RunnerIdle());
+      return;
     }
+
+    // update facing from input (same animation, mirrored render)
+    const left = input.isHeld(InputAction.MOVE_LEFT);
+    const right = input.isHeld(InputAction.MOVE_RIGHT);
+
+    if (right && !left) {
+      runner.setFacingRightSide(true);
+    } else if (left && !right) {
+      runner.setFacingRightSide(false);
+    }
+    // both held → keep current facing
   }
 }
