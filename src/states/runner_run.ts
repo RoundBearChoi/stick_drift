@@ -22,7 +22,6 @@ export class RunnerRun implements RunnerState {
       return;
     }
 
-    // update facing from input (same animation, mirrored render)
     const left = input.isHeld(InputAction.MOVE_LEFT);
     const right = input.isHeld(InputAction.MOVE_RIGHT);
 
