@@ -30,7 +30,6 @@ export class RunnerIdle implements RunnerState {
       } else if (leftPressed || (leftHeld && !rightHeld)) {
         runner.setFacingRightSide(false);
       }
-      // both pressed/held → keep current facing
 
       runner.setState(new RunnerRun());
     }
