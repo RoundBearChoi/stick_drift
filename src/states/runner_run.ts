@@ -1,8 +1,8 @@
 import { InputAction, InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
 import { RunnerState, RunnerStateName } from './runner_state';
-import { IdleState } from './idle_state';
-import { JumpState } from './jump_state';
+import { IdleState } from './runner_idle';
+import { JumpState } from './runner_jump';
 
 export class RunState implements RunnerState {
   readonly state_name = RunnerStateName.RUN;

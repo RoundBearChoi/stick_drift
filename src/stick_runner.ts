@@ -5,7 +5,7 @@ import { FrameBasedAnimation } from './frame_based_animation';
 import { GameContext } from './game_context';
 import { Tickable } from './tickable';
 import { RunnerState, RunnerStateName } from './states/runner_state';
-import { IdleState } from './states/idle_state';
+import { IdleState } from './states/runner_idle';
 
 export interface RunnerOptions {
   pos?: Vector;
