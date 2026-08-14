@@ -9,7 +9,7 @@ import { IdleState } from './states/idle_state';
 
 export interface RunnerOptions {
   pos?: Vector;
-  advancesPerFrame?: number;
+  visual_frames_per_tick?: number;
 }
 
 /**
@@ -19,7 +19,7 @@ export interface RunnerOptions {
 export class StickRunner extends Actor implements Tickable {
   private _runner_state: RunnerState = new IdleState(); // starting state
   private _frame_based_animation: FrameBasedAnimation;
-  private readonly _defaultAdvancesPerFrame: number;
+  private readonly _default_visual_frames_per_tick: number;
 
   constructor(options: RunnerOptions = {}) {
     super({
@@ -28,7 +28,7 @@ export class StickRunner extends Actor implements Tickable {
       anchor: vec(0.5, 1),
     });
 
-    this._defaultAdvancesPerFrame = options.advancesPerFrame ?? 4;
+    this._default_visual_frames_per_tick = options.visual_frames_per_tick ?? 4;
 
     // currently only one animation exists. all states fall back to it.
     this._frame_based_animation = this.createAnimation(Resources.sprite_runner);
@@ -72,7 +72,7 @@ export class StickRunner extends Actor implements Tickable {
       console.warn('Runner animation not loaded yet');
     }
 
-    return new FrameBasedAnimation(source!, this._defaultAdvancesPerFrame);
+    return new FrameBasedAnimation(source!, this._default_visual_frames_per_tick);
   }
 
   fixedUpdate(_dt: number): void {

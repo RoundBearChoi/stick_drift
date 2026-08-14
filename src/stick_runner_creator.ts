@@ -20,6 +20,6 @@ export function createStickRunner(
       engine.halfDrawWidth,
       engine.halfDrawHeight + gap
     ),
-    advancesPerFrame: options.advancesPerFrame ?? 4,
+    visual_frames_per_tick: options.advancesPerFrame ?? 4,
   });
 }
