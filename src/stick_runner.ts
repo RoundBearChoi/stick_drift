@@ -13,9 +13,8 @@ export interface RunnerOptions {
 }
 
 /**
- * Body of the character.
- * Owns current state + animation.
- * Does not read input itself — the controller feeds input to the current state.
+ * owns current state + animation.
+ * Does not read input itself — runner controller feeds input to the current state.
  */
 export class StickRunner extends Actor implements Tickable {
   private _state: RunnerState = new IdleState();
@@ -31,7 +30,7 @@ export class StickRunner extends Actor implements Tickable {
 
     this._defaultAdvancesPerFrame = options.advancesPerFrame ?? 4;
 
-    // Currently only one animation exists. All states fall back to it.
+    // currently only one animation exists. all states fall back to it.
     this._frame_based_animation = this.createAnimation(Resources.sprite_runner);
     this._frame_based_animation.attachToActor(this);
 
@@ -47,7 +46,7 @@ export class StickRunner extends Actor implements Tickable {
     return this._state.name;
   }
 
-  /** States call this to transition. */
+  /** states call this to transition. */
   setState(newState: RunnerState): void {
     if (this._state.name === newState.name) return;
 
@@ -57,9 +56,7 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   /**
-   * Called by states on enter.
-   * Right now every state uses the single existing animation.
-   * Later expand this (or let each state pick its own resource).
+   * called by states on enter.
    */
   playAnimationForState(_stateName: string): void {
     const resource = Resources.sprite_runner;
