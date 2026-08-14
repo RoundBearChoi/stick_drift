@@ -57,11 +57,11 @@ export class InputInterpreter {
     }
 
     // temp debug
-    if (this.pressed.size > 0 || this.released.size > 0) {
-      console.log({
-        pressed: [...this.pressed],
-        held: [...this.held],
-      });
+    for (const action of this.pressed) {
+      console.log(`${action} pressed`);
+    }
+    for (const action of this.released) {
+      console.log(`${action} released`);
     }
   }
 
