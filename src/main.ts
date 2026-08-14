@@ -1,6 +1,7 @@
 import { Engine, ImageFiltering, DisplayMode } from 'excalibur';
 import { loader } from './resources';
 import { GestureScene } from './gesture_scene';
+import { GameplayTestScene1 } from './gameplay_test_scene_1';
 import { TestScene1 } from './test_scene_1';
 import { TestScene2 } from './test_scene_2';
 import { GameContext, NATIVE_RESOLUTION } from './game_context';
@@ -31,6 +32,9 @@ const resolution_scale = new ResolutionScale();
 // register scenes
 const gesture_scene = new GestureScene();
 engine.add('gesture_scene', gesture_scene);
+
+const gameplay_test_scene_1 = new GameplayTestScene1();
+engine.add('gameplay_test_scene_1', gameplay_test_scene_1);
 
 const test_scene_1 = new TestScene1();
 engine.add('test_scene_1', test_scene_1);
@@ -63,5 +67,6 @@ engine.start(loader).then(() => {
 (window as any).game_context = game_context;
 (window as any).resolution_scale = resolution_scale;
 (window as any).gesture_scene = gesture_scene;
+(window as any).gameplay_test_scene_1 = gameplay_test_scene_1;
 (window as any).test_scene_1 = test_scene_1;
 (window as any).test_scene_2 = test_scene_2;
