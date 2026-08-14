@@ -17,7 +17,7 @@ export interface RunnerOptions {
  * Does not read input itself — runner controller feeds input to the current state.
  */
 export class StickRunner extends Actor implements Tickable {
-  private _state: RunnerState = new IdleState();
+  private _state: RunnerState = new IdleState(); // starting state
   private _frame_based_animation: FrameBasedAnimation;
   private readonly _defaultAdvancesPerFrame: number;
 
