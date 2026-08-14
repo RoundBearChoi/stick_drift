@@ -22,7 +22,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(this._stick_runner);
     }
 
-    // ------ always re-register when (re)entering the scene so fixed updates resume ------
+    // deterministic start every time we enter the scene
+    this._stick_runner.reset();
     this._stick_runner.register(this._game_ctx);
   }
 
@@ -31,7 +32,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   }
 
   onDeactivate(): void {
-    // unregister so the runner stops being ticked after leaving the scene. and we can reuse the runner later when we return instead of creating a new one.
+    // unregister so the runner stops being ticked after leaving the scene.
+    // we reuse the same runner instance when we return instead of creating a new one.
     if (this._stick_runner) {
       this._stick_runner.unregister(this._game_ctx);
     }
