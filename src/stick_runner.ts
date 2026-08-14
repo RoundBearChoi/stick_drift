@@ -18,7 +18,7 @@ export interface RunnerOptions {
  */
 export class StickRunner extends Actor implements Tickable {
   private _runner_state: RunnerState = new IdleState(); // starting state
-  private _frame_based_animation: FrameBasedAnimation;
+  private _frame_based_animation!: FrameBasedAnimation;
   private readonly _default_visual_frames_per_tick: number;
 
   constructor(options: RunnerOptions = {}) {
@@ -30,11 +30,7 @@ export class StickRunner extends Actor implements Tickable {
 
     this._default_visual_frames_per_tick = options.visual_frames_per_tick ?? 4;
 
-    // start with idle animation; states will swap as needed via playAnimationForState
-    this._frame_based_animation = this.createAnimation(Resources.stick_runner_idle);
-    this._frame_based_animation.attachToActor(this);
-
-    // enter initial state
+    // initial state will set the animation via onEnter → playAnimationForState
     this._runner_state.onEnter(this);
   }
 
