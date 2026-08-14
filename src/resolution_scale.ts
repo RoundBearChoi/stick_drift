@@ -67,7 +67,7 @@ export class ResolutionScale {
   }
 
   /**
-   * short text for the on-screen debug label (replaces the old console log).
+   * short text for the on-screen debug label.
    */
   getDebugText(): string {
     const mode = this.mode;
