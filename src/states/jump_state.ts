@@ -3,10 +3,10 @@ import { StickRunner } from '../stick_runner';
 import { RunnerState, RunnerStateName } from './runner_state';
 
 export class JumpState implements RunnerState {
-  readonly name = RunnerStateName.JUMP;
+  readonly state_name = RunnerStateName.JUMP;
 
   onEnter(runner: StickRunner): void {
-    runner.playAnimationForState(this.name);
+    runner.playAnimationForState(this.state_name);
 
     console.log("onEnter JUMP");
   }

@@ -5,10 +5,10 @@ import { IdleState } from './idle_state';
 import { JumpState } from './jump_state';
 
 export class RunState implements RunnerState {
-  readonly name = RunnerStateName.RUN;
+  readonly state_name = RunnerStateName.RUN;
 
   onEnter(runner: StickRunner): void {
-    runner.playAnimationForState(this.name);
+    runner.playAnimationForState(this.state_name);
 
     console.log("onEnter RUN");
   }

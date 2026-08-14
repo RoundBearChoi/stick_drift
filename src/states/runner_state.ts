@@ -8,7 +8,7 @@ export enum RunnerStateName {
 }
 
 export interface RunnerState {
-  readonly name: RunnerStateName;
+  readonly state_name: RunnerStateName;
 
   onEnter(runner: StickRunner): void;
   onFixedUpdate(runner: StickRunner, input: InputInterpreter): void;
