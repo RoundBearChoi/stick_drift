@@ -31,5 +31,10 @@ export class RunnerRun implements RunnerState {
       runner.setFacingRightSide(false);
     }
     // both held → keep current facing
+
+    // move 1 pixel in the facing direction every fixed update
+    const speed = 1;
+    const dir = runner.isFacingRightSide ? 1 : -1;
+    runner.pos.x += dir * speed;
   }
 }
