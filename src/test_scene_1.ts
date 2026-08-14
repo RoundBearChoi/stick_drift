@@ -65,7 +65,8 @@ export class TestScene1 extends Scene<GameContext> {
       this.add(this._stick_runner);
     }
 
-    // always re-register when (re)entering the scene so fixed updates resume
+    // deterministic start every time we enter the scene
+    this._stick_runner.reset();
     this._stick_runner.register(this._game_ctx);
   }
 
