@@ -4,6 +4,7 @@ import { FpsOverlay } from './fps_overlay';
 import { ResolutionDebug } from './resolution_debug';
 import { Tickable } from './tickable';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { InputInterpreter } from './input_interpreter';
 
 export const NATIVE_RESOLUTION = {
   width: 640,
@@ -34,6 +35,20 @@ export class GameContext {
   /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();
 
+  private _input: InputInterpreter | null = null;
+
+  /** create the input interpreter (call once after Engine exists) */
+  createInput(engine: Engine): void {
+    this._input = new InputInterpreter(engine);
+  }
+
+  get input(): InputInterpreter {
+    if (!this._input) {
+      throw new Error('InputInterpreter not created yet. Call createInput(engine) first.');
+    }
+    return this._input;
+  }
+
   /** unlock WebAudio (must be called from first user gesture) */
   unlockAudio(): void {
     if (this.audio_unlocked) return;
@@ -56,9 +71,20 @@ export class GameContext {
   update(engine: Engine, realElapsed: number): void {
     this.fps_overlay.update(realElapsed);
 
+    // 1. sample input once for this visual frame
+    if (this._input) {
+      this._input.sample();
+    }
+
+    // 2. run fixed steps (all Tickables see the same input snapshot)
     this._fixed_timestep.step(realElapsed, (dt) => {
       this.fixedUpdate(engine, dt);
     });
+
+    // 3. clear edge flags after all fixed steps
+    if (this._input) {
+      this._input.endFrame();
+    }
   }
 
   /** run at 60 Hz. all deterministic simulation logic is here. */
