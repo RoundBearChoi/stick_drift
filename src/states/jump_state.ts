@@ -3,12 +3,12 @@ import { StickRunner } from '../stick_runner';
 import { RunnerState, RunnerStateName } from './runner_state';
 
 export class JumpState implements RunnerState {
-  readonly name = RunnerStateName.Jump;
+  readonly name = RunnerStateName.JUMP;
 
-  enter(runner: StickRunner): void {
+  onEnter(runner: StickRunner): void {
     runner.playAnimationForState(this.name);
   }
 
-  update(_runner: StickRunner, _input: InputInterpreter): void {
+  onFixedUpdate(_runner: StickRunner, _input: InputInterpreter): void {
   }
 }

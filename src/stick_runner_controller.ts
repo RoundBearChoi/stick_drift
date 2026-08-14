@@ -15,7 +15,7 @@ export class StickRunnerController implements Tickable {
 
   fixedUpdate(_dt: number): void {
     // controller gets the buffer and hands it to the current state.
-    this.runner.state.update(this.runner, this.gameCtx.input);
+    this.runner.state.onFixedUpdate(this.runner, this.gameCtx.input);
   }
 
   register(): void {

@@ -5,13 +5,13 @@ import { RunState } from './run_state';
 import { JumpState } from './jump_state';
 
 export class IdleState implements RunnerState {
-  readonly name = RunnerStateName.Idle;
+  readonly name = RunnerStateName.IDLE;
 
-  enter(runner: StickRunner): void {
+  onEnter(runner: StickRunner): void {
     runner.playAnimationForState(this.name);
   }
 
-  update(runner: StickRunner, input: InputInterpreter): void {
+  onFixedUpdate(runner: StickRunner, input: InputInterpreter): void {
     if (input.wasPressed(InputAction.JUMP)) {
       runner.setState(new JumpState());
       return;

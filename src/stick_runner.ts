@@ -17,7 +17,7 @@ export interface RunnerOptions {
  * Does not read input itself — runner controller feeds input to the current state.
  */
 export class StickRunner extends Actor implements Tickable {
-  private _state: RunnerState = new IdleState(); // starting state
+  private _runner_state: RunnerState = new IdleState(); // starting state
   private _frame_based_animation: FrameBasedAnimation;
   private readonly _defaultAdvancesPerFrame: number;
 
@@ -35,24 +35,24 @@ export class StickRunner extends Actor implements Tickable {
     this._frame_based_animation.attachToActor(this);
 
     // enter initial state
-    this._state.enter(this);
+    this._runner_state.onEnter(this);
   }
 
   get state(): RunnerState {
-    return this._state;
+    return this._runner_state;
   }
 
   get stateName(): RunnerStateName {
-    return this._state.name;
+    return this._runner_state.name;
   }
 
   /** states call this to transition. */
   setState(newState: RunnerState): void {
-    if (this._state.name === newState.name) return;
+    if (this._runner_state.name === newState.name) return;
 
-    this._state.exit?.(this);
-    this._state = newState;
-    this._state.enter(this);
+    this._runner_state.onExit?.(this);
+    this._runner_state = newState;
+    this._runner_state.onEnter(this);
   }
 
   /**
