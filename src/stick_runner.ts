@@ -1,16 +1,26 @@
-import { Actor, Vector, vec, Color } from 'excalibur';
+import { Actor, Vector, vec } from 'excalibur';
+import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
 import { Resources } from './resources';
 import { FrameBasedAnimation } from './frame_based_animation';
 import { GameContext } from './game_context';
 import { Tickable } from './tickable';
+import { RunnerState } from './states/runner_state';
+import { IdleState } from './states/idle_state';
 
 export interface RunnerOptions {
   pos?: Vector;
   advancesPerFrame?: number;
 }
 
+/**
+ * Body of the character.
+ * Owns current state + animation.
+ * Does not read input itself — the controller feeds input to the current state.
+ */
 export class StickRunner extends Actor implements Tickable {
-  private readonly _frame_based_animation: FrameBasedAnimation;
+  private _state: RunnerState = new IdleState();
+  private _frame_based_animation: FrameBasedAnimation;
+  private readonly _defaultAdvancesPerFrame: number;
 
   constructor(options: RunnerOptions = {}) {
     super({
@@ -19,21 +29,53 @@ export class StickRunner extends Actor implements Tickable {
       anchor: vec(0.5, 1),
     });
 
-    const source_sprite = Resources.sprite_runner.getAnimation();
+    this._defaultAdvancesPerFrame = options.advancesPerFrame ?? 4;
 
-    if (!source_sprite) {
+    // Currently only one animation exists. All states fall back to it.
+    this._frame_based_animation = this.createAnimation(Resources.sprite_runner);
+    this._frame_based_animation.attachToActor(this);
+
+    // enter initial state
+    this._state.enter(this);
+  }
+
+  get state(): RunnerState {
+    return this._state;
+  }
+
+  get stateName(): string {
+    return this._state.name;
+  }
+
+  /** States call this to transition. */
+  setState(newState: RunnerState): void {
+    if (this._state.name === newState.name) return;
+
+    this._state.exit?.(this);
+    this._state = newState;
+    this._state.enter(this);
+  }
+
+  /**
+   * Called by states on enter.
+   * Right now every state uses the single existing animation.
+   * Later expand this (or let each state pick its own resource).
+   */
+  playAnimationForState(_stateName: string): void {
+    const resource = Resources.sprite_runner;
+
+    this._frame_based_animation = this.createAnimation(resource);
+    this._frame_based_animation.attachToActor(this);
+  }
+
+  private createAnimation(resource: AsepriteResource): FrameBasedAnimation {
+    const source = resource.getAnimation();
+
+    if (!source) {
       console.warn('Runner animation not loaded yet');
     }
 
-    // clone from source so each runner is independent
-    this._frame_based_animation = new FrameBasedAnimation(
-      source_sprite!,
-      options.advancesPerFrame ?? 4
-    );
-
-    // StickRunner (the Actor)
-    //  └── owns → FrameBasedAnimation (the component)
-    this._frame_based_animation.attachToActor(this);
+    return new FrameBasedAnimation(source!, this._defaultAdvancesPerFrame);
   }
 
   fixedUpdate(_dt: number): void {
@@ -53,6 +95,7 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   reset(): void {
+    this.setState(new IdleState());
     this._frame_based_animation.reset();
   }
 
