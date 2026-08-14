@@ -57,9 +57,9 @@ export class InputInterpreter {
     }
 
     // temp debug
-    for (const action of this.pressed) {
-      console.log(`${action} pressed`);
-    }
+    // for (const action of this.pressed) {
+    //   console.log(`${action} pressed`);
+    // }
 
     // for (const action of this.released) {
     //   console.log(`${action} released`);

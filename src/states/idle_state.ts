@@ -9,6 +9,8 @@ export class IdleState implements RunnerState {
 
   onEnter(runner: StickRunner): void {
     runner.playAnimationForState(this.name);
+
+    console.log("onEnter IDLE");
   }
 
   onFixedUpdate(runner: StickRunner, input: InputInterpreter): void {

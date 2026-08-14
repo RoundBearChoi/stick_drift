@@ -9,6 +9,8 @@ export class RunState implements RunnerState {
 
   onEnter(runner: StickRunner): void {
     runner.playAnimationForState(this.name);
+
+    console.log("onEnter RUN");
   }
 
   onFixedUpdate(runner: StickRunner, input: InputInterpreter): void {

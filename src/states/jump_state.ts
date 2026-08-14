@@ -7,6 +7,8 @@ export class JumpState implements RunnerState {
 
   onEnter(runner: StickRunner): void {
     runner.playAnimationForState(this.name);
+
+    console.log("onEnter JUMP");
   }
 
   onFixedUpdate(_runner: StickRunner, _input: InputInterpreter): void {
