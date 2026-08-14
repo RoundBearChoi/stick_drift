@@ -59,12 +59,14 @@ export class TestScene1 extends Scene<GameContext> {
       }
     }
 
-    // add runner
+    // create runner once
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
-      this._stick_runner.register(this._game_ctx);
       this.add(this._stick_runner);
     }
+
+    // always re-register when (re)entering the scene so fixed updates resume
+    this._stick_runner.register(this._game_ctx);
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
