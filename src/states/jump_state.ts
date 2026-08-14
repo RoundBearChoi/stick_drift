@@ -1,9 +1,9 @@
 import { InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
-import { RunnerState } from './runner_state';
+import { RunnerState, RunnerStateName } from './runner_state';
 
 export class JumpState implements RunnerState {
-  readonly name = 'jump';
+  readonly name = RunnerStateName.Jump;
 
   enter(runner: StickRunner): void {
     runner.playAnimationForState(this.name);

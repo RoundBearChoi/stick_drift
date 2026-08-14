@@ -4,7 +4,7 @@ import { Resources } from './resources';
 import { FrameBasedAnimation } from './frame_based_animation';
 import { GameContext } from './game_context';
 import { Tickable } from './tickable';
-import { RunnerState } from './states/runner_state';
+import { RunnerState, RunnerStateName } from './states/runner_state';
 import { IdleState } from './states/idle_state';
 
 export interface RunnerOptions {
@@ -42,7 +42,7 @@ export class StickRunner extends Actor implements Tickable {
     return this._state;
   }
 
-  get stateName(): string {
+  get stateName(): RunnerStateName {
     return this._state.name;
   }
 
@@ -58,7 +58,7 @@ export class StickRunner extends Actor implements Tickable {
   /**
    * called by states on enter.
    */
-  playAnimationForState(_stateName: string): void {
+  playAnimationForState(_stateName: RunnerStateName): void {
     const resource = Resources.sprite_runner;
 
     this._frame_based_animation = this.createAnimation(resource);

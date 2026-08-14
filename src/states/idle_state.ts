@@ -1,11 +1,11 @@
 import { InputAction, InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
-import { RunnerState } from './runner_state';
+import { RunnerState, RunnerStateName } from './runner_state';
 import { RunState } from './run_state';
 import { JumpState } from './jump_state';
 
 export class IdleState implements RunnerState {
-  readonly name = 'idle';
+  readonly name = RunnerStateName.Idle;
 
   enter(runner: StickRunner): void {
     runner.playAnimationForState(this.name);
