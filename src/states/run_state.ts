@@ -9,14 +9,12 @@ export class RunState implements RunnerState {
 
   onEnter(runner: StickRunner): void {
     runner.playAnimationForState(this.state_name);
-
-    console.log("onEnter RUN");
   }
 
   onFixedUpdate(runner: StickRunner, input: InputInterpreter): void {
     if (input.wasPressed(InputAction.JUMP)) {
-      runner.setState(new JumpState());
-      return;
+      //runner.setState(new JumpState());
+      //return;
     }
 
     if (!input.isHeld(InputAction.MOVE_LEFT) && !input.isHeld(InputAction.MOVE_RIGHT)) {
