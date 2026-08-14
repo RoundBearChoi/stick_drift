@@ -4,15 +4,15 @@ import { debugFontSource } from './debug_font';
 import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
 
 export const Resources = {
-  sprite_runner: new AsepriteResource('./res/sprites/stick_runner_f8f8f2.aseprite'),
-  sprite_wip_text: new AsepriteResource('./res/sprites/wiptext_f8f8f2.aseprite'),
+  stick_runner_idle: new AsepriteResource('./res/sprites/stick_runner_idle.aseprite'),
+  work_in_progress: new AsepriteResource('./res/sprites/work_in_progress.aseprite'),
 } as const;
 
 const loader = new TerminalLoader();
 
 // added resources load during excalibur's initial screen
 loader.addResource(debugFontSource);
-loader.addResource(Resources.sprite_runner);
-loader.addResource(Resources.sprite_wip_text);
+loader.addResource(Resources.stick_runner_idle);
+loader.addResource(Resources.work_in_progress);
 
 export { loader };

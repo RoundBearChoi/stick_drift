@@ -31,7 +31,7 @@ export class StickRunner extends Actor implements Tickable {
     this._default_visual_frames_per_tick = options.visual_frames_per_tick ?? 4;
 
     // currently only one animation exists. all states fall back to it.
-    this._frame_based_animation = this.createAnimation(Resources.sprite_runner);
+    this._frame_based_animation = this.createAnimation(Resources.stick_runner_idle);
     this._frame_based_animation.attachToActor(this);
 
     // enter initial state
@@ -59,7 +59,7 @@ export class StickRunner extends Actor implements Tickable {
    * called by states on enter.
    */
   playAnimationForState(_stateName: RunnerStateName): void {
-    const resource = Resources.sprite_runner;
+    const resource = Resources.stick_runner_idle;
 
     this._frame_based_animation = this.createAnimation(resource);
     this._frame_based_animation.attachToActor(this);

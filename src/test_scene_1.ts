@@ -29,7 +29,7 @@ export class TestScene1 extends Scene<GameContext> {
 
     // add WIP text sprite (temp)
     if (!this._wip_text) {
-      const sheet = Resources.sprite_wip_text.getSpriteSheet();
+      const sheet = Resources.work_in_progress.getSpriteSheet();
       if (!sheet) {
         console.warn('WIP text spritesheet not loaded yet');
       } else {
