@@ -30,7 +30,7 @@ export class StickRunner extends Actor implements Tickable {
 
     this._default_visual_frames_per_tick = options.visual_frames_per_tick ?? 4;
 
-    // currently only one animation exists. all states fall back to it.
+    // start with idle animation; states will swap as needed via playAnimationForState
     this._frame_based_animation = this.createAnimation(Resources.stick_runner_idle);
     this._frame_based_animation.attachToActor(this);
 
@@ -57,9 +57,21 @@ export class StickRunner extends Actor implements Tickable {
 
   /**
    * called by states on enter.
+   * selects the correct Aseprite resource for the given state.
    */
-  playAnimationForState(_stateName: RunnerStateName): void {
-    const resource = Resources.stick_runner_idle;
+  playAnimationForState(stateName: RunnerStateName): void {
+    let resource = Resources.stick_runner_idle;
+
+    switch (stateName) {
+      case RunnerStateName.RUN:
+        resource = Resources.stick_runner_run;
+        break;
+      case RunnerStateName.IDLE:
+      case RunnerStateName.JUMP:
+      default:
+        resource = Resources.stick_runner_idle;
+        break;
+    }
 
     this._frame_based_animation = this.createAnimation(resource);
     this._frame_based_animation.attachToActor(this);
