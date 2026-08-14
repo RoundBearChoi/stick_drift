@@ -29,24 +29,23 @@ export class GameContext {
   /** shared on-screen resolution / scale debug label */
   readonly resolution_debug = new ResolutionDebug();
 
-  private audio_unlocked = false;
-  private readonly _fixed_timestep = new FixedTimestep(60, 5);
-
   /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();
 
-  private _input: InputInterpreter | null = null;
+  private readonly _fixed_timestep = new FixedTimestep(60, 5);
+  private audio_unlocked = false;
+  private _input_interpreter: InputInterpreter | null = null;
 
   /** create the input interpreter (call once after Engine exists) */
   createInput(engine: Engine): void {
-    this._input = new InputInterpreter(engine);
+    this._input_interpreter = new InputInterpreter(engine);
   }
 
   get input(): InputInterpreter {
-    if (!this._input) {
+    if (!this._input_interpreter) {
       throw new Error('InputInterpreter not created yet. Call createInput(engine) first.');
     }
-    return this._input;
+    return this._input_interpreter;
   }
 
   /** unlock WebAudio (must be called from first user gesture) */
@@ -72,8 +71,8 @@ export class GameContext {
     this.fps_overlay.update(realElapsed);
 
     // 1. sample input once for this visual frame
-    if (this._input) {
-      this._input.sample();
+    if (this._input_interpreter) {
+      this._input_interpreter.sample();
     }
 
     // 2. run fixed steps (all Tickables see the same input snapshot)
@@ -82,8 +81,8 @@ export class GameContext {
     });
 
     // 3. clear edge flags after all fixed steps
-    if (this._input) {
-      this._input.endFrame();
+    if (this._input_interpreter) {
+      this._input_interpreter.endFrame();
     }
   }
 
