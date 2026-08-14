@@ -10,13 +10,10 @@ export enum InputAction {
 }
 
 /**
- * Thin action-based input interpreter.
- *
- * - Samples keyboard once per visual frame (via sample()).
- * - Exposes pressed / held / released state for the current frame.
- * - Edges are cleared in endFrame() after all fixed steps finish.
- * - Does not implement Tickable; other systems simply read from it
- *   during their own fixedUpdate.
+ * - samples keyboard once per visual frame (every frame because we don't wanna miss any input).
+ * - exposes pressed / held / released state.
+ * - edges are cleared in endFrame() after all fixed steps finish.
+ * - does not implement Tickable; other systems simply read from it during their own fixedUpdate.
  */
 export class InputInterpreter {
   private bindings = new Map<InputAction, Keys>();
@@ -39,7 +36,7 @@ export class InputInterpreter {
     this.bindings.set(InputAction.TURBO, Keys.H);
   }
 
-  /** Called once per visual frame, before any fixed steps. */
+  /** called once per visual frame, before fixed update */
   sample(): void {
     this.held.clear();
     this.pressed.clear();
@@ -59,17 +56,16 @@ export class InputInterpreter {
       }
     }
 
-    // temporary debug — remove later
-    if (this.pressed.size > 0 || this.released.size > 0 || this.held.size > 0) {
+    // temp debug
+    if (this.pressed.size > 0 || this.released.size > 0) {
       console.log({
         pressed: [...this.pressed],
         held: [...this.held],
-        released: [...this.released],
       });
     }
   }
 
-  /** Called after all fixed steps of the frame are done. Clears edge flags. */
+  /** called after all fixed steps of the frame are done. clears edge flags. */
   endFrame(): void {
     this.pressed.clear();
     this.released.clear();
@@ -89,7 +85,7 @@ export class InputInterpreter {
     return this.released.has(action);
   }
 
-  /** Later: support rebinding */
+  /** for later: support rebinding */
   setBinding(action: InputAction, key: Keys): void {
     this.bindings.set(action, key);
   }
