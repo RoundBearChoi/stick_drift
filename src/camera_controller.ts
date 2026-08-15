@@ -35,7 +35,7 @@ export class CameraController implements Tickable {
    */
   targetOffsetY = -48;
 
-  /** when true, draws a small X at the desired camera target */
+  /** when true, draws a small X at the desired camera target + line to camera center */
   showTargetDebug = true;
 
   private _followTarget: Actor | null = null;
@@ -137,23 +137,32 @@ export class CameraController implements Tickable {
 
     const marker = new Actor({ name: 'CameraTargetDebug' });
     marker.graphics.forceOnScreen = true;
-    marker.graphics.onPostDraw = (ctx) => this.drawTargetX(ctx);
+    marker.graphics.onPostDraw = (ctx) => this.drawDebug(ctx);
 
     this.scene.add(marker);
     this._debugMarker = marker;
   }
 
   /**
-   * mark camera target with an X
+   * debug overlay:
+   * - X at the desired camera target
+   * - thin line from that target to the current camera center
    */
-  private drawTargetX(ctx: ExcaliburGraphicsContext): void {
-    // local space: actor pos is already the target, so draw around origin
-    const half = 4;
+  private drawDebug(ctx: ExcaliburGraphicsContext): void {
     const color: Color = DraculaColorScheme.red;
-    const thickness = 1;
 
-    ctx.drawLine(vec(-half, -half), vec(half, half), color, thickness);
-    ctx.drawLine(vec(half, -half), vec(-half, half), color, thickness);
+    // X at target (local origin)
+    const half = 4;
+    ctx.drawLine(vec(-half, -half), vec(half, half), color, 1);
+    ctx.drawLine(vec(half, -half), vec(-half, half), color, 1);
+
+    // thin line from target → camera center (camera.pos is the center of the screen)
+    const cam = this.scene.camera;
+    if (cam && this._debugMarker) {
+      const localCamX = cam.pos.x - this._debugMarker.pos.x;
+      const localCamY = cam.pos.y - this._debugMarker.pos.y;
+      ctx.drawLine(vec(0, 0), vec(localCamX, localCamY), color, 0.1);
+    }
   }
 
   register(): void {
