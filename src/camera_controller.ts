@@ -20,7 +20,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  */
 export class CameraController implements Tickable {
   /** horizontal deadzone radius (only move when |dx| exceeds this) */
-  deadzoneX = 48;
+  deadzoneX = 64+32;
 
   /** vertical deadzone radius (only move when |dy| exceeds this) */
   deadzoneY = 28;
