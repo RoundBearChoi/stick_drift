@@ -26,7 +26,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(this._stick_runner);
     }
 
-    // Grid after the runner so it draws on top (also has high z)
+    // grid is added after the runner so it draws on top
     if (!this._grid) {
       this._grid = new GridSystem(8);
       this.add(this._grid);

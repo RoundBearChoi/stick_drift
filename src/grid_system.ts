@@ -19,15 +19,15 @@ export class GridSystem extends Actor {
   constructor(cellSize = 8) {
     super({
       name: 'GridSystem',
-      z: 1000, // always draw on top of gameplay actors
+      //z: 1000, // we could use z, but we're already adding grid actor after the runner, so it should be fine
     });
 
     this.cellSize = cellSize;
 
-    // Critical: without this, Excalibur culls the actor because it has no size/graphics
+    // critical: without this, excalibur culls the actor because it has no size/graphics
     this.graphics.forceOnScreen = true;
 
-    // Prefer graphics.onPostDraw (recommended by Excalibur)
+    // prefer graphics.onPostDraw (recommended by excalibur)
     this.graphics.onPostDraw = (ctx) => {
       this.drawGrid(ctx);
     };
@@ -41,7 +41,8 @@ export class GridSystem extends Actor {
     const { left, right, top, bottom } = viewport;
     const size = this.cellSize;
 
-    // Snap to whole-number multiples of cellSize
+    // snap to whole-number multiples of cellSize
+    // line renders don't have to be pixel perfect
     const startX = Math.floor(left / size) * size;
     const endX = Math.ceil(right / size) * size;
     const startY = Math.floor(top / size) * size;
@@ -49,12 +50,12 @@ export class GridSystem extends Actor {
 
     ctx.save();
 
-    // Vertical lines
+    // vertical lines
     for (let x = startX; x <= endX; x += size) {
       ctx.drawLine(vec(x, startY), vec(x, endY), this.lineColor, this.lineThickness);
     }
 
-    // Horizontal lines
+    // horizontal lines
     for (let y = startY; y <= endY; y += size) {
       ctx.drawLine(vec(startX, y), vec(endX, y), this.lineColor, this.lineThickness);
     }
