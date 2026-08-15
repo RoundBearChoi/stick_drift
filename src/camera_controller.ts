@@ -102,7 +102,7 @@ export class CameraController implements Tickable {
    * calculate the position camera wants to sit on.
    * currently: target.pos + (0, targetOffsetY)
    *
-   * later this is the single place to add:
+   * later add:
    * - look-ahead based on facing / velocity
    * - different offsets while airborne
    * - soft focus points for cutscenes
@@ -143,9 +143,12 @@ export class CameraController implements Tickable {
     this._debugMarker = marker;
   }
 
+  /**
+   * mark camera target with an X
+   */
   private drawTargetX(ctx: ExcaliburGraphicsContext): void {
     // local space: actor pos is already the target, so draw around origin
-    const half = 5;
+    const half = 4;
     const color: Color = DraculaColorScheme.red;
     const thickness = 1;
 
