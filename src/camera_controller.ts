@@ -1,6 +1,14 @@
-import { Actor, Scene, Vector, vec } from 'excalibur';
+import {
+  Actor,
+  Color,
+  ExcaliburGraphicsContext,
+  Scene,
+  Vector,
+  vec,
+} from 'excalibur';
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
+import { DraculaColorScheme } from './dracula_color_scheme';
 
 /**
  * fixed-timestep camera that follows a target with deadzones and integer axis-aligned steps.
@@ -27,7 +35,11 @@ export class CameraController implements Tickable {
    */
   targetOffsetY = -48;
 
+  /** when true, draws a small X at the desired camera target */
+  showTargetDebug = true;
+
   private _followTarget: Actor | null = null;
+  private _debugMarker: Actor | null = null;
 
   constructor(
     private readonly scene: Scene,
@@ -51,6 +63,8 @@ export class CameraController implements Tickable {
     const cam = this.scene.camera;
     cam.pos.x = Math.round(desired.x);
     cam.pos.y = Math.round(desired.y);
+
+    this.syncDebugMarker(desired);
   }
 
   fixedUpdate(_dt: number): void {
@@ -80,6 +94,8 @@ export class CameraController implements Tickable {
     // keep whole numbers (defensive; steps are already integers)
     cam.pos.x = Math.round(cam.pos.x);
     cam.pos.y = Math.round(cam.pos.y);
+
+    this.syncDebugMarker(desired);
   }
 
   /**
@@ -98,6 +114,43 @@ export class CameraController implements Tickable {
       this._followTarget.pos.x,
       this._followTarget.pos.y + this.targetOffsetY
     );
+  }
+
+  private syncDebugMarker(desired: Vector): void {
+    if (!this.showTargetDebug) {
+      if (this._debugMarker) {
+        this._debugMarker.graphics.visible = false;
+      }
+      return;
+    }
+
+    this.ensureDebugMarker();
+    if (!this._debugMarker) return;
+
+    this._debugMarker.graphics.visible = true;
+    this._debugMarker.pos.x = Math.round(desired.x);
+    this._debugMarker.pos.y = Math.round(desired.y);
+  }
+
+  private ensureDebugMarker(): void {
+    if (this._debugMarker) return;
+
+    const marker = new Actor({ name: 'CameraTargetDebug' });
+    marker.graphics.forceOnScreen = true;
+    marker.graphics.onPostDraw = (ctx) => this.drawTargetX(ctx);
+
+    this.scene.add(marker);
+    this._debugMarker = marker;
+  }
+
+  private drawTargetX(ctx: ExcaliburGraphicsContext): void {
+    // local space: actor pos is already the target, so draw around origin
+    const half = 5;
+    const color: Color = DraculaColorScheme.red;
+    const thickness = 1;
+
+    ctx.drawLine(vec(-half, -half), vec(half, half), color, thickness);
+    ctx.drawLine(vec(half, -half), vec(-half, half), color, thickness);
   }
 
   register(): void {

@@ -9,6 +9,8 @@ export const DraculaColorScheme = {
   /** #f8f8f2 – official Dracula foreground (slightly warmer than pure white) */
   white: Color.fromHex('#f8f8f2'),
   pink: Color.fromHex('#ff79c6'),
+  /** #ff5555 – official Dracula red */
+  red: Color.fromHex('#ff5555'),
 } as const;
 
 export type DraculaColorScheme = typeof DraculaColorScheme;
