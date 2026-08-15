@@ -31,7 +31,7 @@ export class RunnerRun implements RunnerState {
       runner.setFacingRightSide(false);
     }
 
-    const speed = 1;
+    const speed = 8;
     const dir = runner.isFacingRightSide ? 1 : -1;
     runner.pos.x += dir * speed;
   }
