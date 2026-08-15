@@ -3,7 +3,6 @@ import {
   Color,
   ExcaliburGraphicsContext,
   vec,
-  BoundingBox,
 } from 'excalibur';
 
 /**
@@ -22,17 +21,23 @@ export class GridSystem extends Actor {
       name: 'GridSystem',
       z: 1000, // always draw on top of gameplay actors
     });
+
     this.cellSize = cellSize;
+
+    // Critical: without this, Excalibur culls the actor because it has no size/graphics
+    this.graphics.forceOnScreen = true;
+
+    // Prefer graphics.onPostDraw (recommended by Excalibur)
+    this.graphics.onPostDraw = (ctx) => {
+      this.drawGrid(ctx);
+    };
   }
 
-  onPostDraw(ctx: ExcaliburGraphicsContext, _elapsed: number): void {
+  private drawGrid(ctx: ExcaliburGraphicsContext): void {
     const camera = this.scene?.camera;
     if (!camera) return;
 
-    this.drawGrid(ctx, camera.viewport);
-  }
-
-  private drawGrid(ctx: ExcaliburGraphicsContext, viewport: BoundingBox): void {
+    const viewport = camera.viewport;
     const { left, right, top, bottom } = viewport;
     const size = this.cellSize;
 
