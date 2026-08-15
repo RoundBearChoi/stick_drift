@@ -8,11 +8,13 @@ import { StickRunner } from './stick_runner';
 import { StickRunnerController } from './stick_runner_controller';
 import { createStickRunner } from './stick_runner_creator';
 import { GridSystem } from './grid_system';
+import { CameraController } from './camera_controller';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _stick_runner?: StickRunner;
   private _controller?: StickRunnerController;
+  private _camera_controller?: CameraController;
   private _grid?: GridSystem;
 
   onInitialize(_engine: Engine): void {}
@@ -39,12 +41,21 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       );
     }
 
+    if (!this._camera_controller) {
+      this._camera_controller = new CameraController(this, this._game_ctx);
+      this._camera_controller.setFollowTarget(this._stick_runner);
+    }
+
     // deterministic start every time we enter the scene
     this._stick_runner.reset();
 
-    // both need to be registered so they receive fixedUpdate
+    // snap camera so we don't start with a long catch-up
+    this._camera_controller.snapToTarget();
+
+    // all need to be registered so they receive fixedUpdate
     this._stick_runner.register(this._game_ctx);
     this._controller.register();
+    this._camera_controller.register();
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
@@ -59,6 +70,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
     if (this._controller) {
       this._controller.unregister();
+    }
+    if (this._camera_controller) {
+      this._camera_controller.unregister();
     }
   }
 }
