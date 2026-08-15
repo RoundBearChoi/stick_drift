@@ -63,12 +63,15 @@ export class GridSystem extends Actor {
     ctx.restore();
   }
 
-  /** Change grid density (e.g. 8 / 16 / 32) */
-  setCellSize(size: number): void {
-    this.cellSize = size;
-  }
+  /**
+   * change grid density (e.g. 8 / 16 / 32)
+   * maybe for later
+   */
+  //setCellSize(size: number): void {
+  //  this.cellSize = size;
+  //}
 
-  getCellSize(): number {
-    return this.cellSize;
-  }
+  //getCellSize(): number {
+  //  return this.cellSize;
+  //}
 }
