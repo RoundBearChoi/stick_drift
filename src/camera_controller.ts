@@ -164,7 +164,7 @@ export class CameraController implements Tickable {
 
       // same red with alpha so the line is quieter than the X
       const lineColor = solidRed.clone();
-      lineColor.a = 0.35;
+      lineColor.a = 0.45;
 
       ctx.drawLine(vec(0, 0), vec(localCamX, localCamY), lineColor, 0.1);
     }
