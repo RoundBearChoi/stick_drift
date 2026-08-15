@@ -3,42 +3,31 @@ import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 
 /**
- * Fixed-timestep camera that follows a target with deadzones and
- * integer axis-aligned steps. Designed for pixel-art feel.
+ * fixed-timestep camera that follows a target with deadzones and integer axis-aligned steps.
  *
- * Future-friendly:
+ * future-friendly stuff:
  * - setFollowTarget() so the follow source can change later
- *   (cutscenes, bosses, look-ahead points, etc.)
- * - snapToTarget() for scene transitions / resets
- * - all tuning knobs are instance fields so they can be changed at runtime
- * - movement logic is isolated so look-ahead / variable speed /
- *   airborne bias / level bounds can be added later without rewriting the core
+ * - snapToTarget() for scene transitions and/or resets
+ * - movement logic is isolated so look-ahead / variable speed / airborne bias / level bounds can be added later
  */
 export class CameraController implements Tickable {
-  // --- tunable ---
-
   /** horizontal deadzone radius (only move when |dx| exceeds this) */
   deadzoneX = 48;
 
-  /** vertical deadzone radius */
+  /** vertical deadzone radius (only move when |dy| exceeds this) */
   deadzoneY = 28;
 
   /** max pixels the camera may move on one axis per fixed update */
   maxStep = 2;
 
   /**
-   * Vertical offset from the follow target's pos to the desired camera focus.
-   * Negative because y increases downward in Excalibur.
-   *
-   * StickRunner sprites are 32×32 with bottom-center anchor, so:
-   *   -32 (top of sprite) - 12 (small gap above head) = -44
-   * Change this value to raise/lower where the camera wants to look relative to the character.
+   * vertical offset from the follow target's pos to the desired camera focus.
+   * this is negative because y increases downward in excalibur.
+   * stickRunner sprites are 32×32 with bottom-center anchor, so roughly 32 + 16 = 48
    */
-  targetOffsetY = -44;
+  targetOffsetY = -48;
 
-  // --- internal ---
-
-  private followTarget: Actor | null = null;
+  private _followTarget: Actor | null = null;
 
   constructor(
     private readonly scene: Scene,
@@ -46,17 +35,14 @@ export class CameraController implements Tickable {
   ) {}
 
   /**
-   * Set (or clear) the actor the camera should follow.
-   * Passing null stops following.
-   * Designed so later we can hand it any Actor, a dummy marker, etc.
+   * set (or clear) the actor (target) the camera should follow. passing null stops following.
    */
   setFollowTarget(target: Actor | null): void {
-    this.followTarget = target;
+    this._followTarget = target;
   }
 
   /**
-   * Immediately place the camera on the current desired target position.
-   * Call on scene enter / after teleports / after reset.
+   * immediately place the camera on the current desired target position. call on scene enter etc.
    */
   snapToTarget(): void {
     const desired = this.getDesiredTargetPos();
@@ -97,20 +83,20 @@ export class CameraController implements Tickable {
   }
 
   /**
-   * Computes the point the camera wants to sit on.
-   * Currently: target.pos + (0, targetOffsetY)
+   * calculate the position camera wants to sit on.
+   * currently: target.pos + (0, targetOffsetY)
    *
-   * Later this is the single place to add:
+   * later this is the single place to add:
    * - look-ahead based on facing / velocity
    * - different offsets while airborne
    * - soft focus points for cutscenes
    */
   private getDesiredTargetPos(): Vector | null {
-    if (!this.followTarget) return null;
+    if (!this._followTarget) return null;
 
     return vec(
-      this.followTarget.pos.x,
-      this.followTarget.pos.y + this.targetOffsetY
+      this._followTarget.pos.x,
+      this._followTarget.pos.y + this.targetOffsetY
     );
   }
 
