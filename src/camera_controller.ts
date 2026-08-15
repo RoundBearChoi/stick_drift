@@ -145,23 +145,28 @@ export class CameraController implements Tickable {
 
   /**
    * debug overlay:
-   * - X at the desired camera target
-   * - thin line from that target to the current camera center
+   * - X at the desired camera target (fully opaque)
+   * - thin semi-transparent line from that target to the current camera center
    */
   private drawDebug(ctx: ExcaliburGraphicsContext): void {
-    const color: Color = DraculaColorScheme.red;
+    const solidRed: Color = DraculaColorScheme.red;
 
-    // X at target (local origin)
+    // X at target (local origin) — keep solid so it stays easy to spot
     const half = 4;
-    ctx.drawLine(vec(-half, -half), vec(half, half), color, 1);
-    ctx.drawLine(vec(half, -half), vec(-half, half), color, 1);
+    ctx.drawLine(vec(-half, -half), vec(half, half), solidRed, 1);
+    ctx.drawLine(vec(half, -half), vec(-half, half), solidRed, 1);
 
     // thin line from target → camera center (camera.pos is the center of the screen)
     const cam = this.scene.camera;
     if (cam && this._debugMarker) {
       const localCamX = cam.pos.x - this._debugMarker.pos.x;
       const localCamY = cam.pos.y - this._debugMarker.pos.y;
-      ctx.drawLine(vec(0, 0), vec(localCamX, localCamY), color, 0.1);
+
+      // same red with alpha so the line is quieter than the X
+      const lineColor = solidRed.clone();
+      lineColor.a = 0.35;
+
+      ctx.drawLine(vec(0, 0), vec(localCamX, localCamY), lineColor, 0.1);
     }
   }
 
