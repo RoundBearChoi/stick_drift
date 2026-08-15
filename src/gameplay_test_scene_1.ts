@@ -7,11 +7,13 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { StickRunnerController } from './stick_runner_controller';
 import { createStickRunner } from './stick_runner_creator';
+import { GridSystem } from './grid_system';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _stick_runner?: StickRunner;
   private _controller?: StickRunnerController;
+  private _grid?: GridSystem;
 
   onInitialize(_engine: Engine): void {}
 
@@ -22,6 +24,12 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
       this.add(this._stick_runner);
+    }
+
+    // Grid after the runner so it draws on top (also has high z)
+    if (!this._grid) {
+      this._grid = new GridSystem(8);
+      this.add(this._grid);
     }
 
     if (!this._controller) {
