@@ -9,13 +9,13 @@ export const DraculaColorScheme = {
   background: Color.fromHex('#282a36'),
 
   /** #44475a – current line / selection */
-  currentLine: Color.fromHex('#44475a'),
+  selection_color: Color.fromHex('#44475a'),
 
   /** #f8f8f2 – official Dracula foreground (slightly warmer than pure white) */
   white: Color.fromHex('#f8f8f2'),
 
-  /** #6272a4 – comments / muted */
-  comment: Color.fromHex('#6272a4'),
+  /** #6272a4 – official Dracula comment color */
+  comment_color: Color.fromHex('#6272a4'),
 
   /** #8be9fd – cyan */
   cyan: Color.fromHex('#8be9fd'),
