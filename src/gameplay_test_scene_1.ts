@@ -43,7 +43,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // reset every time we enter the scene.
     // IMPORTANT: this is where the runner context is first passed to runner.
     // later it's also passed on every fixed update.
-    this._stick_runner.reset(this._game_ctx.runner_ctx);
+    this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
 
     // three bricks
     if (!this._bricks) {

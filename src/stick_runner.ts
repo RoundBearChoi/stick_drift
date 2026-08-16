@@ -126,7 +126,7 @@ export class StickRunner extends Actor implements Tickable {
    * animation graphic is attached even when already in the idle state. this recreates animation graphic from scratch.
    * (on every onEnter we call playAnimationForState)
    */
-  reset(runnerCtx: RunnerContext): void {
+  resetRunner(runnerCtx: RunnerContext): void {
     // apply tuning from context (anchor lives here so all runner numbers stay in one place)
     this.anchor = runnerCtx.anchor;
 
