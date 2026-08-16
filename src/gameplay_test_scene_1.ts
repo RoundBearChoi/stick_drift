@@ -16,7 +16,7 @@ import { CameraController } from './camera_controller';
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _stick_runner?: StickRunner;
-  private _controller?: StickRunnerController;
+  private _stick_runner_controller?: StickRunnerController;
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
   private _bricks?: Actor[];
@@ -27,12 +27,25 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._game_ctx = context.data!;
     console.log('🌊 onActivate gameplay_test_scene_1');
 
+    // stick runner
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
       this.add(this._stick_runner);
     }
 
-    // three bricks lined up, good distance to the right of the runner
+    if (!this._stick_runner_controller) {
+      this._stick_runner_controller = new StickRunnerController(
+        this._stick_runner,
+        this._game_ctx
+      );
+    }
+
+    // reset every time we enter the scene.
+    // IMPORTANT: this is where the runner context is first passed to runner.
+    // later it's also passed on every fixed update.
+    this._stick_runner.reset(this._game_ctx.runner_ctx);
+
+    // three bricks
     if (!this._bricks) {
       this._bricks = [];
 
@@ -61,29 +74,18 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(this._grid);
     }
 
-    if (!this._controller) {
-      this._controller = new StickRunnerController(
-        this._stick_runner,
-        this._game_ctx
-      );
-    }
-
+    // camera
     if (!this._camera_controller) {
       this._camera_controller = new CameraController(this, this._game_ctx);
       this._camera_controller.setFollowTarget(this._stick_runner);
     }
 
-    // reset every time we enter the scene.
-    // IMPORTANT: this is where the runner context is first passed to runner.
-    // later it's also passed on every fixed update.
-    this._stick_runner.reset(this._game_ctx.runner_ctx);
-
     // snap camera so we don't start with a long catch-up
     this._camera_controller.snapToTarget();
 
-    // all need to be registered so they receive fixedUpdate
+    // register so they receive fixedUpdate
     this._stick_runner.register(this._game_ctx);
-    this._controller.register();
+    this._stick_runner_controller.register();
     this._camera_controller.register();
   }
 
@@ -97,8 +99,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (this._stick_runner) {
       this._stick_runner.unregister(this._game_ctx);
     }
-    if (this._controller) {
-      this._controller.unregister();
+    if (this._stick_runner_controller) {
+      this._stick_runner_controller.unregister();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();

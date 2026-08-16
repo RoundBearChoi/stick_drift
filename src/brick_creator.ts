@@ -6,8 +6,7 @@ export interface BrickCreateOptions {
 }
 
 /**
- * Creates a static 16x16 brick actor.
- * Scene still owns the actor and is responsible for add / remove.
+ * scene still owns the actor and is responsible for add / remove.
  */
 export function createBrick(
   engine: Engine,
