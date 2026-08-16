@@ -1,5 +1,6 @@
 import { InputAction, InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
+import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerRun } from './runner_run';
 import { RunnerJump } from './runner_jump';
@@ -7,13 +8,20 @@ import { RunnerJump } from './runner_jump';
 export class RunnerIdle implements RunnerState {
   readonly state_name = RunnerStateName.IDLE;
 
-  onEnter(runner: StickRunner): void {
-    runner.playAnimationForState(this.state_name);
+  onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
+    runner.playAnimationForState(
+      this.state_name,
+      runnerCtx.idle_animation_tick_per_frames
+    );
   }
 
-  onFixedUpdate(runner: StickRunner, input: InputInterpreter): void {
+  onFixedUpdate(
+    runner: StickRunner,
+    input: InputInterpreter,
+    runnerCtx: RunnerContext
+  ): void {
     if (input.wasPressed(InputAction.JUMP)) {
-      //runner.setState(new JumpState());
+      //runner.setState(new JumpState(), runnerCtx);
       //return;
     }
 
@@ -31,7 +39,7 @@ export class RunnerIdle implements RunnerState {
         runner.setFacingRightSide(false);
       }
 
-      runner.setState(new RunnerRun());
+      runner.setState(new RunnerRun(), runnerCtx);
     }
   }
 }
