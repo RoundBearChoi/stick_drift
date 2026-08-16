@@ -19,14 +19,11 @@ export interface RunnerOptions {
 export class StickRunner extends Actor implements Tickable {
   private _runner_state: RunnerState = new RunnerIdle(); // starting state (onEnter deferred until reset)
   private _frame_based_animation!: FrameBasedAnimation;
-
-  /** true = facing right (default). used to mirror the sprite. */
   private _isFacingRightSide = true;
 
   constructor(options: RunnerOptions = {}) {
     super({
       pos: options.pos ?? vec(0, 0),
-      // anchor is applied later in reset() once runner has access to RunnerContext
     });
 
     // onEnter cannot be called here. at construction time runner does not have access to runner context.
