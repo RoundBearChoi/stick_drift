@@ -123,7 +123,7 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   /**
-   * always force a full re-enter of idle state.
+   * force a full re-enter of idle state.
    * animation graphic is attached even when already in the idle state. this recreates animation graphic from scratch.
    * (on every onEnter we call playAnimationForState)
    */
