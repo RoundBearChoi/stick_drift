@@ -3,7 +3,6 @@ import { StickRunner } from './stick_runner';
 
 export interface StickRunnerCreateOptions {
   gapFromCenter?: number;
-  advancesPerFrame?: number;
 }
 
 /**
@@ -20,6 +19,5 @@ export function createStickRunner(
       engine.halfDrawWidth,
       engine.halfDrawHeight + gap
     ),
-    visual_frames_per_tick: options.advancesPerFrame ?? 4,
   });
 }
