@@ -91,7 +91,7 @@ export class CameraController implements Tickable {
       cam.pos.y += step;
     }
 
-    // keep whole numbers (defensive; steps are already integers)
+    // keep whole numbers (this is defensive. when you put in integers nothing happens in Math.round)
     cam.pos.x = Math.round(cam.pos.x);
     cam.pos.y = Math.round(cam.pos.y);
 
