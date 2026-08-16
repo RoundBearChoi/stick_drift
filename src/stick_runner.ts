@@ -123,8 +123,9 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   /**
-   * deterministic start. always forces a full re-enter of Idle so the
-   * animation graphic is attached even when already in the idle state.
+   * always force a full re-enter of idle state.
+   * animation graphic is attached even when already in the idle state. this recreates animation graphic from scratch.
+   * (on every onEnter we call playAnimationForState)
    */
   reset(runnerCtx: RunnerContext): void {
     this._runner_state.onExit?.(this); // if onExit exists on the current state, call it. if it doesn’t, do nothing.
