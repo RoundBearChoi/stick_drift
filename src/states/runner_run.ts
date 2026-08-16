@@ -1,5 +1,6 @@
 import { InputAction, InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
+import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerJump } from './runner_jump';
@@ -7,18 +8,25 @@ import { RunnerJump } from './runner_jump';
 export class RunnerRun implements RunnerState {
   readonly state_name = RunnerStateName.RUN;
 
-  onEnter(runner: StickRunner): void {
-    runner.playAnimationForState(this.state_name);
+  onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
+    runner.playAnimationForState(
+      this.state_name,
+      runnerCtx.run_animation_tick_per_frames
+    );
   }
 
-  onFixedUpdate(runner: StickRunner, input: InputInterpreter): void {
+  onFixedUpdate(
+    runner: StickRunner,
+    input: InputInterpreter,
+    runnerCtx: RunnerContext
+  ): void {
     if (input.wasPressed(InputAction.JUMP)) {
-      //runner.setState(new JumpState());
+      //runner.setState(new JumpState(), runnerCtx);
       //return;
     }
 
     if (!input.isHeld(InputAction.MOVE_LEFT) && !input.isHeld(InputAction.MOVE_RIGHT)) {
-      runner.setState(new RunnerIdle());
+      runner.setState(new RunnerIdle(), runnerCtx);
       return;
     }
 
@@ -31,8 +39,7 @@ export class RunnerRun implements RunnerState {
       runner.setFacingRightSide(false);
     }
 
-    const speed = 8;
     const dir = runner.isFacingRightSide ? 1 : -1;
-    runner.pos.x += dir * speed;
+    runner.pos.x += dir * runnerCtx.run_speed;
   }
 }
