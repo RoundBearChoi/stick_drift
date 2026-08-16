@@ -49,7 +49,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // deterministic start every time we enter the scene
     // IMPORTANT: this is where the runner context is first passed to runner
     // it's also passed on every fixed update
-    this._stick_runner.reset(this._game_ctx.runner_context);
+    this._stick_runner.reset(this._game_ctx.runner_ctx);
 
     // snap camera so we don't start with a long catch-up
     this._camera_controller.snapToTarget();
