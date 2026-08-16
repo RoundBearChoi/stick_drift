@@ -127,13 +127,11 @@ export class StickRunner extends Actor implements Tickable {
    * (on every onEnter we call playAnimationForState)
    */
   resetRunner(runnerCtx: RunnerContext): void {
-    // apply tuning from context (anchor lives here so all runner numbers stay in one place)
-    this.anchor = runnerCtx.anchor;
-
     this._runner_state.onExit?.(this); // if onExit exists on the current state, call it. if it doesn’t, do nothing.
     this._runner_state = new RunnerIdle();
     this._runner_state.onEnter(this, runnerCtx);
     this.setFacingRightSide(true);
+    this.anchor = runnerCtx.anchor;
   }
 
   get currentFrameIndex(): number {
