@@ -127,7 +127,7 @@ export class StickRunner extends Actor implements Tickable {
    * animation graphic is attached even when already in the idle state.
    */
   reset(runnerCtx: RunnerContext): void {
-    this._runner_state.onExit?.(this);
+    this._runner_state.onExit?.(this); // if onExit exists on the current state, call it. if it doesn’t, do nothing.
     this._runner_state = new RunnerIdle();
     this._runner_state.onEnter(this, runnerCtx);
     this.setFacingRightSide(true);
