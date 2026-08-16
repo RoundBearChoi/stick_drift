@@ -26,7 +26,7 @@ export class RunnerRun implements RunnerState {
     }
 
     if (!input.isHeld(InputAction.MOVE_LEFT) && !input.isHeld(InputAction.MOVE_RIGHT)) {
-      runner.setState(new RunnerIdle(), runnerCtx);
+      runner.setNewState(new RunnerIdle(), runnerCtx);
       return;
     }
 

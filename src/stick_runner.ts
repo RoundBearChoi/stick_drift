@@ -58,7 +58,7 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   /** states call this to transition. */
-  setState(newState: RunnerState, runnerCtx: RunnerContext): void {
+  setNewState(newState: RunnerState, runnerCtx: RunnerContext): void {
     if (this._runner_state.state_name === newState.state_name) return;
 
     this._runner_state.onExit?.(this);
@@ -105,7 +105,6 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
-    // animation is created on first reset / setState
     this._frame_based_animation?.tick();
   }
 

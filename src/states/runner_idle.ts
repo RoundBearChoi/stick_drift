@@ -39,7 +39,7 @@ export class RunnerIdle implements RunnerState {
         runner.setFacingRightSide(false);
       }
 
-      runner.setState(new RunnerRun(), runnerCtx);
+      runner.setNewState(new RunnerRun(), runnerCtx);
     }
   }
 }
