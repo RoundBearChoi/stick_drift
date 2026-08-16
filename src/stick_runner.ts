@@ -31,7 +31,7 @@ export class StickRunner extends Actor implements Tickable {
     });
 
     // onEnter is intentionally not called here.
-    // Scene / reset() will call setState with RunnerContext so animation speed is correct.
+    // Scene / reset() will enter Idle with RunnerContext so animation speed is correct.
   }
 
   get state(): RunnerState {
@@ -105,7 +105,7 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
-    // animation is created on first setState / reset
+    // animation is created on first reset / setState
     this._frame_based_animation?.tick();
   }
 
@@ -122,10 +122,13 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   /**
-   * deterministic start. must be called with RunnerContext so onEnter gets correct values.
+   * deterministic start. always forces a full re-enter of Idle so the
+   * animation graphic is attached even when already in the idle state.
    */
   reset(runnerCtx: RunnerContext): void {
-    this.setState(new RunnerIdle(), runnerCtx);
+    this._runner_state.onExit?.(this);
+    this._runner_state = new RunnerIdle();
+    this._runner_state.onEnter(this, runnerCtx);
     this.setFacingRightSide(true);
   }
 
