@@ -2,11 +2,14 @@ import {
   Scene,
   Engine,
   SceneActivationContext,
+  Actor,
+  vec,
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { StickRunnerController } from './stick_runner_controller';
 import { createStickRunner } from './stick_runner_creator';
+import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
 
@@ -16,6 +19,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _controller?: StickRunnerController;
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
+  private _bricks?: Actor[];
 
   onInitialize(_engine: Engine): void {}
 
@@ -26,6 +30,29 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (!this._stick_runner) {
       this._stick_runner = createStickRunner(this.engine);
       this.add(this._stick_runner);
+    }
+
+    // three bricks lined up, good distance to the right of the runner
+    if (!this._bricks) {
+      this._bricks = [];
+
+      const groundY = this.engine.halfDrawHeight + 110; // same floor reference as runner feet
+
+      const brick1 = createBrick(this.engine, {
+        pos: vec(this.engine.halfDrawWidth + 140, groundY),
+      });
+      const brick2 = createBrick(this.engine, {
+        pos: vec(this.engine.halfDrawWidth + 160, groundY),
+      });
+      const brick3 = createBrick(this.engine, {
+        pos: vec(this.engine.halfDrawWidth + 180, groundY),
+      });
+
+      this.add(brick1);
+      this.add(brick2);
+      this.add(brick3);
+
+      this._bricks.push(brick1, brick2, brick3);
     }
 
     // grid is added after the runner so it draws on top

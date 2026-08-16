@@ -8,6 +8,8 @@ export const Resources = {
   stick_runner_run: new AsepriteResource('./res/sprites/stick_runner_run.aseprite'),
 
   work_in_progress: new AsepriteResource('./res/sprites/work_in_progress.aseprite'),
+
+  brick: new AsepriteResource('./res/sprites/16x16_brick.aseprite'),
 } as const;
 
 const loader = new TerminalLoader();
@@ -17,5 +19,6 @@ loader.addResource(debugFontSource);
 loader.addResource(Resources.stick_runner_idle);
 loader.addResource(Resources.stick_runner_run);
 loader.addResource(Resources.work_in_progress);
+loader.addResource(Resources.brick);
 
 export { loader };
