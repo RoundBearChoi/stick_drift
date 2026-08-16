@@ -18,7 +18,7 @@ export class StickRunnerController implements Tickable {
     this.runner.state.onFixedUpdate(
       this.runner,
       this.gameCtx.input,
-      this.gameCtx.runner
+      this.gameCtx.runner_context
     );
   }
 

@@ -8,6 +8,9 @@ export enum RunnerStateName {
   JUMP = 'jump',
 }
 
+/**
+ * IMPORTANT: on every fixed update, runner ctx is passed to the runner
+ */
 export interface RunnerState {
   readonly state_name: RunnerStateName;
 

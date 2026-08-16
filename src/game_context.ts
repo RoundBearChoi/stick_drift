@@ -31,7 +31,7 @@ export class GameContext {
   readonly resolution_debug = new ResolutionDebug();
 
   /** runner tuning values (speed, animation ticks, etc.) */
-  readonly runner = new RunnerContext();
+  readonly runner_context = new RunnerContext();
 
   /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();
