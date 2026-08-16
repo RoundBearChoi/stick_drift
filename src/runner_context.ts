@@ -1,6 +1,5 @@
 /**
- * Tuning values for the stick runner.
- * Owned by GameContext so all runner-related numbers live in one place.
+ * owned by game ctx so all runner-related numbers live in one place.
  */
 export class RunnerContext {
   /** pixels moved per fixed update while running */
