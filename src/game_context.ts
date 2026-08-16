@@ -5,6 +5,7 @@ import { ResolutionDebug } from './resolution_debug';
 import { Tickable } from './tickable';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { InputInterpreter } from './input_interpreter';
+import { RunnerContext } from './runner_context';
 
 export const NATIVE_RESOLUTION = {
   width: 640,
@@ -28,6 +29,9 @@ export class GameContext {
 
   /** shared on-screen resolution / scale debug label */
   readonly resolution_debug = new ResolutionDebug();
+
+  /** runner tuning values (speed, animation ticks, etc.) */
+  readonly runner = new RunnerContext();
 
   /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();
