@@ -3,13 +3,13 @@ import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
 import { Resources } from './resources';
 import { FrameBasedAnimation } from './frame_based_animation';
 import { GameContext } from './game_context';
+import { RunnerContext } from './runner_context';
 import { Tickable } from './tickable';
 import { RunnerState, RunnerStateName } from './states/runner_state';
 import { RunnerIdle } from './states/runner_idle';
 
 export interface RunnerOptions {
   pos?: Vector;
-  visual_frames_per_tick?: number;
 }
 
 /**
@@ -17,9 +17,8 @@ export interface RunnerOptions {
  * does not read input itself — runner controller feeds input to the current state.
  */
 export class StickRunner extends Actor implements Tickable {
-  private _runner_state: RunnerState = new RunnerIdle(); // starting state
+  private _runner_state: RunnerState = new RunnerIdle(); // starting state (onEnter deferred until reset)
   private _frame_based_animation!: FrameBasedAnimation;
-  private readonly _default_visual_frames_per_tick: number;
 
   /** true = facing right (default). used to mirror the sprite. */
   private _isFacingRightSide = true;
@@ -31,10 +30,8 @@ export class StickRunner extends Actor implements Tickable {
       anchor: vec(0.5, 1),
     });
 
-    this._default_visual_frames_per_tick = options.visual_frames_per_tick ?? 4;
-
-    // initial state will set the animation via onEnter → playAnimationForState
-    this._runner_state.onEnter(this);
+    // onEnter is intentionally not called here.
+    // Scene / reset() will call setState with RunnerContext so animation speed is correct.
   }
 
   get state(): RunnerState {
@@ -61,19 +58,22 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   /** states call this to transition. */
-  setState(newState: RunnerState): void {
+  setState(newState: RunnerState, runnerCtx: RunnerContext): void {
     if (this._runner_state.state_name === newState.state_name) return;
 
     this._runner_state.onExit?.(this);
     this._runner_state = newState;
-    this._runner_state.onEnter(this);
+    this._runner_state.onEnter(this, runnerCtx);
   }
 
   /**
    * called by states on enter.
-   * selects the correct Aseprite resource for the given state.
+   * selects the correct Aseprite resource and applies the given animation speed.
    */
-  playAnimationForState(stateName: RunnerStateName): void {
+  playAnimationForState(
+    stateName: RunnerStateName,
+    advancesPerFrame: number
+  ): void {
     let resource = Resources.stick_runner_idle;
 
     switch (stateName) {
@@ -87,22 +87,26 @@ export class StickRunner extends Actor implements Tickable {
         break;
     }
 
-    this._frame_based_animation = this.createAnimation(resource);
+    this._frame_based_animation = this.createAnimation(resource, advancesPerFrame);
     this._frame_based_animation.attachToActor(this);
   }
 
-  private createAnimation(resource: AsepriteResource): FrameBasedAnimation {
+  private createAnimation(
+    resource: AsepriteResource,
+    advancesPerFrame: number
+  ): FrameBasedAnimation {
     const source = resource.getAnimation();
 
     if (!source) {
       console.warn('Runner animation not loaded yet');
     }
 
-    return new FrameBasedAnimation(source!, this._default_visual_frames_per_tick);
+    return new FrameBasedAnimation(source!, advancesPerFrame);
   }
 
   fixedUpdate(_dt: number): void {
-    this._frame_based_animation.tick();
+    // animation is created on first setState / reset
+    this._frame_based_animation?.tick();
   }
 
   register(gameCtx: GameContext): void {
@@ -114,16 +118,18 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   setAnimationSpeed(advancesPerFrame: number): void {
-    this._frame_based_animation.setSpeed(advancesPerFrame);
+    this._frame_based_animation?.setSpeed(advancesPerFrame);
   }
 
-  reset(): void {
-    this.setState(new RunnerIdle());
-    this._frame_based_animation.reset();
+  /**
+   * deterministic start. must be called with RunnerContext so onEnter gets correct values.
+   */
+  reset(runnerCtx: RunnerContext): void {
+    this.setState(new RunnerIdle(), runnerCtx);
     this.setFacingRightSide(true);
   }
 
   get currentFrameIndex(): number {
-    return this._frame_based_animation.currentFrameIndex;
+    return this._frame_based_animation?.currentFrameIndex ?? 0;
   }
 }
