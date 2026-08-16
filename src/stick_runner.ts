@@ -32,6 +32,7 @@ export class StickRunner extends Actor implements Tickable {
 
     // onEnter cannot be called here. at construction time runner does not have access to runner context.
     // constructor only creates the object and sets placeholder idle state. no animation is attached yet.
+    // onEnter is called either on scene start/reset or when state changes.
   }
 
   get state(): RunnerState {
