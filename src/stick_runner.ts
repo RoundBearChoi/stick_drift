@@ -30,8 +30,8 @@ export class StickRunner extends Actor implements Tickable {
       anchor: vec(0.5, 1),
     });
 
-    // onEnter is intentionally not called here.
-    // Scene / reset() will enter Idle with RunnerContext so animation speed is correct.
+    // onEnter cannot be called here. at construction time runner does not have access to runner context.
+    // constructor only creates the object and sets placeholder idle state. no animation is attached yet.
   }
 
   get state(): RunnerState {
