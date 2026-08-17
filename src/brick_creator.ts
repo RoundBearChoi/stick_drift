@@ -22,7 +22,7 @@ export function createBrick(
   // bottom-center anchor so it sits on the same floor reference as the runner
   const actor = new Actor({
     pos: options.pos ?? vec(0, 0),
-    anchor: vec(0.5, 0.5),
+    anchor: vec(0, 0), // top left pivot for easy registration on uint8array grid
   });
 
   if (spr) {
