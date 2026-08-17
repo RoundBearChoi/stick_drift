@@ -31,7 +31,7 @@ export class CameraController implements Tickable {
   /**
    * vertical offset from the follow target's pos to the desired camera focus.
    * this is negative because y increases downward in excalibur.
-   * stickRunner sprites are 32×32 with bottom-center anchor, so roughly 32 + 16 = 48
+   * runner sprites are 32×32 with bottom-center anchor, so roughly 32 + 16 = 48
    */
   targetOffsetY = -48;
 
