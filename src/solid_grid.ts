@@ -5,9 +5,9 @@
  */
 export const CELL_SIZE = 8;
 
-/** temporary level size. matching native resolution for now */
-export const LEVEL_WIDTH_CELLS = 80;
-export const LEVEL_HEIGHT_CELLS = 45;
+/** level size = 2× native resolution (640×360 → 1280×720) so the camera has room to chase */
+export const LEVEL_WIDTH_CELLS = 160;
+export const LEVEL_HEIGHT_CELLS = 90;
 
 export class SolidGrid {
   private readonly data = new Uint8Array(LEVEL_WIDTH_CELLS * LEVEL_HEIGHT_CELLS);
