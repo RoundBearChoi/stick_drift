@@ -2,7 +2,7 @@ import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 
-/** this script's only responsibility is to apply horizontal movement buffer to the runner and then zero the buffer. */
+/** this script's sole responsibility is to apply horizontal movement buffer to the runner and then zero the buffer. */
 export class RunnerMovementBufferResolve implements Tickable {
   constructor(
     private readonly runner: StickRunner,
