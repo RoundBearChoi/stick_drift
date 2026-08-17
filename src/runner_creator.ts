@@ -1,16 +1,16 @@
 import { Engine, vec } from 'excalibur';
 import { StickRunner } from './stick_runner';
 
-export interface StickRunnerCreateOptions {
+export interface RunnerCreateOptions {
   gapFromCenter?: number;
 }
 
 /**
  * scene still owns the runner and is responsible for register / add / unregister.
  */
-export function createStickRunner(
+export function createRunner(
   engine: Engine,
-  options: StickRunnerCreateOptions = {}
+  options: RunnerCreateOptions = {}
 ): StickRunner {
   const gap = options.gapFromCenter ?? 110;
 

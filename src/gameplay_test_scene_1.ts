@@ -9,7 +9,7 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerController } from './runner_controller';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
-import { createStickRunner } from './stick_runner_creator';
+import { createRunner } from './runner_creator';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
@@ -31,7 +31,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
     // stick runner
     if (!this._stick_runner) {
-      this._stick_runner = createStickRunner(this.engine);
+      this._stick_runner = createRunner(this.engine);
       this.add(this._stick_runner);
     }
 
