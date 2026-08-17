@@ -39,7 +39,8 @@ export class RunnerRun implements RunnerState {
       runner.setFacingRightSide(false);
     }
 
+    // only write intent — do not touch position here
     const dir = runner.isFacingRightSide ? 1 : -1;
-    runner.pos.x += dir * runnerCtx.run_speed;
+    runnerCtx.horizontal_move_buffer = dir * runnerCtx.run_speed;
   }
 }

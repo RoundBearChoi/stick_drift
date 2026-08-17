@@ -13,4 +13,10 @@ export class RunnerContext {
 
   /** bottom-center pivot */
   readonly anchor: Vector = vec(0.5, 1);
+
+  /**
+   * Intentional horizontal movement for this fixed update (in pixels).
+   * States write to this. Resolver consumes it and then zeros it.
+   */
+  horizontal_move_buffer = 0;
 }

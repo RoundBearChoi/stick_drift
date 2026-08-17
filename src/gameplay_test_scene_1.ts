@@ -8,6 +8,7 @@ import {
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { StickRunnerController } from './stick_runner_controller';
+import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { createStickRunner } from './stick_runner_creator';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
@@ -17,6 +18,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _stick_runner?: StickRunner;
   private _stick_runner_controller?: StickRunnerController;
+  private _movement_resolve?: RunnerMovementBufferResolve;
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
   private _bricks?: Actor[];
@@ -35,6 +37,13 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
     if (!this._stick_runner_controller) {
       this._stick_runner_controller = new StickRunnerController(
+        this._stick_runner,
+        this._game_ctx
+      );
+    }
+
+    if (!this._movement_resolve) {
+      this._movement_resolve = new RunnerMovementBufferResolve(
         this._stick_runner,
         this._game_ctx
       );
@@ -84,8 +93,10 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._camera_controller.snapToTarget();
 
     // register so they receive fixedUpdate
+    // order matters: controller (state machine) first → movement resolve second
     this._stick_runner.register(this._game_ctx);
     this._stick_runner_controller.register();
+    this._movement_resolve.register();
     this._camera_controller.register();
   }
 
@@ -101,6 +112,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
     if (this._stick_runner_controller) {
       this._stick_runner_controller.unregister();
+    }
+    if (this._movement_resolve) {
+      this._movement_resolve.unregister();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();
