@@ -42,7 +42,6 @@ export class GridSystem extends Actor {
     const size = this.cellSize;
 
     // snap to whole-number multiples of cellSize
-    // line renders don't have to be pixel perfect
     const startX = Math.floor(left / size) * size;
     const endX = Math.ceil(right / size) * size;
     const startY = Math.floor(top / size) * size;
@@ -50,14 +49,15 @@ export class GridSystem extends Actor {
 
     ctx.save();
 
-    // vertical lines
+    // vertical lines — offset by 0.5 so a 1px stroke lands cleanly on the pixel
+    // (avoids the classic half-pixel centering that makes lines look 1px off relative to sprites)
     for (let x = startX; x <= endX; x += size) {
-      ctx.drawLine(vec(x, startY), vec(x, endY), this.lineColor, this.lineThickness);
+      ctx.drawLine(vec(x + 0.5, startY), vec(x + 0.5, endY), this.lineColor, this.lineThickness);
     }
 
-    // horizontal lines
+    // horizontal lines — same 0.5 offset
     for (let y = startY; y <= endY; y += size) {
-      ctx.drawLine(vec(startX, y), vec(endX, y), this.lineColor, this.lineThickness);
+      ctx.drawLine(vec(startX, y + 0.5), vec(endX, y + 0.5), this.lineColor, this.lineThickness);
     }
 
     ctx.restore();
