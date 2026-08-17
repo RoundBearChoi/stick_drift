@@ -58,7 +58,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (!this._bricks) {
       this._bricks = [];
 
-      const groundY = 168 + 112;
+      const groundY = 280;
 
       const brick1 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160, groundY),

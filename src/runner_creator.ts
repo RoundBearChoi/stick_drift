@@ -16,8 +16,8 @@ export function createRunner(
 
   return new StickRunner({
     pos: vec(
-      engine.halfDrawWidth,
-      engine.halfDrawHeight + gap
+      320,
+      280
     ),
   });
 }
