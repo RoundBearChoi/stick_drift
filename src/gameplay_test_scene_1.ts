@@ -7,7 +7,7 @@ import {
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
-import { StickRunnerController } from './stick_runner_controller';
+import { RunnerController } from './runner_controller';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { createStickRunner } from './stick_runner_creator';
 import { createBrick } from './brick_creator';
@@ -17,8 +17,8 @@ import { CameraController } from './camera_controller';
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _stick_runner?: StickRunner;
-  private _stick_runner_controller?: StickRunnerController;
-  private _stick_runner_movement_resolve?: RunnerMovementBufferResolve;
+  private _runner_controller?: RunnerController;
+  private _runner_movement_resolve?: RunnerMovementBufferResolve;
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
   private _bricks?: Actor[];
@@ -35,15 +35,15 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(this._stick_runner);
     }
 
-    if (!this._stick_runner_controller) {
-      this._stick_runner_controller = new StickRunnerController(
+    if (!this._runner_controller) {
+      this._runner_controller = new RunnerController(
         this._stick_runner,
         this._game_ctx
       );
     }
 
-    if (!this._stick_runner_movement_resolve) {
-      this._stick_runner_movement_resolve = new RunnerMovementBufferResolve(
+    if (!this._runner_movement_resolve) {
+      this._runner_movement_resolve = new RunnerMovementBufferResolve(
         this._stick_runner,
         this._game_ctx
       );
@@ -95,8 +95,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // register so they receive fixedUpdate
     // IMPORTANT: order matters. runner controller (state machine) first → movement resolve after
     this._stick_runner.register(this._game_ctx);
-    this._stick_runner_controller.register();
-    this._stick_runner_movement_resolve.register();
+    this._runner_controller.register();
+    this._runner_movement_resolve.register();
     this._camera_controller.register();
   }
 
@@ -110,11 +110,11 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (this._stick_runner) {
       this._stick_runner.unregister(this._game_ctx);
     }
-    if (this._stick_runner_controller) {
-      this._stick_runner_controller.unregister();
+    if (this._runner_controller) {
+      this._runner_controller.unregister();
     }
-    if (this._stick_runner_movement_resolve) {
-      this._stick_runner_movement_resolve.unregister();
+    if (this._runner_movement_resolve) {
+      this._runner_movement_resolve.unregister();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();
