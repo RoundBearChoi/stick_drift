@@ -79,9 +79,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._bricks.push(brick1, brick2, brick3);
 
       // register into solid grid (top-left pivot → direct world rect)
-      this._solid_grid.clear();
+      this._solid_grid.clearSolidData();
       for (const brick of this._bricks) {
-        this._solid_grid.registerBrick(brick.pos.x, brick.pos.y);
+        this._solid_grid.register_16_16_brick(brick.pos.x, brick.pos.y);
       }
     }
 
@@ -129,7 +129,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
   }
 
-  /** Expose for the upcoming collision resolve step */
+  /** exposed for future collision resolve step */
   get solidGrid(): SolidGrid {
     return this._solid_grid;
   }

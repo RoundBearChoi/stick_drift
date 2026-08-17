@@ -1,23 +1,20 @@
 import { Vector } from 'excalibur';
 
 /**
- * Fixed-size occupancy grid for solid collision.
- * Cell size is 8px to match the visual GridSystem and smallest brick.
- * Top-left origin for both world and cell coordinates.
+ * fixed-size occupancy grid for collision detection.
+ * cell size is 8px. smallest brick must be 8x8.
+ * IMPORTANT: top-left origin for both world and cell coordinates. brick pivot must be top-left.
  */
 export const CELL_SIZE = 8;
 
-/** Native resolution is 640x360 → 80x45 cells */
+/** temporary level size. matching native resolution for now */
 export const LEVEL_WIDTH_CELLS = 80;
 export const LEVEL_HEIGHT_CELLS = 45;
 
 export class SolidGrid {
   private readonly data = new Uint8Array(LEVEL_WIDTH_CELLS * LEVEL_HEIGHT_CELLS);
 
-  /**
-   * Register a world-space axis-aligned rectangle as solid.
-   * Expects top-left origin (matches brick pivot).
-   */
+  /** register world-space axis-aligned rectangle as a solid object. this function expects top-left origin. */
   registerRect(worldX: number, worldY: number, width: number, height: number): void {
     const x0 = Math.floor(worldX / CELL_SIZE);
     const y0 = Math.floor(worldY / CELL_SIZE);
@@ -31,8 +28,8 @@ export class SolidGrid {
     }
   }
 
-  /** Convenience for 16x16 bricks (current asset size). */
-  registerBrick(worldX: number, worldY: number): void {
+  /** convenience for 16x16 bricks */
+  register_16_16_brick(worldX: number, worldY: number): void {
     this.registerRect(worldX, worldY, 16, 16);
   }
 
@@ -43,20 +40,20 @@ export class SolidGrid {
       cellY < 0 ||
       cellY >= LEVEL_HEIGHT_CELLS
     ) {
-      // Treat out-of-bounds as solid for now (keeps runner inside the level)
+      // treat out-of-bounds as solid for now
       return true;
     }
     return this.data[cellY * LEVEL_WIDTH_CELLS + cellX] === 1;
   }
 
-  /** World-space point → solid? */
+  /** check world-space point for solid */
   isSolidAtWorld(worldX: number, worldY: number): boolean {
     const cellX = Math.floor(worldX / CELL_SIZE);
     const cellY = Math.floor(worldY / CELL_SIZE);
     return this.isSolid(cellX, cellY);
   }
 
-  clear(): void {
+  clearSolidData(): void {
     this.data.fill(0);
   }
 
