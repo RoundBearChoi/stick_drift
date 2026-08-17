@@ -30,7 +30,7 @@ const game_context = new GameContext();
 const resolution_scale = new ResolutionScale();
 
 // create input interpreter once the Engine exists
-game_context.createInput(engine);
+game_context.createInputInterpreter(engine);
 
 // register scenes
 const gesture_scene = new GestureScene();

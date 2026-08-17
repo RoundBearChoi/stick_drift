@@ -12,7 +12,7 @@ export class RunnerMovementBufferResolve implements Tickable {
   fixedUpdate(_dt: number): void {
     const runnerCtx = this.gameCtx.runner_ctx;
 
-    // apply
+    // apply movement
     this.runner.pos.x += runnerCtx.horizontal_move_buffer;
 
     // zero after resolve
@@ -20,10 +20,10 @@ export class RunnerMovementBufferResolve implements Tickable {
   }
 
   register(): void {
-    this.gameCtx.register(this);
+    this.gameCtx.registerTickable(this);
   }
 
   unregister(): void {
-    this.gameCtx.unregister(this);
+    this.gameCtx.unregisterTickable(this);
   }
 }

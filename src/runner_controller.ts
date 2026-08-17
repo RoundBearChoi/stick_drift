@@ -23,10 +23,10 @@ export class RunnerController implements Tickable {
   }
 
   register(): void {
-    this.gameCtx.register(this);
+    this.gameCtx.registerTickable(this);
   }
 
   unregister(): void {
-    this.gameCtx.unregister(this);
+    this.gameCtx.unregisterTickable(this);
   }
 }

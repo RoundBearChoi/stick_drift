@@ -41,7 +41,7 @@ export class GameContext {
   private _input_interpreter: InputInterpreter | null = null;
 
   /** create the input interpreter (call once after Engine exists) */
-  createInput(engine: Engine): void {
+  createInputInterpreter(engine: Engine): void {
     this._input_interpreter = new InputInterpreter(engine);
   }
 
@@ -62,11 +62,11 @@ export class GameContext {
   }
 
   /** register for fixed updates */
-  register(tickable: Tickable): void {
+  registerTickable(tickable: Tickable): void {
     this._tickables.add(tickable);
   }
 
-  unregister(tickable: Tickable): void {
+  unregisterTickable(tickable: Tickable): void {
     this._tickables.delete(tickable);
   }
 
