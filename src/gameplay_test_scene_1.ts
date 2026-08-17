@@ -58,16 +58,16 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (!this._bricks) {
       this._bricks = [];
 
-      const groundY = this.engine.halfDrawHeight + 110; // same floor reference as runner feet
+      const groundY = 170 + 112;
 
       const brick1 = createBrick(this.engine, {
-        pos: vec(this.engine.halfDrawWidth + 140, groundY),
+        pos: vec(144 + 160 + 160, groundY),
       });
       const brick2 = createBrick(this.engine, {
-        pos: vec(this.engine.halfDrawWidth + 160, groundY),
+        pos: vec(144 + 160 + 160 + 16, groundY),
       });
       const brick3 = createBrick(this.engine, {
-        pos: vec(this.engine.halfDrawWidth + 180, groundY),
+        pos: vec(144 + 160 + 160 + 16 + 16, groundY),
       });
 
       this.add(brick1);
