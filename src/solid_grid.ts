@@ -1,5 +1,3 @@
-import { Vector } from 'excalibur';
-
 /**
  * fixed-size occupancy grid for collision detection.
  * cell size is 8px. smallest brick must be 8x8.

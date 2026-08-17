@@ -19,7 +19,6 @@ export function createBrick(
 
   const spr = sheet?.getSprite(0, 0);
 
-  // bottom-center anchor so it sits on the same floor reference as the runner
   const actor = new Actor({
     pos: options.pos ?? vec(0, 0),
     anchor: vec(0, 0), // top left pivot for easy registration on uint8array grid
