@@ -6,10 +6,8 @@ import {
 } from 'excalibur';
 
 /**
- * World-aligned grid for level design / placement reference.
- * Draws thin gray lines every `cellSize` pixels (default 8).
- * Only renders lines that intersect the current camera viewport.
- * Not a Tickable — pure rendering.
+ * only renders lines that intersect the current camera viewport.
+ * not a Tickable — pure rendering.
  */
 export class GridSystem extends Actor {
   private cellSize: number;
@@ -24,7 +22,7 @@ export class GridSystem extends Actor {
 
     this.cellSize = cellSize;
 
-    // critical: without this, excalibur culls the actor because it has no size/graphics
+    // IMPORTANT: without this, excalibur culls the actor because it has no size/graphics
     this.graphics.forceOnScreen = true;
 
     // prefer graphics.onPostDraw (recommended by excalibur)
@@ -49,8 +47,7 @@ export class GridSystem extends Actor {
 
     ctx.save();
 
-    // vertical lines — offset by 0.5 so a 1px stroke lands cleanly on the pixel
-    // (avoids the classic half-pixel centering that makes lines look 1px off relative to sprites)
+    // vertical lines — offset by 1 so a 1px stroke lands cleanly on the pixel
     for (let x = startX; x <= endX; x += size) {
       ctx.drawLine(vec(x + 1, startY), vec(x + 1, endY), this.lineColor, this.lineThickness);
     }
@@ -62,16 +59,4 @@ export class GridSystem extends Actor {
 
     ctx.restore();
   }
-
-  /**
-   * change grid density (e.g. 8 / 16 / 32)
-   * maybe for later
-   */
-  //setCellSize(size: number): void {
-  //  this.cellSize = size;
-  //}
-
-  //getCellSize(): number {
-  //  return this.cellSize;
-  //}
 }
