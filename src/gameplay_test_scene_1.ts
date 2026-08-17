@@ -13,6 +13,7 @@ import { createRunner } from './runner_creator';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
+import { SolidGrid } from './solid_grid';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -22,6 +23,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
   private _bricks?: Actor[];
+  private _solid_grid = new SolidGrid();
 
   onInitialize(_engine: Engine): void {}
 
@@ -54,7 +56,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // later it's also passed on every fixed update.
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
 
-    // three bricks
+    // three bricks + solid registration
     if (!this._bricks) {
       this._bricks = [];
 
@@ -75,6 +77,12 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(brick3);
 
       this._bricks.push(brick1, brick2, brick3);
+
+      // register into solid grid (top-left pivot → direct world rect)
+      this._solid_grid.clear();
+      for (const brick of this._bricks) {
+        this._solid_grid.registerBrick(brick.pos.x, brick.pos.y);
+      }
     }
 
     // grid is added after the runner so it draws on top
@@ -119,5 +127,10 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (this._camera_controller) {
       this._camera_controller.unregister();
     }
+  }
+
+  /** Expose for the upcoming collision resolve step */
+  get solidGrid(): SolidGrid {
+    return this._solid_grid;
   }
 }
