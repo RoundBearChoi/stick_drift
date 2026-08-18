@@ -1,4 +1,5 @@
 import { Actor, Animation } from 'excalibur';
+import { applySpriteRenderOffset } from './sprite_render';
 
 /**
  * advance animation frame purely based on fixed updates.
@@ -57,6 +58,7 @@ export class FrameBasedAnimation {
        * every time we advance one animation frame we're telling excalibur “sprite for this actor has changed so use that sprite.”
        */
       this._owner.graphics.use(frame.graphic);
+      applySpriteRenderOffset(this._owner);
     }
   }
 

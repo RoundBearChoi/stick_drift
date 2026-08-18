@@ -1,5 +1,6 @@
 import { Actor, Engine, Vector, vec } from 'excalibur';
 import { Resources } from './resources';
+import { applySpriteRenderOffset } from './sprite_render';
 
 export interface BrickCreateOptions {
   pos?: Vector;
@@ -26,6 +27,7 @@ export function createBrick(
 
   if (spr) {
     actor.graphics.use(spr);
+    applySpriteRenderOffset(actor);
   }
 
   return actor;
