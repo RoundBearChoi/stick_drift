@@ -47,12 +47,12 @@ export class GridSystem extends Actor {
 
     ctx.save();
 
-    // vertical lines — no offset (experiment)
+    // vertical lines
     for (let x = startX; x <= endX; x += size) {
       ctx.drawLine(vec(x, startY), vec(x, endY), this.lineColor, this.lineThickness);
     }
 
-    // horizontal lines — no offset (experiment)
+    // horizontal lines
     for (let y = startY; y <= endY; y += size) {
       ctx.drawLine(vec(startX, y), vec(endX, y), this.lineColor, this.lineThickness);
     }
