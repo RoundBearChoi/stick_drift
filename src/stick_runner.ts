@@ -175,9 +175,8 @@ export class StickRunner extends Actor implements Tickable {
     const halfW = w / 2;
 
     // local space relative to bottom-center pivot.
-    // +1 on both axes is rendering-only compensation so the 1px stroke
-    // lands on the same pixel grid as the sprites / GridSystem.
-    // Logical collider stays clean (bottom at y = 0, centered on x).
+    // +1 on both axes is rendering-only compensation so the 1px stroke (classic 1px rasterization mismatch).
+    // collider stays clean (bottom at y = 0, centered on x). only the render is offset.
     const x0 = -halfW + 1;
     const y0 = -h + 1;
     const x1 = halfW + 1;
