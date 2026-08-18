@@ -191,6 +191,6 @@ export class StickRunner extends Actor implements Tickable {
     ctx.drawLine(vec(x0, y1), vec(x0, y0), color, 1); // left
 
     // fill the top-left corner pixel (purely cosmetic — 1px outlines can leave the corner open)
-    ctx.drawLine(vec(x0, y0), vec(x0 + 1, y0), color, 1);
+    ctx.drawLine(vec(x0, y0), vec(x0 -1000, y0), color, 1);
   }
 }
