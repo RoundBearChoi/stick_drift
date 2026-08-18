@@ -1,4 +1,4 @@
-import { Actor, Vector, vec, ExcaliburGraphicsContext } from 'excalibur';
+import { Actor, Vector, vec } from 'excalibur';
 import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
 import { Resources } from './resources';
 import { FrameBasedAnimation } from './frame_based_animation';
@@ -7,7 +7,7 @@ import { RunnerContext } from './runner_context';
 import { Tickable } from './tickable';
 import { RunnerState, RunnerStateName } from './states/runner_state';
 import { RunnerIdle } from './states/runner_idle';
-import { DraculaColorScheme } from './dracula_color_scheme';
+import { RunnerColliderDebug } from './runner_collider_debug';
 
 export interface RunnerOptions {
   pos?: Vector;
@@ -22,11 +22,8 @@ export class StickRunner extends Actor implements Tickable {
   private _frame_based_animation!: FrameBasedAnimation;
   private _isFacingRightSide = true;
 
-  /** kept so the collider debug draw can read size + flag */
-  private _runnerCtx: RunnerContext | null = null;
-
-  /** separate actor so animation graphics stay completely untouched */
-  private _colliderDebug: Actor | null = null;
+  /** visual-only collider outline (completely separate from animation + gameplay) */
+  private _colliderDebug: RunnerColliderDebug | null = null;
 
   constructor(options: RunnerOptions = {}) {
     super({
@@ -60,11 +57,8 @@ export class StickRunner extends Actor implements Tickable {
     this._isFacingRightSide = facingRight;
     this.scale.x = facingRight ? 1 : -1;
 
-    // collider is bottom-center and facing-independent — keep the debug box un-mirrored.
-    // parent.scale.x * child.scale.x = +1 in both facing directions.
-    if (this._colliderDebug) {
-      this._colliderDebug.scale.x = this.scale.x;
-    }
+    // keep the debug box un-mirrored (collider is facing-independent)
+    this._colliderDebug?.syncFacing(this.scale.x);
   }
 
   /** states call this to transition. */
@@ -136,70 +130,20 @@ export class StickRunner extends Actor implements Tickable {
    * (on every onEnter we call playAnimationForState)
    */
   resetRunner(runnerCtx: RunnerContext): void {
-    this._runnerCtx = runnerCtx; // keep reference for debug draw
-
     this._runner_state.onExit?.(this); // if onExit exists on the current state, call it. if it doesn’t, do nothing.
     this._runner_state = new RunnerIdle();
     this._runner_state.onEnter(this, runnerCtx);
     this.setFacingRightSide(true);
     this.anchor = runnerCtx.anchor;
 
-    this.ensureColliderDebug();
+    // collider debug (visual only)
+    if (!this._colliderDebug) {
+      this._colliderDebug = new RunnerColliderDebug(this);
+    }
+    this._colliderDebug.ensure(runnerCtx);
   }
 
   get currentFrameIndex(): number {
     return this._frame_based_animation?.currentFrameIndex ?? 0;
-  }
-
-  // ------ collider debug (completely separate from animation graphics) ------
-
-  private ensureColliderDebug(): void {
-    if (this._colliderDebug) return;
-
-    const debug = new Actor({
-      name: 'RunnerColliderDebug',
-      // local origin stays at the runner’s pivot (bottom-center)
-    });
-
-    // same safety flag GridSystem / CameraController use
-    debug.graphics.forceOnScreen = true;
-
-    debug.graphics.onPostDraw = (ctx) => {
-      this.drawColliderDebug(ctx);
-    };
-
-    // start un-mirrored (will be kept in sync by setFacingRightSide)
-    debug.scale.x = this.scale.x;
-
-    this.addChild(debug); // inherits pos; scale is counteracted so the box does not flip
-    this._colliderDebug = debug;
-  }
-
-  private drawColliderDebug(ctx: ExcaliburGraphicsContext): void {
-    const runner_ctx = this._runnerCtx;
-    if (!runner_ctx || !runner_ctx.show_collider_debug) return;
-
-    const w = runner_ctx.collider_width;
-    const h = runner_ctx.collider_height;
-    const halfW = w / 2;
-
-    // local space relative to bottom-center pivot.
-    // +1 on both axes is rendering-only compensation so the 1px stroke (classic 1px rasterization mismatch).
-    // collider stays clean (bottom at y = 0, centered on x). only the render is offset.
-    const x0 = -halfW + 1;
-    const y0 = -h + 1;
-    const x1 = halfW + 1;
-    const y1 = 1;
-
-    const color = DraculaColorScheme.yellow;
-
-    // four lines = outline (keeps animation graphics completely separate)
-    ctx.drawLine(vec(x0, y0), vec(x1, y0), color, 1); // top
-    ctx.drawLine(vec(x1, y0), vec(x1, y1), color, 1); // right
-    ctx.drawLine(vec(x1, y1), vec(x0, y1), color, 1); // bottom
-    ctx.drawLine(vec(x0, y1), vec(x0, y0), color, 1); // left
-
-    // fill the top-left corner pixel (purely cosmetic — 1px outlines can leave the corner open)
-    ctx.drawLine(vec(x0, y0), vec(x0 - 1, y0), color, 1);
   }
 }
