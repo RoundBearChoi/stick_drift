@@ -57,13 +57,11 @@ export class RunnerColliderDebug {
     const h = runnerCtx.collider_height;
     const halfW = w / 2;
 
-    // local space relative to bottom-center pivot.
-    // +1 on both axes is rendering-only compensation so the 1px stroke.
-    // (classic 1px rasterization mismatch)
-    const x0 = -halfW + 1;
-    const y0 = -h + 1;
-    const x1 = halfW + 1;
-    const y1 = 1;
+    // local space relative to bottom-center pivot (no 1px render offset)
+    const x0 = -halfW;
+    const y0 = -h;
+    const x1 = halfW;
+    const y1 = 0;
 
     const color = DraculaColorScheme.yellow;
 
@@ -72,8 +70,5 @@ export class RunnerColliderDebug {
     ctx.drawLine(vec(x1, y0), vec(x1, y1), color, 1); // right
     ctx.drawLine(vec(x1, y1), vec(x0, y1), color, 1); // bottom
     ctx.drawLine(vec(x0, y1), vec(x0, y0), color, 1); // left
-
-    // fill the top-left corner pixel (purely cosmetic — 1px outlines can leave the corner open)
-    ctx.drawLine(vec(x0, y0), vec(x0 + 1, y0), color, 1);
   }
 }
