@@ -7,8 +7,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  * completely separate from animation graphics and from gameplay/collision logic.
  *
  * - lives as a child of the runner so it follows position
- * - counters parent scale.x so the box never flips with facing
- * - all numbers come from RunnerContext
+ * - counters parent scale.x so the box doesn't flip
  */
 export class RunnerColliderDebug {
   private _actor: Actor | null = null;
@@ -16,7 +15,7 @@ export class RunnerColliderDebug {
 
   constructor(private readonly host: Actor) {}
 
-  /** call once we have a RunnerContext (e.g. from resetRunner) */
+  /** call once we have a RunnerContext */
   ensure(runnerCtx: RunnerContext): void {
     this._runnerCtx = runnerCtx;
     if (this._actor) return;
@@ -59,9 +58,8 @@ export class RunnerColliderDebug {
     const halfW = w / 2;
 
     // local space relative to bottom-center pivot.
-    // +1 on both axes is rendering-only compensation so the 1px stroke
-    // (classic 1px rasterization mismatch) lands on the same pixel grid
-    // as the sprites / GridSystem. Logical collider stays clean.
+    // +1 on both axes is rendering-only compensation so the 1px stroke.
+    // (classic 1px rasterization mismatch)
     const x0 = -halfW + 1;
     const y0 = -h + 1;
     const x1 = halfW + 1;
