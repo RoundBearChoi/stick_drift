@@ -62,6 +62,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
       const groundY = 280;
 
+      // horizontal bricks
       const brick1 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160, groundY),
       });
@@ -72,9 +73,15 @@ export class GameplayTestScene1 extends Scene<GameContext> {
         pos: vec(144 + 160 + 160 + 16 + 16, groundY),
       });
 
+      // vertical
+      const brick4 = createBrick(this.engine, {
+        pos: vec(144 + 160 + 160 + 160, groundY - 8),
+      });
+
       this.add(brick1);
       this.add(brick2);
       this.add(brick3);
+      this.add(brick4);
 
       this._bricks.push(brick1, brick2, brick3);
 
