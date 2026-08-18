@@ -145,7 +145,7 @@ export class StickRunner extends Actor implements Tickable {
     return this._frame_based_animation?.currentFrameIndex ?? 0;
   }
 
-  // ── collider debug (completely separate from animation graphics) ──
+  // ------ collider debug (completely separate from animation graphics) ------
 
   private ensureColliderDebug(): void {
     if (this._colliderDebug) return;
@@ -167,16 +167,14 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   private drawColliderDebug(ctx: ExcaliburGraphicsContext): void {
-    const runnerCtx = this._runnerCtx;
-    if (!runnerCtx || !runnerCtx.show_collider_debug) return;
+    const runner_ctx = this._runnerCtx;
+    if (!runner_ctx || !runner_ctx.show_collider_debug) return;
 
-    const w = runnerCtx.collider_width;
-    const h = runnerCtx.collider_height;
+    const w = runner_ctx.collider_width;
+    const h = runner_ctx.collider_height;
     const halfW = w / 2;
 
-    // local space relative to bottom-center pivot:
-    //   x: -halfW … +halfW
-    //   y: -h … 0          (sits on the feet)
+    // local space relative to bottom-center pivot
     const x0 = -halfW;
     const y0 = -h;
     const x1 = halfW;
