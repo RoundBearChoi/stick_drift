@@ -1,4 +1,4 @@
-import { Actor, Vector, vec } from 'excalibur';
+import { Actor, Vector, vec, ExcaliburGraphicsContext } from 'excalibur';
 import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
 import { Resources } from './resources';
 import { FrameBasedAnimation } from './frame_based_animation';
@@ -7,6 +7,7 @@ import { RunnerContext } from './runner_context';
 import { Tickable } from './tickable';
 import { RunnerState, RunnerStateName } from './states/runner_state';
 import { RunnerIdle } from './states/runner_idle';
+import { DraculaColorScheme } from './dracula_color_scheme';
 
 export interface RunnerOptions {
   pos?: Vector;
@@ -20,6 +21,12 @@ export class StickRunner extends Actor implements Tickable {
   private _runner_state: RunnerState = new RunnerIdle(); // starting state (onEnter deferred until reset)
   private _frame_based_animation!: FrameBasedAnimation;
   private _isFacingRightSide = true;
+
+  /** kept so the collider debug draw can read size + flag */
+  private _runnerCtx: RunnerContext | null = null;
+
+  /** separate actor so animation graphics stay completely untouched */
+  private _colliderDebug: Actor | null = null;
 
   constructor(options: RunnerOptions = {}) {
     super({
@@ -123,14 +130,64 @@ export class StickRunner extends Actor implements Tickable {
    * (on every onEnter we call playAnimationForState)
    */
   resetRunner(runnerCtx: RunnerContext): void {
+    this._runnerCtx = runnerCtx; // keep reference for debug draw
+
     this._runner_state.onExit?.(this); // if onExit exists on the current state, call it. if it doesn’t, do nothing.
     this._runner_state = new RunnerIdle();
     this._runner_state.onEnter(this, runnerCtx);
     this.setFacingRightSide(true);
     this.anchor = runnerCtx.anchor;
+
+    this.ensureColliderDebug();
   }
 
   get currentFrameIndex(): number {
     return this._frame_based_animation?.currentFrameIndex ?? 0;
+  }
+
+  // ── collider debug (completely separate from animation graphics) ──
+
+  private ensureColliderDebug(): void {
+    if (this._colliderDebug) return;
+
+    const debug = new Actor({
+      name: 'RunnerColliderDebug',
+      // local origin stays at the runner’s pivot (bottom-center)
+    });
+
+    // same safety flag GridSystem / CameraController use
+    debug.graphics.forceOnScreen = true;
+
+    debug.graphics.onPostDraw = (ctx) => {
+      this.drawColliderDebug(ctx);
+    };
+
+    this.addChild(debug); // inherits pos + scale.x (facing)
+    this._colliderDebug = debug;
+  }
+
+  private drawColliderDebug(ctx: ExcaliburGraphicsContext): void {
+    const runnerCtx = this._runnerCtx;
+    if (!runnerCtx || !runnerCtx.show_collider_debug) return;
+
+    const w = runnerCtx.collider_width;
+    const h = runnerCtx.collider_height;
+    const halfW = w / 2;
+
+    // local space relative to bottom-center pivot:
+    //   x: -halfW … +halfW
+    //   y: -h … 0          (sits on the feet)
+    const x0 = -halfW;
+    const y0 = -h;
+    const x1 = halfW;
+    const y1 = 0;
+
+    const color = DraculaColorScheme.yellow;
+
+    // four lines = outline (keeps animation graphics completely separate)
+    ctx.drawLine(vec(x0, y0), vec(x1, y0), color, 1); // top
+    ctx.drawLine(vec(x1, y0), vec(x1, y1), color, 1); // right
+    ctx.drawLine(vec(x1, y1), vec(x0, y1), color, 1); // bottom
+    ctx.drawLine(vec(x0, y1), vec(x0, y0), color, 1); // left
   }
 }

@@ -16,4 +16,12 @@ export class RunnerContext {
 
   /** horizontal movement intent. states write to this. resolver consumes it and then zeros it. */
   horizontal_move_buffer = 0;
+
+  // ── collider (temporary / debug) ──────────────────────────────
+  /** collider size in world pixels. bottom-center aligned with runner anchor for now. */
+  collider_width = 24;
+  collider_height = 24;
+
+  /** whether to draw the yellow collider debug box */
+  show_collider_debug = true;
 }
