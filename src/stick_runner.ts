@@ -59,6 +59,12 @@ export class StickRunner extends Actor implements Tickable {
 
     this._isFacingRightSide = facingRight;
     this.scale.x = facingRight ? 1 : -1;
+
+    // collider is bottom-center and facing-independent — keep the debug box un-mirrored.
+    // parent.scale.x * child.scale.x = +1 in both facing directions.
+    if (this._colliderDebug) {
+      this._colliderDebug.scale.x = this.scale.x;
+    }
   }
 
   /** states call this to transition. */
@@ -162,7 +168,10 @@ export class StickRunner extends Actor implements Tickable {
       this.drawColliderDebug(ctx);
     };
 
-    this.addChild(debug); // inherits pos + scale.x (facing)
+    // start un-mirrored (will be kept in sync by setFacingRightSide)
+    debug.scale.x = this.scale.x;
+
+    this.addChild(debug); // inherits pos; scale is counteracted so the box does not flip
     this._colliderDebug = debug;
   }
 
@@ -191,6 +200,6 @@ export class StickRunner extends Actor implements Tickable {
     ctx.drawLine(vec(x0, y1), vec(x0, y0), color, 1); // left
 
     // fill the top-left corner pixel (purely cosmetic — 1px outlines can leave the corner open)
-    ctx.drawLine(vec(x0, y0), vec(x0 -1000, y0), color, 1);
+    ctx.drawLine(vec(x0, y0), vec(x0 + 1, y0), color, 1);
   }
 }
