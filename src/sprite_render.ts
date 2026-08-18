@@ -1,8 +1,8 @@
 import { Actor, Vector, vec } from 'excalibur';
 
 /**
- * Visual-only shift applied to all sprite actors (bricks, runner, future sprites).
- * Does not affect world position, anchors, solid grid, or collider debug.
+ * render only 1px offset for all sprite actors (bricks, runner, etc).
+ * this does not (should not) affect world position, anchors, solid grid, or colliders, etc.
  */
 export const SPRITE_RENDER_OFFSET: Vector = vec(0, -1);
 
