@@ -174,11 +174,14 @@ export class StickRunner extends Actor implements Tickable {
     const h = runner_ctx.collider_height;
     const halfW = w / 2;
 
-    // local space relative to bottom-center pivot
+    // local space relative to bottom-center pivot.
+    // +1 on both y values is rendering-only compensation so the 1px stroke
+    // lands on the same pixel row as the sprite (same offset GridSystem uses).
+    // Logical collider stays at y = 0.
     const x0 = -halfW;
-    const y0 = -h;
+    const y0 = -h + 1;
     const x1 = halfW;
-    const y1 = 0;
+    const y1 = 1;
 
     const color = DraculaColorScheme.yellow;
 
