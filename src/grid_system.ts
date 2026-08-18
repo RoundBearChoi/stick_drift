@@ -47,14 +47,14 @@ export class GridSystem extends Actor {
 
     ctx.save();
 
-    // vertical lines — offset by 1 so a 1px stroke lands cleanly on the pixel
+    // vertical lines — no offset (experiment)
     for (let x = startX; x <= endX; x += size) {
-      ctx.drawLine(vec(x + 1, startY), vec(x + 1, endY), this.lineColor, this.lineThickness);
+      ctx.drawLine(vec(x, startY), vec(x, endY), this.lineColor, this.lineThickness);
     }
 
-    // horizontal lines — same 0.5 offset
+    // horizontal lines — no offset (experiment)
     for (let y = startY; y <= endY; y += size) {
-      ctx.drawLine(vec(startX, y + 1), vec(endX, y + 1), this.lineColor, this.lineThickness);
+      ctx.drawLine(vec(startX, y), vec(endX, y), this.lineColor, this.lineThickness);
     }
 
     ctx.restore();
