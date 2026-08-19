@@ -91,7 +91,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       // keep reference to the bricks
       this._bricks.push(brick0, brick1, brick2, brick3, brick4);
 
-      // IMPORTANT: register into solid grid for collision
+      // IMPORTANT: register into solid grid for collision check
       this._solid_grid.clearSolidData();
       for (const brick of this._bricks) {
         this._solid_grid.register_16_16_brick(brick.pos.x, brick.pos.y);

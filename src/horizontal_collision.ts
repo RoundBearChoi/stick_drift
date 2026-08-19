@@ -9,9 +9,11 @@ export function resolveHorizontalCollision(
   runnerX: number,
   runnerY: number,
   runnerCtx: RunnerContext,
-  dx: number,
+  //dx: number,
   solidGrid: SolidGrid
 ): number {
+  const dx = runnerCtx.horizontal_move_buffer;
+
   if (dx === 0) return 0;
 
   const halfW = runnerCtx.collider_width / 2;
