@@ -20,11 +20,12 @@ export function resolveHorizontalCollision(
   const top = runnerY - runnerCtx.collider_height;
   const bottom = runnerY;
 
-  // rows the collider currently occupies.
-  // bottom - epsilon so a foot sitting exactly on a cell boundary.
-  // does not count as overlapping the cell below (floor stays walkable).
+  // Rows the collider occupies for side checks.
+  // Shrink the bottom by 2px so a solid only blocks horizontally when there
+  // is at least 2px of vertical overlap. Exact edge contact (and 1px overlap)
+  // with a floor does not make the floor tiles act as walls.
   const rowStart = Math.floor(top / CELL_SIZE);
-  const rowEnd = Math.floor((bottom - Number.EPSILON) / CELL_SIZE);
+  const rowEnd = Math.floor((bottom - 2) / CELL_SIZE);
 
   if (dx > 0) {
     // leading edge is the right side. look at cells the right edge will enter.
