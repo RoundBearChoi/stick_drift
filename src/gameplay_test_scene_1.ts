@@ -22,7 +22,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _runner_movement_resolve?: RunnerMovementBufferResolve;
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
-  private _bricks?: Actor[];
+  private _bricks?: Actor[]; // keep reference to the actors
   private _solid_grid = new SolidGrid();
 
   onInitialize(_engine: Engine): void {}
@@ -57,40 +57,41 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // later it's also passed on every fixed update.
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
 
-    // three bricks + solid registration
+    // bricks
     if (!this._bricks) {
       this._bricks = [];
 
-      const groundY = 280;
+      const baseY = 280;
 
-      // bricks
       const brick0 = createBrick(this.engine, {
-        pos: vec(64, groundY - 8),
+        pos: vec(64, baseY - 8),
       });
 
       const brick1 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160, groundY),
+        pos: vec(144 + 160 + 160, baseY),
       });
       const brick2 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160 + 16, groundY),
+        pos: vec(144 + 160 + 160 + 16, baseY),
       });
       const brick3 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160 + 16 + 16, groundY),
+        pos: vec(144 + 160 + 160 + 16 + 16, baseY),
       });
 
       const brick4 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160 + 160, groundY - 8),
+        pos: vec(144 + 160 + 160 + 160, baseY - 8),
       });
 
+      // add bricks to the scene
       this.add(brick0);
       this.add(brick1);
       this.add(brick2);
       this.add(brick3);
       this.add(brick4);
 
-      this._bricks.push(brick1, brick2, brick3, brick4);
+      // keep reference to the bricks
+      this._bricks.push(brick0, brick1, brick2, brick3, brick4);
 
-      // register into solid grid (top-left pivot → direct world rect)
+      // IMPORTANT: register into solid grid for collision
       this._solid_grid.clearSolidData();
       for (const brick of this._bricks) {
         this._solid_grid.register_16_16_brick(brick.pos.x, brick.pos.y);
