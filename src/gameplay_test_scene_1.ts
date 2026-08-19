@@ -95,7 +95,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._solid_grid.clearSolidData();
       for (const brick of this._bricks) {
         //this._solid_grid.register_16_16_brick(brick.pos.x, brick.pos.y);
-        this._solid_grid.registerRect(brick.pos.x, brick.pos.y, 16, 16)
+        this._solid_grid.registerRect(brick.pos.x, brick.pos.y, 16, 16);
       }
     }
 
