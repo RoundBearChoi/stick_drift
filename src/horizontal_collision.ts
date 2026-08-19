@@ -9,7 +9,6 @@ export function resolveHorizontalCollision(
   runnerX: number,
   runnerY: number,
   runnerCtx: RunnerContext,
-  //dx: number,
   solidGrid: SolidGrid
 ): number {
   const dx = runnerCtx.horizontal_move_buffer;

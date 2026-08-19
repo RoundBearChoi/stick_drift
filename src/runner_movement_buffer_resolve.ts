@@ -13,14 +13,11 @@ export class RunnerMovementBufferResolve implements Tickable {
   ) {}
 
   fixedUpdate(_dt: number): void {
-    const runnerCtx = this.gameCtx.runner_ctx;
-
     // collision owns the clamping logic
     const safeDx = resolveHorizontalCollision(
       this.runner.pos.x,
       this.runner.pos.y,
-      runnerCtx,
-      //runnerCtx.horizontal_move_buffer,
+      this.gameCtx.runner_ctx,
       this.solidGrid
     );
 
@@ -28,7 +25,7 @@ export class RunnerMovementBufferResolve implements Tickable {
     this.runner.pos.x += safeDx;
 
     // zero after resolve
-    runnerCtx.horizontal_move_buffer = 0;
+    this.gameCtx.runner_ctx.horizontal_move_buffer = 0;
   }
 
   register(): void {
