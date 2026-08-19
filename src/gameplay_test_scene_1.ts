@@ -63,10 +63,12 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
       const baseY = 280;
 
+      // left side
       const brick0 = createBrick(this.engine, {
         pos: vec(64, baseY - 8),
       });
 
+      // bottom
       const brick1 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160, baseY),
       });
@@ -77,6 +79,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
         pos: vec(144 + 160 + 160 + 16 + 16, baseY),
       });
 
+      // right side
       const brick4 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160 + 160, baseY - 8),
       });
