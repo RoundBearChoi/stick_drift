@@ -65,12 +65,12 @@ export class RunnerColliderDebug {
 
     // four lines = outline
     ctx.drawLine(vec(x0, y0), vec(x1, y0), DraculaColorScheme.yellow, 1); // top
-    ctx.drawLine(vec(x1 + 1, y0), vec(x1 + 1, y1), DraculaColorScheme.yellow, 1); // right - 1px offset to avoid rasterization mismatch
+    ctx.drawLine(vec(x1, y0), vec(x1, y1), DraculaColorScheme.yellow, 1);// right
     ctx.drawLine(vec(x1, y1), vec(x0, y1), DraculaColorScheme.yellow, 1); // bottom
     ctx.drawLine(vec(x0, y1), vec(x0, y0), DraculaColorScheme.yellow, 1); // left
 
     // fill the corner pixels (purely cosmetic — 1px outlines can leave the corner open due to rasterization mismatch)
-    ctx.drawLine(vec(x0, y0), vec(x0 - 1, y0), DraculaColorScheme.yellow, 1); // top-left corner
-    ctx.drawLine(vec(x1, y0), vec(x1 + 1, y0), DraculaColorScheme.yellow, 1); // top-right corner
+    //ctx.drawLine(vec(x0, y0), vec(x0 - 1, y0), DraculaColorScheme.yellow, 1); // top-left corner
+    //ctx.drawLine(vec(x1, y0), vec(x1 + 1, y0), DraculaColorScheme.yellow, 1); // top-right corner
   }
 }
