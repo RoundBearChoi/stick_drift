@@ -27,11 +27,6 @@ export class SolidGrid {
     }
   }
 
-  /** convenience for 16x16 bricks */
-  //register_16_16_brick(worldX: number, worldY: number): void {
-  //  this.registerRect(worldX, worldY, 16, 16);
-  //}
-
   isSolid(cellX: number, cellY: number): boolean {
     if (
       cellX < 0 ||
