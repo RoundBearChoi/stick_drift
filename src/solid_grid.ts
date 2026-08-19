@@ -10,7 +10,11 @@ export const LEVEL_WIDTH_CELLS = 160;
 export const LEVEL_HEIGHT_CELLS = 90;
 
 export class SolidGrid {
-  /** one giant array that contains all 8x8 cells in the level. */
+  /**
+   * one giant array that contains all 8x8 cells in the level.
+   * uint8 is the smallest native unit in js (8 bits 00000000 0~255).
+   * manually using 1 bit wouldn't be worth it.
+   */
   private readonly _arr_level_width_height = new Uint8Array(LEVEL_WIDTH_CELLS * LEVEL_HEIGHT_CELLS);
 
   /** register world-space axis-aligned rectangle as a solid object. this function expects top-left origin. */
