@@ -2,7 +2,7 @@ import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { SolidGrid } from './solid_grid';
-import { resolveHorizontalCollision } from './horizontal_collision';
+import { resolveHorizontalCollision } from './runner_horizontal_collision';
 
 /** this script's sole responsibility is to apply horizontal movement buffer to the runner and then zero the buffer. */
 export class RunnerMovementBufferResolve implements Tickable {
