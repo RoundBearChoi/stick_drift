@@ -12,6 +12,8 @@ export class RunnerMovementBufferResolve implements Tickable {
   fixedUpdate(_dt: number): void {
     const runnerCtx = this.gameCtx.runner_ctx;
 
+    // check collision before applying movement
+
     // apply movement
     this.runner.pos.x += runnerCtx.horizontal_move_buffer;
 
