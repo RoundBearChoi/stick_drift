@@ -10,7 +10,8 @@ export const LEVEL_WIDTH_CELLS = 160;
 export const LEVEL_HEIGHT_CELLS = 90;
 
 export class SolidGrid {
-  private readonly data = new Uint8Array(LEVEL_WIDTH_CELLS * LEVEL_HEIGHT_CELLS);
+  /** one giant array that contains all 8x8 cells in the level. */
+  private readonly _arr_level_width_height = new Uint8Array(LEVEL_WIDTH_CELLS * LEVEL_HEIGHT_CELLS);
 
   /** register world-space axis-aligned rectangle as a solid object. this function expects top-left origin. */
   registerRect(worldX: number, worldY: number, width: number, height: number): void {
@@ -41,7 +42,7 @@ export class SolidGrid {
       // treat out-of-bounds as solid for now
       return true;
     }
-    return this.data[cellY * LEVEL_WIDTH_CELLS + cellX] === 1;
+    return this._arr_level_width_height[cellY * LEVEL_WIDTH_CELLS + cellX] === 1;
   }
 
   /** check world-space point for solid */
@@ -52,7 +53,7 @@ export class SolidGrid {
   }
 
   clearSolidData(): void {
-    this.data.fill(0);
+    this._arr_level_width_height.fill(0);
   }
 
   private setCell(cellX: number, cellY: number, value: number): void {
@@ -64,6 +65,6 @@ export class SolidGrid {
     ) {
       return;
     }
-    this.data[cellY * LEVEL_WIDTH_CELLS + cellX] = value;
+    this._arr_level_width_height[cellY * LEVEL_WIDTH_CELLS + cellX] = value;
   }
 }
