@@ -20,10 +20,9 @@ export function resolveHorizontalCollision(
   const top = runnerY - runnerCtx.collider_height;
   const bottom = runnerY;
 
-  // Rows the collider occupies for side checks.
-  // Shrink the bottom by 2px so a solid only blocks horizontally when there
-  // is at least 2px of vertical overlap. Exact edge contact (and 1px overlap)
-  // with a floor does not make the floor tiles act as walls.
+  // rows the collider must occupy for side checks.
+  // shrink the bottom by 2px so a side wall can only block when there is at least 2px of vertical overlap.
+  // this means exact edge contact (1px overlap) with the floor does not make the floor act as walls.
   const rowStart = Math.floor(top / CELL_SIZE);
   const rowEnd = Math.floor((bottom - 2) / CELL_SIZE);
 
