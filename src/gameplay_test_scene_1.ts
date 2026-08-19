@@ -47,7 +47,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (!this._runner_movement_resolve) {
       this._runner_movement_resolve = new RunnerMovementBufferResolve(
         this._stick_runner,
-        this._game_ctx
+        this._game_ctx,
+        this._solid_grid
       );
     }
 
@@ -83,7 +84,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(brick3);
       this.add(brick4);
 
-      this._bricks.push(brick1, brick2, brick3);
+      this._bricks.push(brick1, brick2, brick3, brick4);
 
       // register into solid grid (top-left pivot → direct world rect)
       this._solid_grid.clearSolidData();
