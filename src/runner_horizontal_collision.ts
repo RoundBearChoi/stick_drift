@@ -38,7 +38,7 @@ export function resolveHorizontalCollision(
       for (let row = rowStart; row <= rowEnd; row++) {
         if (solidGrid.isSolid(col, row)) {
           const solidLeft = col * CELL_SIZE;
-          const maxRight = solidLeft - 1; // 1 integer before the brick
+          const maxRight = solidLeft - 1; // IMPORTANT: 1 integer before the brick
           const allowedDx = maxRight - right;
           if (allowedDx < clampedDx) {
             clampedDx = Math.max(0, allowedDx);
@@ -59,7 +59,7 @@ export function resolveHorizontalCollision(
     for (let row = rowStart; row <= rowEnd; row++) {
       if (solidGrid.isSolid(col, row)) {
         const solidRight = (col + 1) * CELL_SIZE;
-        const minLeft = solidRight + 1; // 1 integer after the brick
+        const minLeft = solidRight + 1; // IMPORTANT: 1 integer after the brick
         const allowedDx = minLeft - left;
         if (allowedDx > clampedDx) {
           // allowedDx is less negative (or zero) → more restrictive
