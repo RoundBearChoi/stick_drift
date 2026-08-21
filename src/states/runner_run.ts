@@ -3,7 +3,8 @@ import { StickRunner } from '../stick_runner';
 import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
-import { RunnerJump } from './runner_jump';
+import { RunnerFall } from './runner_fall';
+// import { RunnerJump } from './runner_jump';
 
 export class RunnerRun implements RunnerState {
   readonly state_name = RunnerStateName.RUN;
@@ -20,9 +21,15 @@ export class RunnerRun implements RunnerState {
     input: InputInterpreter,
     runnerCtx: RunnerContext
   ): void {
+    // leave ground → fall
+    if (!runnerCtx.is_grounded) {
+      runner.setNewState(new RunnerFall(), runnerCtx);
+      return;
+    }
+
     if (input.wasPressed(InputAction.JUMP)) {
-      //runner.setState(new JumpState(), runnerCtx);
-      //return;
+      // runner.setNewState(new RunnerJump(), runnerCtx);
+      // return;
     }
 
     if (!input.isHeld(InputAction.MOVE_LEFT) && !input.isHeld(InputAction.MOVE_RIGHT)) {

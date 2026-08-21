@@ -3,8 +3,6 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerContext } from './runner_context';
 import { SolidGrid, CELL_SIZE } from './solid_grid';
-import { RunnerStateName } from './states/runner_state';
-import { RunnerFall } from './states/runner_fall';
 
 /**
  * this script's sole responsibility is to check if the runner is grounded.
@@ -43,7 +41,7 @@ export function checkIsGrounded(
 
 /**
  * shared component that keeps runner_ctx.is_grounded up to date every fixed update.
- * this can force a transition to fall state when runner isn't grounded.
+ * does not change states — individual states (Idle, Run, etc.) read the flag and decide.
  */
 export class GroundChecker implements Tickable {
   constructor(
@@ -54,22 +52,12 @@ export class GroundChecker implements Tickable {
 
   fixedUpdate(_dt: number): void {
     const ctx = this.gameCtx.runner_ctx;
-    const grounded = checkIsGrounded(
+    ctx.is_grounded = checkIsGrounded(
       this.runner.pos.x,
       this.runner.pos.y,
       ctx,
       this.solidGrid
     );
-
-    ctx.is_grounded = grounded;
-
-    // only the grounded locomotion states care about falling off an edge
-    if (!grounded) {
-      const name = this.runner.stateName;
-      if (name === RunnerStateName.IDLE || name === RunnerStateName.RUN) {
-        this.runner.setNewState(new RunnerFall(), ctx);
-      }
-    }
   }
 
   register(): void {

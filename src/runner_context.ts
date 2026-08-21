@@ -24,7 +24,7 @@ export class RunnerContext {
 
   /**
    * shared ground flag. updated every fixed update by GroundChecker.
-   * states that care (Idle / Run) can read it; the checker itself also forces Fall when leaving ground.
+   * states that care (Idle / Run) read it and decide whether to transition to Fall.
    */
   is_grounded = true;
 }
