@@ -80,9 +80,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
       // bottom
       const brick1 = createBrick(this.engine, {
-        pos: vec(320, baseY),
+        pos: vec(320, baseY + 96),
       });
-
       const brick2 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160, baseY),
       });
