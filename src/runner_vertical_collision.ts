@@ -2,11 +2,8 @@ import { CELL_SIZE, SolidGrid } from './solid_grid';
 import { RunnerContext } from './runner_context';
 
 /**
- * pure vertical collision against 8×8 blocks.
- * this script's sole responsibility is to get current pos + intended dy and return the largest safe dy
- * that does not let the runner collider overlap a solid cell.
- *
- * currently only handles falling (dy > 0). upward (jump) support can be added later.
+ * this script's sole responsibility is to get current pos + intended dy and return the largest safe dy that does not let the runner collider overlap a solid cell.
+ * currently only handles falling (dy > 0). jump can be added later.
  * stops the runner 1 integer pixel above the solid's top, matching horizontal "1 before solid" rule.
  */
 export function resolveVerticalCollision(
@@ -27,7 +24,6 @@ export function resolveVerticalCollision(
   const right = runnerX + halfW;
   const bottom = runnerY;
 
-  // columns the bottom edge occupies.
   // shrink by 1px on each side so tiny edge contact does not count as landing on a platform.
   // (mirrors the horizontal collision's bottom-shrink of 2px philosophy)
   const colStart = Math.floor((left + 1) / CELL_SIZE);

@@ -6,8 +6,7 @@ import { resolveHorizontalCollision } from './runner_horizontal_collision';
 import { resolveVerticalCollision } from './runner_vertical_collision';
 
 /**
- * sole responsibility: apply movement buffers (horizontal then vertical) after collision resolution,
- * then zero both buffers.
+ * sole responsibility: apply movement buffers (horizontal then vertical) after collision resolution. then zero both buffers.
  */
 export class RunnerMovementBufferResolve implements Tickable {
   constructor(

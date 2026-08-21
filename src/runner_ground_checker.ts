@@ -41,7 +41,7 @@ export function checkIsGrounded(
 
 /**
  * shared component that keeps runner_ctx.is_grounded up to date every fixed update.
- * also applies temporary constant gravity while airborne (writes to vertical_move_buffer).
+ * also writes to vertical_move_buffer.
  * does not change states — individual states (Idle, Run, etc.) read the flag and decide.
  */
 export class GroundChecker implements Tickable {
@@ -61,7 +61,7 @@ export class GroundChecker implements Tickable {
     );
 
     // temporary constant gravity while airborne
-    // (buffer is consumed by RunnerMovementBufferResolve on the next fixed update)
+    // add more complex gravity formula later
     if (!ctx.is_grounded) {
       ctx.vertical_move_buffer += 2;
     }
