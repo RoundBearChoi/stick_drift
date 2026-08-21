@@ -5,7 +5,7 @@ import { RunnerContext } from './runner_context';
 import { SolidGrid, CELL_SIZE } from './solid_grid';
 
 /**
- * this script's sole responsibility is to check if the runner is grounded.
+ * this script's sole responsibility is to check if runner is grounded and add vertical move buffer.
  * returns true when at least 2 px of the runner's bottom edge sits 1 px above a solid cell.
  * (matches the horizontal collision "shrink by 2 px" philosophy so 1 px edge contact is ignored)
  */
