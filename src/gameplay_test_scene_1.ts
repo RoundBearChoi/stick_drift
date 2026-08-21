@@ -20,7 +20,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _stick_runner?: StickRunner;
   private _runner_controller?: RunnerController;
-  private _runner_movement_resolve?: RunnerMovementBufferResolve;
+  private _runner_move_buffer_resolve?: RunnerMovementBufferResolve;
   private _ground_checker?: GroundChecker;
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
@@ -46,8 +46,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       );
     }
 
-    if (!this._runner_movement_resolve) {
-      this._runner_movement_resolve = new RunnerMovementBufferResolve(
+    if (!this._runner_move_buffer_resolve) {
+      this._runner_move_buffer_resolve = new RunnerMovementBufferResolve(
         this._stick_runner,
         this._game_ctx,
         this._solid_grid
@@ -137,7 +137,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // → camera
     this._stick_runner.register(this._game_ctx);
     this._runner_controller.register();
-    this._runner_movement_resolve.register();
+    this._runner_move_buffer_resolve.register();
     this._ground_checker.register();
     this._camera_controller.register();
   }
@@ -155,8 +155,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (this._runner_controller) {
       this._runner_controller.unregister();
     }
-    if (this._runner_movement_resolve) {
-      this._runner_movement_resolve.unregister();
+    if (this._runner_move_buffer_resolve) {
+      this._runner_move_buffer_resolve.unregister();
     }
     if (this._ground_checker) {
       this._ground_checker.unregister();
