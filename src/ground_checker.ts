@@ -7,7 +7,7 @@ import { RunnerStateName } from './states/runner_state';
 import { RunnerFall } from './states/runner_fall';
 
 /**
- * pure ground sensor.
+ * this script's sole responsibility is to check if the runner is grounded.
  * returns true when at least 2 px of the runner's bottom edge sits 1 px above a solid cell.
  * (matches the horizontal collision "shrink by 2 px" philosophy so 1 px edge contact is ignored)
  */
@@ -42,8 +42,8 @@ export function checkIsGrounded(
 }
 
 /**
- * shared component that keeps runner_ctx.is_grounded up to date every fixed update
- * and forces Idle / Run → Fall when the runner leaves the ground.
+ * shared component that keeps runner_ctx.is_grounded up to date every fixed update.
+ * this can force a transition to fall state when runner isn't grounded.
  */
 export class GroundChecker implements Tickable {
   constructor(
