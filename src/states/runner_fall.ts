@@ -2,6 +2,7 @@ import { InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
 import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
+import { RunnerIdle } from './runner_idle';
 
 export class RunnerFall implements RunnerState {
   readonly state_name = RunnerStateName.FALL;
@@ -14,10 +15,14 @@ export class RunnerFall implements RunnerState {
   }
 
   onFixedUpdate(
-    _runner: StickRunner,
+    runner: StickRunner,
     _input: InputInterpreter,
-    _runnerCtx: RunnerContext
+    runnerCtx: RunnerContext
   ): void {
-    // gravity + landing will live here later
+    // landed → go back to idle
+    if (runnerCtx.is_grounded) {
+      runner.setNewState(new RunnerIdle(), runnerCtx);
+      return;
+    }
   }
 }
