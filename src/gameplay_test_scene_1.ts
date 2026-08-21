@@ -80,17 +80,21 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
       // bottom
       const brick1 = createBrick(this.engine, {
+        pos: vec(320, baseY),
+      });
+
+      const brick2 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160, baseY),
       });
-      const brick2 = createBrick(this.engine, {
+      const brick3 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160 + 16, baseY),
       });
-      const brick3 = createBrick(this.engine, {
+      const brick4 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160 + 16 + 16, baseY),
       });
 
       // right side
-      const brick4 = createBrick(this.engine, {
+      const brick5 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160 + 160, baseY - 8),
       });
 
@@ -100,9 +104,10 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(brick2);
       this.add(brick3);
       this.add(brick4);
+      this.add(brick5);
 
       // keep reference to the bricks
-      this._bricks.push(brick0, brick1, brick2, brick3, brick4);
+      this._bricks.push(brick0, brick1, brick2, brick3, brick4, brick5);
 
       // IMPORTANT: register into solid grid for collision check
       this._solid_grid.clearSolidData();
