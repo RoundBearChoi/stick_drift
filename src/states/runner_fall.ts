@@ -19,7 +19,6 @@ export class RunnerFall implements RunnerState {
     _input: InputInterpreter,
     runnerCtx: RunnerContext
   ): void {
-    // landed → go back to idle
     if (runnerCtx.is_grounded) {
       runner.setNewState(new RunnerIdle(), runnerCtx);
       return;
