@@ -23,4 +23,10 @@ export class RunnerContext {
 
   /** whether to draw the yellow collider debug box */
   show_collider_debug = true;
+
+  /**
+   * shared ground flag. updated every fixed update by GroundChecker.
+   * states that care (Idle / Run) can read it; the checker itself also forces Fall when leaving ground.
+   */
+  is_grounded = true;
 }

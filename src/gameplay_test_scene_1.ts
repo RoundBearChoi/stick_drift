@@ -9,6 +9,7 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerController } from './runner_controller';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
+import { GroundChecker } from './ground_checker';
 import { createRunner } from './runner_creator';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
@@ -20,6 +21,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _stick_runner?: StickRunner;
   private _runner_controller?: RunnerController;
   private _runner_movement_resolve?: RunnerMovementBufferResolve;
+  private _ground_checker?: GroundChecker;
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
   private _bricks?: Actor[]; // keep reference to the actors
@@ -46,6 +48,14 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
     if (!this._runner_movement_resolve) {
       this._runner_movement_resolve = new RunnerMovementBufferResolve(
+        this._stick_runner,
+        this._game_ctx,
+        this._solid_grid
+      );
+    }
+
+    if (!this._ground_checker) {
+      this._ground_checker = new GroundChecker(
         this._stick_runner,
         this._game_ctx,
         this._solid_grid
@@ -117,10 +127,14 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._camera_controller.snapToTarget();
 
     // register so they receive fixedUpdate
-    // IMPORTANT: order matters. runner controller (state machine) first → movement resolve after
+    // IMPORTANT: order matters.
+    // runner (anim) → controller (state / write buffer) → movement resolve (apply dx)
+    // → ground checker (read final pos, update is_grounded, may force Fall)
+    // → camera
     this._stick_runner.register(this._game_ctx);
     this._runner_controller.register();
     this._runner_movement_resolve.register();
+    this._ground_checker.register();
     this._camera_controller.register();
   }
 
@@ -139,6 +153,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
     if (this._runner_movement_resolve) {
       this._runner_movement_resolve.unregister();
+    }
+    if (this._ground_checker) {
+      this._ground_checker.unregister();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();

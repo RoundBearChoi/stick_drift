@@ -6,6 +6,7 @@ export enum RunnerStateName {
   IDLE = 'idle',
   RUN = 'run',
   JUMP = 'jump',
+  FALL = 'fall',
 }
 
 /**

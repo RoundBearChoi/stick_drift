@@ -1,0 +1,82 @@
+import { Tickable } from './tickable';
+import { GameContext } from './game_context';
+import { StickRunner } from './stick_runner';
+import { RunnerContext } from './runner_context';
+import { SolidGrid, CELL_SIZE } from './solid_grid';
+import { RunnerStateName } from './states/runner_state';
+import { RunnerFall } from './states/runner_fall';
+
+/**
+ * pure ground sensor.
+ * returns true when at least 2 px of the runner's bottom edge sits 1 px above a solid cell.
+ * (matches the horizontal collision "shrink by 2 px" philosophy so 1 px edge contact is ignored)
+ */
+export function checkIsGrounded(
+  runnerX: number,
+  runnerY: number,
+  runnerCtx: RunnerContext,
+  solidGrid: SolidGrid
+): boolean {
+  const halfW = runnerCtx.collider_width / 2;
+  const left = runnerX - halfW;
+  const right = runnerX + halfW;
+  const checkY = runnerY + 1; // 1 px below the bottom of the collider
+
+  const cellY = Math.floor(checkY / CELL_SIZE);
+  const startCol = Math.floor(left / CELL_SIZE);
+  const endCol = Math.floor((right - 1) / CELL_SIZE);
+
+  for (let col = startCol; col <= endCol; col++) {
+    if (!solidGrid.isSolid(col, cellY)) continue;
+
+    const cellLeft = col * CELL_SIZE;
+    const cellRight = cellLeft + CELL_SIZE;
+    const overlap = Math.min(right, cellRight) - Math.max(left, cellLeft);
+
+    if (overlap >= 2) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * shared component that keeps runner_ctx.is_grounded up to date every fixed update
+ * and forces Idle / Run → Fall when the runner leaves the ground.
+ */
+export class GroundChecker implements Tickable {
+  constructor(
+    private readonly runner: StickRunner,
+    private readonly gameCtx: GameContext,
+    private readonly solidGrid: SolidGrid
+  ) {}
+
+  fixedUpdate(_dt: number): void {
+    const ctx = this.gameCtx.runner_ctx;
+    const grounded = checkIsGrounded(
+      this.runner.pos.x,
+      this.runner.pos.y,
+      ctx,
+      this.solidGrid
+    );
+
+    ctx.is_grounded = grounded;
+
+    // only the grounded locomotion states care about falling off an edge
+    if (!grounded) {
+      const name = this.runner.stateName;
+      if (name === RunnerStateName.IDLE || name === RunnerStateName.RUN) {
+        this.runner.setNewState(new RunnerFall(), ctx);
+      }
+    }
+  }
+
+  register(): void {
+    this.gameCtx.registerTickable(this);
+  }
+
+  unregister(): void {
+    this.gameCtx.unregisterTickable(this);
+  }
+}

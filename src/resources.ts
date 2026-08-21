@@ -6,6 +6,8 @@ import { AsepriteResource, AsepriteSpriteSheet } from '@excaliburjs/plugin-asepr
 export const Resources = {
   stick_runner_idle: new AsepriteResource('./res/sprites/stick_runner_idle.aseprite'),
   stick_runner_run: new AsepriteResource('./res/sprites/stick_runner_run.aseprite'),
+  stick_runner_jump: new AsepriteResource('./res/sprites/stick_runner_jump.aseprite'),
+  stick_runner_fall: new AsepriteResource('./res/sprites/stick_runner_fall.aseprite'),
 
   work_in_progress: new AsepriteResource('./res/sprites/work_in_progress.aseprite'),
 
@@ -18,6 +20,8 @@ const loader = new TerminalLoader();
 loader.addResource(debugFontSource);
 loader.addResource(Resources.stick_runner_idle);
 loader.addResource(Resources.stick_runner_run);
+loader.addResource(Resources.stick_runner_jump);
+loader.addResource(Resources.stick_runner_fall);
 loader.addResource(Resources.work_in_progress);
 loader.addResource(Resources.brick);
 

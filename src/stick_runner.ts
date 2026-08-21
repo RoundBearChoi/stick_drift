@@ -84,8 +84,13 @@ export class StickRunner extends Actor implements Tickable {
       case RunnerStateName.RUN:
         resource = Resources.stick_runner_run;
         break;
-      case RunnerStateName.IDLE:
       case RunnerStateName.JUMP:
+        resource = Resources.stick_runner_jump;
+        break;
+      case RunnerStateName.FALL:
+        resource = Resources.stick_runner_fall;
+        break;
+      case RunnerStateName.IDLE:
       default:
         resource = Resources.stick_runner_idle;
         break;
