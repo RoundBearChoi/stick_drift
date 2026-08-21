@@ -9,7 +9,7 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerController } from './runner_controller';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
-import { GroundChecker } from './ground_checker';
+import { GroundChecker } from './runner_ground_checker';
 import { createRunner } from './runner_creator';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
