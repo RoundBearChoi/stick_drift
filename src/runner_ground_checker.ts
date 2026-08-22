@@ -43,6 +43,8 @@ export function checkIsGrounded(
  * shared component that keeps runner_ctx.is_grounded up to date every fixed update.
  * also writes to fall_buffer (only after upward energy is fully depleted).
  * does not change states — individual states (Idle, Run, etc.) read the flag and decide.
+ *
+ * when grounded, clears residual upward energy so Idle / Run start from a clean physics slate.
  */
 export class GroundChecker implements Tickable {
   constructor(
@@ -59,6 +61,12 @@ export class GroundChecker implements Tickable {
       ctx,
       this.solidGrid
     );
+
+    // grounded invariant: no residual upward energy allowed
+    if (ctx.is_grounded) {
+      ctx.up_force = 0;
+      ctx.jump_buffer = 0;
+    }
 
     // constant gravity while airborne.
     // only accumulate fall after all upward_momentum (and therefore jump_buffer) are depleted.
