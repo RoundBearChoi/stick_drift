@@ -33,11 +33,8 @@ export class GameContext {
   /** runner tuning values (speed, animation ticks, etc.) */
   readonly runner_ctx = new RunnerContext();
 
-  /**
-   * constant gravity: pixels added to fall_buffer per fixed update while airborne
-   * (after up_force is fully depleted).
-   */
-  readonly gravity = 3;
+  /** constant gravity. pixels added to fall_buffer per fixed update while airborne */
+  readonly gravity = 4;
 
   /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();

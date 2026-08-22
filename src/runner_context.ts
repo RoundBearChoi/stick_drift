@@ -18,7 +18,7 @@ export class RunnerContext {
   jump_buffer = 0;
 
   /** initial upward push for jump. decrease by 1 each fixed update until 0. */
-  jump_initial_momentum = 10;
+  jump_initial_momentum = 15;
 
   /** collider size in world pixels. bottom-center aligned with runner anchor for now. */
   collider_width = 20;
