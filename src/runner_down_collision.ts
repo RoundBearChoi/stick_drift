@@ -3,20 +3,20 @@ import { RunnerContext } from './runner_context';
 
 /**
  * this script's sole responsibility is to get current pos + intended dy and return the largest safe dy that does not let the runner collider overlap a solid cell.
- * currently only handles falling (dy > 0). jump can be added later.
+ * this is only for downward movement (dy > 0).
  * stops the runner 1 integer pixel above the solid's top, matching horizontal "1 before solid" rule.
  */
-export function resolveVerticalCollision(
+export function resolveDownCollision(
   runnerX: number,
   runnerY: number,
   runnerCtx: RunnerContext,
   solidGrid: SolidGrid
 ): number {
-  const dy = runnerCtx.vertical_move_buffer;
+  const dy = runnerCtx.fall_buffer;
 
   if (dy === 0) return 0;
 
-  // for now only resolve downward movement
+  // only resolve downward movement
   if (dy < 0) return dy;
 
   const halfW = runnerCtx.collider_width / 2;

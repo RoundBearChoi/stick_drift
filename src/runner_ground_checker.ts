@@ -63,7 +63,7 @@ export class GroundChecker implements Tickable {
     // temporary constant gravity while airborne
     // add more complex gravity formula later
     if (!ctx.is_grounded) {
-      ctx.vertical_move_buffer += 2;
+      ctx.fall_buffer += 2;
     }
   }
 
