@@ -12,9 +12,7 @@ export class RunnerContext {
   /** bottom-center pivot */
   readonly anchor: Vector = vec(0.5, 1);
 
-  /** horizontal movement intent. states write to this. resolver consumes it and then zeros it. */
   horizontal_move_buffer = 0;
-
   fall_buffer = 0;
 
   /** collider size in world pixels. bottom-center aligned with runner anchor for now. */
