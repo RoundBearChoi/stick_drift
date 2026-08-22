@@ -1,4 +1,4 @@
-import { InputInterpreter } from '../input_interpreter';
+import { InputAction, InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
 import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
@@ -16,12 +16,24 @@ export class RunnerFall implements RunnerState {
 
   onFixedUpdate(
     runner: StickRunner,
-    _input: InputInterpreter,
+    input: InputInterpreter,
     runnerCtx: RunnerContext
   ): void {
     if (runnerCtx.is_grounded) {
       runner.setNewState(new RunnerIdle(), runnerCtx);
       return;
+    }
+
+    // air control — same horizontal intent as run / jump
+    const left = input.isHeld(InputAction.MOVE_LEFT);
+    const right = input.isHeld(InputAction.MOVE_RIGHT);
+
+    if (right && !left) {
+      runner.setFacingRightSide(true);
+      runnerCtx.horizontal_move_buffer = runnerCtx.run_speed;
+    } else if (left && !right) {
+      runner.setFacingRightSide(false);
+      runnerCtx.horizontal_move_buffer = -runnerCtx.run_speed;
     }
   }
 }

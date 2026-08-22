@@ -15,6 +15,21 @@ export class RunnerContext {
   horizontal_move_buffer = 0;
   fall_buffer = 0;
 
+  /**
+   * decaying upward push written only by states (e.g. Jump onEnter sets it to jump_initial_momentum).
+   * movement resolve feeds this into jump_buffer and decreases it by 1 every fixed update.
+   */
+  upward_momentum = 0;
+
+  /**
+   * per-frame upward intent (positive = pixels up). set from upward_momentum, then consumed + zeroed by movement resolve.
+   * while this (or upward_momentum) remains, fall is suppressed.
+   */
+  jump_buffer = 0;
+
+  /** temporary initial upward push for jump. decrease by 1 each fixed update until 0. */
+  jump_initial_momentum = 5;
+
   /** collider size in world pixels. bottom-center aligned with runner anchor for now. */
   collider_width = 20;
   collider_height = 30;

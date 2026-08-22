@@ -4,7 +4,7 @@ import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerFall } from './runner_fall';
-// import { RunnerJump } from './runner_jump';
+import { RunnerJump } from './runner_jump';
 
 export class RunnerRun implements RunnerState {
   readonly state_name = RunnerStateName.RUN;
@@ -28,8 +28,8 @@ export class RunnerRun implements RunnerState {
     }
 
     if (input.wasPressed(InputAction.JUMP)) {
-      // runner.setNewState(new RunnerJump(), runnerCtx);
-      // return;
+      runner.setNewState(new RunnerJump(), runnerCtx);
+      return;
     }
 
     if (!input.isHeld(InputAction.MOVE_LEFT) && !input.isHeld(InputAction.MOVE_RIGHT)) {
