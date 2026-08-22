@@ -22,9 +22,9 @@ export class RunnerMovementBufferResolve implements Tickable {
 
     // 1. feed jump from momentum (states only write upward_momentum)
     // decrease upward_momentum by 1 every fixed update while it remains
-    if (ctx.upward_momentum > 0) {
-      ctx.jump_buffer = ctx.upward_momentum;
-      ctx.upward_momentum = Math.max(0, ctx.upward_momentum - 1);
+    if (ctx.up_force > 0) {
+      ctx.jump_buffer = ctx.up_force;
+      ctx.up_force = Math.max(0, ctx.up_force - 1);
     }
 
     // 2. horizontal first
@@ -50,7 +50,7 @@ export class RunnerMovementBufferResolve implements Tickable {
 
       // hit a ceiling → kill remaining upward push so we start falling next frames
       if (safeUp < ctx.jump_buffer) {
-        ctx.upward_momentum = 0;
+        ctx.up_force = 0;
       }
 
       ctx.jump_buffer = 0;

@@ -16,7 +16,7 @@ export class RunnerJump implements RunnerState {
     );
 
     // states should only write to upward_momentum
-    runnerCtx.upward_momentum = runnerCtx.jump_initial_momentum;
+    runnerCtx.up_force = runnerCtx.jump_initial_momentum;
     // clear any residual fall so ascent starts clean
     runnerCtx.fall_buffer = 0;
   }
@@ -27,7 +27,7 @@ export class RunnerJump implements RunnerState {
     runnerCtx: RunnerContext
   ): void {
     // when upward energy is gone, hand off to fall (or idle if we somehow landed)
-    if (runnerCtx.upward_momentum <= 0) {
+    if (runnerCtx.up_force <= 0) {
       if (runnerCtx.is_grounded) {
         runner.setNewState(new RunnerIdle(), runnerCtx);
       } else {

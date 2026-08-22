@@ -14,7 +14,7 @@ export class RunnerContext {
 
   horizontal_move_buffer = 0;
   fall_buffer = 0;
-  upward_momentum = 0;
+  up_force = 0;
   jump_buffer = 0;
 
   /** initial upward push for jump. decrease by 1 each fixed update until 0. */
