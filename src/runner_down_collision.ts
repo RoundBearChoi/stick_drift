@@ -5,6 +5,9 @@ import { RunnerContext } from './runner_context';
  * this script's sole responsibility is to get current pos + intended dy and return the largest safe dy that does not let the runner collider overlap a solid cell.
  * this is only for downward movement (dy > 0).
  * stops the runner 1 integer pixel above the solid's top, matching horizontal "1 before solid" rule.
+ *
+ * when a bottom collision actually clamps the movement, also clears residual upward energy
+ * (up_force / jump_buffer) so grounded states start from a clean physics slate.
  */
 export function resolveDownCollision(
   runnerX: number,
@@ -48,6 +51,13 @@ export function resolveDownCollision(
         clampedDy = Math.max(0, allowedDy);
       }
     }
+  }
+
+  // bottom collision detected → clear residual upward energy
+  // (mirrors the ceiling-hit clear of up_force in RunnerMovementBufferResolve)
+  if (clampedDy < dy) {
+    runnerCtx.up_force = 0;
+    runnerCtx.jump_buffer = 0;
   }
 
   return clampedDy;
