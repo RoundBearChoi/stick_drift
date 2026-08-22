@@ -2,7 +2,7 @@ import { CELL_SIZE, SolidGrid } from './solid_grid';
 import { RunnerContext } from './runner_context';
 
 /**
- * pure horizontal collision against 8×8 blocks.
+ * horizontal collision against 8×8 blocks.
  * this script's sole responsibility is to get current pos + intended dx and return the largest safe dx that does not let the runner collider overlap a solid cell.
  */
 export function resolveHorizontalCollision(
