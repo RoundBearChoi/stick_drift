@@ -7,9 +7,8 @@ import { resolveDownCollision } from './runner_down_collision';
 import { resolveUpCollision } from './runner_up_collision';
 
 /**
- * sole responsibility: apply movement buffers (horizontal then vertical) after collision resolution. then zero the consumed buffers.
+ * sole responsibility: apply movement buffers (horizontal then vertical) after collision resolution. then zero the buffers.
  * ascent (jump_buffer) has priority over fall.
- * also feeds jump_buffer from upward_momentum and decays the momentum.
  */
 export class RunnerMovementBufferResolve implements Tickable {
   constructor(
@@ -21,14 +20,14 @@ export class RunnerMovementBufferResolve implements Tickable {
   fixedUpdate(_dt: number): void {
     const ctx = this.gameCtx.runner_ctx;
 
-    // 0. feed jump from momentum (states only write upward_momentum)
+    // 1. feed jump from momentum (states only write upward_momentum)
     // decrease upward_momentum by 1 every fixed update while it remains
     if (ctx.upward_momentum > 0) {
       ctx.jump_buffer = ctx.upward_momentum;
       ctx.upward_momentum = Math.max(0, ctx.upward_momentum - 1);
     }
 
-    // 1. horizontal first
+    // 2. horizontal first
     const safeDx = resolveHorizontalCollision(
       this.runner.pos.x,
       this.runner.pos.y,
@@ -38,7 +37,7 @@ export class RunnerMovementBufferResolve implements Tickable {
     this.runner.pos.x += safeDx;
     ctx.horizontal_move_buffer = 0;
 
-    // 2. vertical after (uses the updated x so we can land on platforms we just moved onto)
+    // 3. vertical after (uses the updated x so we can land on platforms we just moved onto)
     // ascent has priority — we only fall after all upward_momentum and jump_buffer are depleted
     if (ctx.jump_buffer > 0) {
       const safeUp = resolveUpCollision(

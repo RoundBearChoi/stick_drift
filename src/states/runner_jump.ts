@@ -15,7 +15,7 @@ export class RunnerJump implements RunnerState {
       runnerCtx.idle_animation_tick_per_frames
     );
 
-    // states only write to upward_momentum
+    // states should only write to upward_momentum
     runnerCtx.upward_momentum = runnerCtx.jump_initial_momentum;
     // clear any residual fall so ascent starts clean
     runnerCtx.fall_buffer = 0;

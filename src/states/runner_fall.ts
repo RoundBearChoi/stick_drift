@@ -24,7 +24,7 @@ export class RunnerFall implements RunnerState {
       return;
     }
 
-    // air control — same horizontal intent as run / jump
+    // air control — same horizontal intent as run / jump (temp)
     const left = input.isHeld(InputAction.MOVE_LEFT);
     const right = input.isHeld(InputAction.MOVE_RIGHT);
 
