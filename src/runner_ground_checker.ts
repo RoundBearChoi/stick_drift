@@ -43,9 +43,6 @@ export function checkIsGrounded(
  * shared component that keeps runner_ctx.is_grounded up to date every fixed update.
  * also writes to fall_buffer (only after upward energy is fully depleted).
  * does not change states — individual states (Idle, Run, etc.) read the flag and decide.
- *
- * residual upward energy (up_force / jump_buffer) is cleared on actual bottom collision
- * inside resolveDownCollision, not here.
  */
 export class GroundChecker implements Tickable {
   constructor(

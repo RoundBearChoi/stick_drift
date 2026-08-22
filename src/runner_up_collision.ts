@@ -2,8 +2,6 @@ import { CELL_SIZE, SolidGrid } from './solid_grid';
 import { RunnerContext } from './runner_context';
 
 /**
- * this script's sole responsibility is to get current pos + intended upward distance and return the largest safe upward distance that does not let the runner collider overlap a solid cell.
- * this is only for upward movement (jump_buffer > 0).
  * stops the runner 1 integer pixel below the solid's bottom, matching the "1 before solid" rule used everywhere else.
  */
 export function resolveUpCollision(
