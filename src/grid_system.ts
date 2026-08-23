@@ -11,7 +11,7 @@ import {
  */
 export class GridSystem extends Actor {
   private cellSize: number;
-  private lineColor = Color.fromRGB(140, 140, 160, 0.28);
+  private lineColor = Color.fromRGB(140, 140, 160, 0.15);
   private lineThickness = 1;
 
   constructor(cellSize = 8) {
