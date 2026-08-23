@@ -35,12 +35,6 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._game_ctx = context.data!;
     console.log('🌊 onActivate gameplay_test_scene_1');
 
-    // level size lives on game_ctx (hard-coded defaults for now).
-    // later a level loader can overwrite these before the grid is built.
-    // example:
-    //   this._game_ctx.level_width_cells = loaded.widthCells;
-    //   this._game_ctx.level_height_cells = loaded.heightCells;
-
     // solid grid — create once using current game_ctx dimensions
     if (!this._solid_grid) {
       this._solid_grid = new SolidGrid(
@@ -79,7 +73,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
 
     // reset every time we enter the scene.
-    // IMPORTANT: this is where the runner context is first passed to runner.
+    // this is where the runner context is first passed to runner.
     // later it's also passed on every fixed update.
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
 
@@ -121,23 +115,23 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(brick4);
       this.add(brick5);
 
-      // keep reference to the bricks
+      // keep reference to the bricks. later you can use the reference to delete or whatever.
       this._bricks.push(brick0, brick1, brick2, brick3, brick4, brick5);
 
-      // IMPORTANT: register into solid grid for collision check
+      // register to solid grid for collision check
       this._solid_grid.clearSolidData();
       for (const brick of this._bricks) {
         this._solid_grid.registerRect(brick.pos.x, brick.pos.y, 16, 16);
       }
     }
 
-    // grid is added after the runner so it draws on top
+    // grid is added to scene after the runner so it draws on top
     if (!this._grid) {
       this._grid = new GridSystem(8);
       this.add(this._grid);
     }
 
-    // level boundaries debug (after grid so it draws on top of the grid lines)
+    // level boundaries debug (added to scene after grid so it draws on top of the grid lines)
     if (!this._levelBoundaries) {
       const widthPx = this._game_ctx.level_width_cells * CELL_SIZE;
       const heightPx = this._game_ctx.level_height_cells * CELL_SIZE;
@@ -151,11 +145,10 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._camera_controller.setFollowTarget(this._stick_runner);
     }
 
-    // snap camera so we don't start with a long catch-up
+    // snap camera first so we don't start with a long catch-up
     this._camera_controller.snapToTarget();
 
-    // register so they receive fixedUpdate
-    // IMPORTANT: order matters.
+    // IMPORTANT: register tickables so they receive fixedUpdate. order matters.
     // runner (anim) → controller (state / write buffer) → movement resolve (apply dx)
     // → ground checker (read final pos, update is_grounded, may force Fall)
     // → camera

@@ -6,12 +6,8 @@ import {
 import { DraculaColorScheme } from './dracula_color_scheme';
 
 /**
- * draw outer level boundary in yellow.
- * only the segments that intersect viewport are rendered.
- * pure visual — non tickable.
- *
- * size comes from the current level (GameContext.level_*_cells * CELL_SIZE)
- * so it can change when a different level is loaded.
+ * draw outer level boundary in yellow. only the segments that intersect viewport are rendered.
+ * this is pure visual — non tickable.
  */
 export class LevelBoundariesDebug extends Actor {
   private readonly _width: number;
@@ -43,16 +39,16 @@ export class LevelBoundariesDebug extends Actor {
     const w = this._width;
     const h = this._height;
 
-    // --- top edge (y = 0) ---
+    // top edge (y = 0)
     this.drawClippedHorizontal(ctx, 0, 0, w, left, right, top, bottom);
 
-    // --- bottom edge (y = h) ---
+    // bottom edge (y = h)
     this.drawClippedHorizontal(ctx, h, 0, w, left, right, top, bottom);
 
-    // --- left edge (x = 0) ---
+    // left edge (x = 0)
     this.drawClippedVertical(ctx, 0, 0, h, left, right, top, bottom);
 
-    // --- right edge (x = w) ---
+    // right edge (x = w)
     this.drawClippedVertical(ctx, w, 0, h, left, right, top, bottom);
   }
 
