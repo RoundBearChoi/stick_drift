@@ -9,11 +9,8 @@ import { CameraController } from './camera_controller';
 import { DraculaColorScheme } from './dracula_color_scheme';
 
 /**
- * visual-only camera target debug overlay.
- * draws a solid red X at the desired camera focus and a thin semi-transparent line
- * to the current camera center.
- *
- * pure visual — not a Tickable.
+ * draws a solid red X at the desired camera focus and a thin semi-transparent line to the current camera center.
+ * pure visual, not a tickable.
  */
 export class CameraDebug extends Actor {
   constructor(
