@@ -36,6 +36,15 @@ export class GameContext {
   /** constant gravity. pixels added to fall_buffer per fixed update while airborne */
   readonly gravity = 4;
 
+  /**
+   * current level size in cells.
+   * hard-coded for now (2× native resolution → 1280×720 so the camera has room to chase).
+   * scenes / level loaders can overwrite these when starting a level.
+   * change only at scene/level start — not mid-frame.
+   */
+  level_width_cells = 160;
+  level_height_cells = 90;
+
   /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();
 

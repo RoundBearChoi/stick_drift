@@ -4,25 +4,30 @@ import {
   vec,
 } from 'excalibur';
 import { DraculaColorScheme } from './dracula_color_scheme';
-import {
-  LEVEL_WIDTH_CELLS,
-  LEVEL_HEIGHT_CELLS,
-  CELL_SIZE,
-} from './solid_grid';
 
 /**
  * draw outer level boundary in yellow.
  * only the segments that intersect viewport are rendered.
  * pure visual — non tickable.
+ *
+ * size comes from the current level (GameContext.level_*_cells * CELL_SIZE)
+ * so it can change when a different level is loaded.
  */
 export class LevelBoundariesDebug extends Actor {
-  private readonly _width  = LEVEL_WIDTH_CELLS  * CELL_SIZE;
-  private readonly _height = LEVEL_HEIGHT_CELLS * CELL_SIZE;
-  private readonly _color  = DraculaColorScheme.yellow;
+  private readonly _width: number;
+  private readonly _height: number;
+  private readonly _color = DraculaColorScheme.yellow;
   private readonly _thickness = 1;
 
-  constructor() {
+  /**
+   * @param widthPx  level width in world pixels
+   * @param heightPx level height in world pixels
+   */
+  constructor(widthPx: number, heightPx: number) {
     super({ name: 'LevelBoundariesDebug' });
+
+    this._width = widthPx;
+    this._height = heightPx;
 
     // this is required so Excalibur doesn't cull an actor with no size/graphics
     this.graphics.forceOnScreen = true;

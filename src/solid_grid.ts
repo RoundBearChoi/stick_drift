@@ -5,17 +5,26 @@
  */
 export const CELL_SIZE = 8;
 
-/** temp level size = 2× native resolution (640×360 → 1280×720) so the camera has room to chase */
-export const LEVEL_WIDTH_CELLS = 160;
-export const LEVEL_HEIGHT_CELLS = 90;
-
 export class SolidGrid {
+  readonly widthCells: number;
+  readonly heightCells: number;
+
   /**
    * one giant array that contains all 8x8 cells in the level.
    * uint8 is the smallest native unit in js (8 bits 00000000 0~255).
    * manually packing 1 bit per cell wouldn't be worth it.
    */
-  private readonly _arr_level_width_height = new Uint8Array(LEVEL_WIDTH_CELLS * LEVEL_HEIGHT_CELLS);
+  private readonly _arr_level_width_height: Uint8Array;
+
+  /**
+   * @param widthCells  level width in cells (from GameContext.level_width_cells)
+   * @param heightCells level height in cells (from GameContext.level_height_cells)
+   */
+  constructor(widthCells: number, heightCells: number) {
+    this.widthCells = widthCells;
+    this.heightCells = heightCells;
+    this._arr_level_width_height = new Uint8Array(widthCells * heightCells);
+  }
 
   /** register world-space axis-aligned rectangle as a solid object. this function expects top-left origin. */
   registerRect(worldX: number, worldY: number, width: number, height: number): void {
@@ -34,14 +43,14 @@ export class SolidGrid {
   isSolid(cellX: number, cellY: number): boolean {
     if (
       cellX < 0 ||
-      cellX >= LEVEL_WIDTH_CELLS ||
+      cellX >= this.widthCells ||
       cellY < 0 ||
-      cellY >= LEVEL_HEIGHT_CELLS
+      cellY >= this.heightCells
     ) {
       // treat out-of-bounds as solid for now
       return true;
     }
-    return this._arr_level_width_height[cellY * LEVEL_WIDTH_CELLS + cellX] === 1;
+    return this._arr_level_width_height[cellY * this.widthCells + cellX] === 1;
   }
 
   /** check world-space point for solid */
@@ -58,12 +67,12 @@ export class SolidGrid {
   private setCell(cellX: number, cellY: number, value: number): void {
     if (
       cellX < 0 ||
-      cellX >= LEVEL_WIDTH_CELLS ||
+      cellX >= this.widthCells ||
       cellY < 0 ||
-      cellY >= LEVEL_HEIGHT_CELLS
+      cellY >= this.heightCells
     ) {
       return;
     }
-    this._arr_level_width_height[cellY * LEVEL_WIDTH_CELLS + cellX] = value;
+    this._arr_level_width_height[cellY * this.widthCells + cellX] = value;
   }
 }

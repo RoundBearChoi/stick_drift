@@ -14,7 +14,7 @@ import { createRunner } from './runner_creator';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
-import { SolidGrid } from './solid_grid';
+import { SolidGrid, CELL_SIZE } from './solid_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
@@ -27,13 +27,27 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _grid?: GridSystem;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks?: Actor[]; // keep reference to the actors
-  private _solid_grid = new SolidGrid();
+  private _solid_grid?: SolidGrid;
 
   onInitialize(_engine: Engine): void {}
 
   onActivate(context: SceneActivationContext<GameContext>): void {
     this._game_ctx = context.data!;
     console.log('🌊 onActivate gameplay_test_scene_1');
+
+    // level size lives on game_ctx (hard-coded defaults for now).
+    // later a level loader can overwrite these before the grid is built.
+    // example:
+    //   this._game_ctx.level_width_cells = loaded.widthCells;
+    //   this._game_ctx.level_height_cells = loaded.heightCells;
+
+    // solid grid — create once using current game_ctx dimensions
+    if (!this._solid_grid) {
+      this._solid_grid = new SolidGrid(
+        this._game_ctx.level_width_cells,
+        this._game_ctx.level_height_cells
+      );
+    }
 
     // stick runner
     if (!this._stick_runner) {
@@ -125,7 +139,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
     // level boundaries debug (after grid so it draws on top of the grid lines)
     if (!this._levelBoundaries) {
-      this._levelBoundaries = new LevelBoundariesDebug();
+      const widthPx = this._game_ctx.level_width_cells * CELL_SIZE;
+      const heightPx = this._game_ctx.level_height_cells * CELL_SIZE;
+      this._levelBoundaries = new LevelBoundariesDebug(widthPx, heightPx);
       this.add(this._levelBoundaries);
     }
 
@@ -176,6 +192,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
   /** exposed for future collision resolve step */
   get solidGrid(): SolidGrid {
+    if (!this._solid_grid) {
+      throw new Error('SolidGrid not created yet. Activate the scene first.');
+    }
     return this._solid_grid;
   }
 }
