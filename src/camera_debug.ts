@@ -13,7 +13,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  * draws a solid red X at the desired camera focus and a thin semi-transparent line
  * to the current camera center.
  *
- * pure visual \u2014 not a Tickable.
+ * pure visual — not a Tickable.
  */
 export class CameraDebug extends Actor {
   constructor(
@@ -39,12 +39,12 @@ export class CameraDebug extends Actor {
 
     const solidRed: Color = DraculaColorScheme.red;
 
-    // X at target (local origin) \u2014 keep solid so it stays easy to spot
+    // X at target (local origin) — keep solid so it stays easy to spot
     const half = 4;
     ctx.drawLine(vec(-half, -half), vec(half, half), solidRed, 1);
     ctx.drawLine(vec(half, -half), vec(-half, half), solidRed, 1);
 
-    // thin line from target \u2192 camera center
+    // thin line from target → camera center
     const cam = this.hostScene.camera;
     if (cam) {
       const localCamX = cam.pos.x - this.pos.x;

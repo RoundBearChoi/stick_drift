@@ -28,7 +28,7 @@ export class CameraController implements Tickable {
   /**
    * vertical offset from the follow target's pos to the desired camera focus.
    * this is negative because y increases downward in excalibur.
-   * runner sprites are 32\u00d732 with bottom-center anchor, so roughly 32 + 16 = 48
+   * runner sprites are 32×32 with bottom-center anchor, so roughly 32 + 16 = 48
    */
   targetOffsetY = -48;
 
@@ -71,7 +71,7 @@ export class CameraController implements Tickable {
     if (Math.abs(dx) <= this.deadzoneX) dx = 0;
     if (Math.abs(dy) <= this.deadzoneY) dy = 0;
 
-    // resolve horizontal first, then vertical \u2192 pure axis-aligned integer moves
+    // resolve horizontal first, then vertical → pure axis-aligned integer moves
     if (dx !== 0) {
       const step = Math.sign(dx) * Math.min(Math.abs(dx), this.maxStep);
       cam.pos.x += step;
