@@ -11,7 +11,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 /**
  * visual-only camera target debug overlay.
  * draws a solid red X at the desired camera focus and a thin semi-transparent line to the current camera center.
- * also draws an identical X at world origin (0, 0).
+ * also draws an identical X at world origin (0, 0) and a line from the camera center to that origin.
  * pure visual, not a tickable.
  * draws in world space and never mutates its own position (avoids transform jitter).
  */
@@ -52,11 +52,16 @@ export class CameraDebug extends Actor {
       1
     );
 
-    // ── existing desired-target X + line (unchanged) ───────────
+    const cam = this.hostScene.camera;
+
+    // line from camera center (screen center in world space) to origin
+    if (cam) {
+      ctx.drawLine(vec(0, 0), cam.pos, transparent_red, 1);
+    }
+
+    // ── existing desired-target X + line ───────────────────────
     const desired = this.cameraController.getDesiredTargetPos();
     if (!desired) return;
-
-    const cam = this.hostScene.camera;
     if (!cam) return;
 
     // X at desired target (world space)
@@ -73,7 +78,7 @@ export class CameraDebug extends Actor {
       1
     );
 
-    // line from center to X
+    // line from center to desired X
     ctx.drawLine(desired, cam.pos, transparent_red, 1);
   }
 }
