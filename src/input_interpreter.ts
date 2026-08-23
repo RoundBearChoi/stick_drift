@@ -72,8 +72,6 @@ export class InputInterpreter {
     this.released.clear();
   }
 
-  // ---------- public API ----------
-
   isHeld(action: InputAction): boolean {
     return this.held.has(action);
   }
