@@ -63,8 +63,6 @@ export class StickRunner extends Actor implements Tickable {
 
   /** states call this to transition. */
   setNewState(newState: RunnerState, runnerCtx: RunnerContext): void {
-    if (this._runner_state.state_name === newState.state_name) return;
-
     this._runner_state.onExit?.(this);
     this._runner_state = newState;
     this._runner_state.onEnter(this, runnerCtx);
