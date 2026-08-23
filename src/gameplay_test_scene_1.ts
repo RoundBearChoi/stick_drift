@@ -14,6 +14,7 @@ import { createRunner } from './runner_creator';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
+import { CameraDebug } from './camera_debug';
 import { SolidGrid, CELL_SIZE } from './solid_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 
@@ -24,6 +25,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _runner_move_buffer_resolve?: RunnerMovementBufferResolve;
   private _ground_checker?: GroundChecker;
   private _camera_controller?: CameraController;
+  private _camera_debug?: CameraDebug;
   private _grid?: GridSystem;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks?: Actor[]; // keep reference to the actors
@@ -33,9 +35,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
   onActivate(context: SceneActivationContext<GameContext>): void {
     this._game_ctx = context.data!;
-    console.log('🌊 onActivate gameplay_test_scene_1');
+    console.log('\ud83c\udf0a onActivate gameplay_test_scene_1');
 
-    // solid grid — create once using current game_ctx dimensions
+    // solid grid \u2014 create once using current game_ctx dimensions
     if (!this._solid_grid) {
       this._solid_grid = new SolidGrid(
         this._game_ctx.level_width_cells,
@@ -145,13 +147,19 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._camera_controller.setFollowTarget(this._stick_runner);
     }
 
+    // camera debug (pure visual, not tickable)
+    if (!this._camera_debug) {
+      this._camera_debug = new CameraDebug(this._camera_controller, this);
+      this.add(this._camera_debug);
+    }
+
     // snap camera first so we don't start with a long catch-up
     this._camera_controller.snapToTarget();
 
     // IMPORTANT: register tickables so they receive fixedUpdate. order matters.
-    // runner (anim) → controller (state / write buffer) → movement resolve (apply dx)
-    // → ground checker (read final pos, update is_grounded, may force Fall)
-    // → camera
+    // runner (anim) \u2192 controller (state / write buffer) \u2192 movement resolve (apply dx)
+    // \u2192 ground checker (read final pos, update is_grounded, may force Fall)
+    // \u2192 camera
     this._stick_runner.register(this._game_ctx);
     this._runner_controller.register();
     this._runner_move_buffer_resolve.register();
