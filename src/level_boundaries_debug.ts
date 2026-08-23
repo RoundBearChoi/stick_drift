@@ -11,20 +11,20 @@ import {
 } from './solid_grid';
 
 /**
- * Draws the outer level boundary (0,0 → 1280×720) in yellow.
- * Only the segments that intersect the current camera viewport are rendered.
- * Pure visual — not a Tickable.
+ * draw outer level boundary in yellow.
+ * only the segments that intersect viewport are rendered.
+ * pure visual — non tickable.
  */
 export class LevelBoundariesDebug extends Actor {
-  private readonly _width  = LEVEL_WIDTH_CELLS  * CELL_SIZE; // 1280
-  private readonly _height = LEVEL_HEIGHT_CELLS * CELL_SIZE; // 720
+  private readonly _width  = LEVEL_WIDTH_CELLS  * CELL_SIZE;
+  private readonly _height = LEVEL_HEIGHT_CELLS * CELL_SIZE;
   private readonly _color  = DraculaColorScheme.yellow;
   private readonly _thickness = 1;
 
   constructor() {
     super({ name: 'LevelBoundariesDebug' });
 
-    // Required so Excalibur doesn't cull an actor with no size/graphics
+    // this is required so Excalibur doesn't cull an actor with no size/graphics
     this.graphics.forceOnScreen = true;
 
     this.graphics.onPostDraw = (ctx) => this.draw(ctx);
@@ -38,23 +38,19 @@ export class LevelBoundariesDebug extends Actor {
     const w = this._width;
     const h = this._height;
 
-    // --- Top edge (y = 0) ---
+    // --- top edge (y = 0) ---
     this.drawClippedHorizontal(ctx, 0, 0, w, left, right, top, bottom);
 
-    // --- Bottom edge (y = h) ---
+    // --- bottom edge (y = h) ---
     this.drawClippedHorizontal(ctx, h, 0, w, left, right, top, bottom);
 
-    // --- Left edge (x = 0) ---
+    // --- left edge (x = 0) ---
     this.drawClippedVertical(ctx, 0, 0, h, left, right, top, bottom);
 
-    // --- Right edge (x = w) ---
+    // --- right edge (x = w) ---
     this.drawClippedVertical(ctx, w, 0, h, left, right, top, bottom);
   }
 
-  /**
-   * Draw a horizontal line at a fixed Y, clipped to the viewport.
-   * Only draws if the line actually intersects the vertical range of the viewport.
-   */
   private drawClippedHorizontal(
     ctx: ExcaliburGraphicsContext,
     y: number,
@@ -65,10 +61,10 @@ export class LevelBoundariesDebug extends Actor {
     viewTop: number,
     viewBottom: number
   ): void {
-    // Early out if the entire horizontal line is above or below the viewport
+    // early out if entire horizontal line is above or below viewport
     if (y < viewTop || y > viewBottom) return;
 
-    // Clamp X range to viewport
+    // clamp X range to viewport
     const startX = Math.max(x0, viewLeft);
     const endX   = Math.min(x1, viewRight);
 
@@ -77,9 +73,6 @@ export class LevelBoundariesDebug extends Actor {
     }
   }
 
-  /**
-   * Draw a vertical line at a fixed X, clipped to the viewport.
-   */
   private drawClippedVertical(
     ctx: ExcaliburGraphicsContext,
     x: number,
@@ -90,10 +83,10 @@ export class LevelBoundariesDebug extends Actor {
     viewTop: number,
     viewBottom: number
   ): void {
-    // Early out if the entire vertical line is left or right of the viewport
+    // early out if entire vertical line is left or right of viewport
     if (x < viewLeft || x > viewRight) return;
 
-    // Clamp Y range to viewport
+    // clamp Y range to viewport
     const startY = Math.max(y0, viewTop);
     const endY   = Math.min(y1, viewBottom);
 

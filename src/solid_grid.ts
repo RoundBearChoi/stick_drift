@@ -5,7 +5,7 @@
  */
 export const CELL_SIZE = 8;
 
-/** level size = 2× native resolution (640×360 → 1280×720) so the camera has room to chase */
+/** temp level size = 2× native resolution (640×360 → 1280×720) so the camera has room to chase */
 export const LEVEL_WIDTH_CELLS = 160;
 export const LEVEL_HEIGHT_CELLS = 90;
 
