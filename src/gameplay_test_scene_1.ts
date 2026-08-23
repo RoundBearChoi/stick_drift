@@ -15,6 +15,7 @@ import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
 import { SolidGrid } from './solid_grid';
+import { LevelBoundariesDebug } from './level_boundaries_debug';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -24,6 +25,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _ground_checker?: GroundChecker;
   private _camera_controller?: CameraController;
   private _grid?: GridSystem;
+  private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks?: Actor[]; // keep reference to the actors
   private _solid_grid = new SolidGrid();
 
@@ -119,6 +121,12 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (!this._grid) {
       this._grid = new GridSystem(8);
       this.add(this._grid);
+    }
+
+    // level boundaries debug (after grid so it draws on top of the grid lines)
+    if (!this._levelBoundaries) {
+      this._levelBoundaries = new LevelBoundariesDebug();
+      this.add(this._levelBoundaries);
     }
 
     // camera
