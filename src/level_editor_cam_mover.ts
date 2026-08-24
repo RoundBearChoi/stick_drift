@@ -6,9 +6,7 @@ import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 
 /**
- * free-camera mover used only by level_editor_test_scene.
- * while any arrow key is held, the camera moves in that direction
- * at a fixed number of pixels per fixed update.
+ * this is only used by level_editor_test_scene.
  */
 export class LevelEditorCamMover implements Tickable {
   /** pixels the camera moves on one axis per fixed update while the key is held */
