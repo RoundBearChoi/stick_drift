@@ -1,5 +1,6 @@
 import {
   Actor,
+  Engine,
   ExcaliburGraphicsContext,
   vec,
 } from 'excalibur';
@@ -8,7 +9,8 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 
 /**
  * visual helper for level_editor_test_scene.
- * snap points are exactly the legal brick top-left positions (multiples of CELL_SIZE).
+ * Moves itself to the nearest grid point under the mouse and draws a small green circle.
+ * Snap points match legal brick top-left positions (multiples of CELL_SIZE).
  */
 export class NearestMouseToGrid extends Actor {
   private readonly _radius = 3;
@@ -17,27 +19,30 @@ export class NearestMouseToGrid extends Actor {
   constructor() {
     super({ name: 'NearestMouseToGrid' });
 
-    // required so Excalibur does not cull an actor that has no size/graphics
+    // required so Excalibur does not cull an actor with no size/graphics
     this.graphics.forceOnScreen = true;
 
     this.graphics.onPostDraw = (ctx) => {
-      this.draw(ctx);
+      // draw in local space (circle sits on the actor’s own position)
+      ctx.drawCircle(vec(0, 0), this._radius, this._color);
     };
   }
 
-  private draw(ctx: ExcaliburGraphicsContext): void {
-    const engine = this.scene?.engine;
-    if (!engine) return;
+  onPreUpdate(engine: Engine): void {
+    const pointer = engine.input.pointers.primary;
 
-    // lastWorldPos is already camera-aware world coordinates
-    const worldPos = engine.input.pointers.primary.lastWorldPos;
-    if (!worldPos) return; // pointer never active yet
+    // Prefer the more explicit conversion path under CSS scaling
+    let worldPos = pointer.lastWorldPos;
 
-    // Nearest grid point (true nearest, jumps at cell mid-points)
-    // This produces exactly the same coordinates a brick's top-left would use.
-    const snapX = Math.round(worldPos.x / CELL_SIZE) * CELL_SIZE;
-    const snapY = Math.round(worldPos.y / CELL_SIZE) * CELL_SIZE;
+    // Fallback / more reliable path when CSS scale is active
+    if (pointer.lastScreenPos) {
+      worldPos = engine.screen.screenToWorldCoordinates(pointer.lastScreenPos);
+    }
 
-    ctx.drawCircle(vec(snapX, snapY), this._radius, this._color);
+    if (!worldPos) return;
+
+    // Snap to nearest grid point (matches brick placement)
+    this.pos.x = Math.round(worldPos.x / CELL_SIZE) * CELL_SIZE;
+    this.pos.y = Math.round(worldPos.y / CELL_SIZE) * CELL_SIZE;
   }
 }
