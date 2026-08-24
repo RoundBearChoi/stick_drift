@@ -1,7 +1,6 @@
 import {
   Actor,
   Engine,
-  ExcaliburGraphicsContext,
   vec,
 } from 'excalibur';
 import { CELL_SIZE } from './solid_grid';
@@ -11,13 +10,26 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  * visual helper for level_editor_test_scene.
  * snap points match legal brick top-left positions (multiples of CELL_SIZE).
  * this script uses a fully manual page → screen conversion because Excalibur’s lastWorldPos / screenToWorldCoordinates drift under custom CSS integer scaling.
+ *
+ * starts at world (0, 0). only begins following the mouse after the pointer
+ * page position actually changes (so entering the scene does not jump the circle).
  */
 export class NearestMouseToGrid extends Actor {
   private readonly _radius = 3;
   private readonly _color = DraculaColorScheme.green;
 
+  /** false until we observe a real mouse move */
+  private _followMouse = false;
+
+  /** first sampled page position — used to detect the initial move */
+  private _prevPageX: number | null = null;
+  private _prevPageY: number | null = null;
+
   constructor() {
-    super({ name: 'NearestMouseToGrid' });
+    super({
+      name: 'NearestMouseToGrid',
+      pos: vec(0, 0),
+    });
 
     // required so Excalibur does not cull an actor with no size/graphics
     this.graphics.forceOnScreen = true;
@@ -32,6 +44,21 @@ export class NearestMouseToGrid extends Actor {
     const pointer = engine.input.pointers.primary;
     const pagePos = pointer.lastPagePos;
     if (!pagePos) return;
+
+    // stay at (0, 0) until the mouse actually moves
+    if (!this._followMouse) {
+      if (this._prevPageX === null || this._prevPageY === null) {
+        this._prevPageX = pagePos.x;
+        this._prevPageY = pagePos.y;
+        return;
+      }
+
+      if (pagePos.x === this._prevPageX && pagePos.y === this._prevPageY) {
+        return;
+      }
+
+      this._followMouse = true;
+    }
 
     const canvas = engine.canvas;
     const rect = canvas.getBoundingClientRect();
