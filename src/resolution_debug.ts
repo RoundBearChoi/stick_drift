@@ -1,4 +1,4 @@
-import { Scene, Label, vec, CoordPlane } from 'excalibur';
+import { Scene, Label, vec, CoordPlane, TransformComponent } from 'excalibur';
 import { createTopLeftFont } from './debug_font';
 import { ResolutionScale } from './resolution_scale';
 import { DraculaColorScheme } from './dracula_color_scheme';
@@ -32,7 +32,7 @@ export class ResolutionDebug {
         font: createTopLeftFont(),
       });
       this.label.color = DraculaColorScheme.white;
-      this.label.coordPlane = CoordPlane.Screen;
+      this.label.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
     }
 
     scene.add(this.label);

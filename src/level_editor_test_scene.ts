@@ -5,6 +5,7 @@ import {
   Label,
   vec,
   CoordPlane,
+  TransformComponent,
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { GridSystem } from './grid_system';
@@ -41,7 +42,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
         font: createTopLeftFont(),
       });
       this._titleLabel.color = DraculaColorScheme.cyan;
-      this._titleLabel.coordPlane = CoordPlane.Screen;
+      this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
       this.add(this._titleLabel);
     }
 
