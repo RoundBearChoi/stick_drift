@@ -33,21 +33,13 @@ const resolution_scale = new ResolutionScale();
 // create input interpreter once the Engine exists
 game_context.createInputInterpreter(engine);
 
-// register scenes
-const gesture_scene = new GestureScene();
-engine.add('gesture_scene', gesture_scene);
-
-const gameplay_test_scene_1 = new GameplayTestScene1();
-engine.add('gameplay_test_scene_1', gameplay_test_scene_1);
-
-const level_editor_test_scene = new LevelEditorTestScene();
-engine.add('level_editor_test_scene', level_editor_test_scene);
-
-const test_scene_1 = new TestScene1();
-engine.add('test_scene_1', test_scene_1);
-
-const test_scene_2 = new TestScene2();
-engine.add('test_scene_2', test_scene_2);
+// register scenes WITHOUT keeping long-lived references
+// so that after scene_cycle does removeScene the old instance can be GC'd
+engine.add('gesture_scene', new GestureScene());
+engine.add('gameplay_test_scene_1', new GameplayTestScene1());
+engine.add('level_editor_test_scene', new LevelEditorTestScene());
+engine.add('test_scene_1', new TestScene1());
+engine.add('test_scene_2', new TestScene2());
 
 // start and pass game context into scene
 engine.start(loader).then(() => {
@@ -69,12 +61,8 @@ engine.start(loader).then(() => {
   console.log('integer resolution scaling ready (f8 to cycle)');
 });
 
-// debug access from browser console
+// debug access — only long-lived objects
+// scene instances are updated by scene_cycle when you visit them
 (window as any).engine = engine;
 (window as any).game_context = game_context;
 (window as any).resolution_scale = resolution_scale;
-(window as any).gesture_scene = gesture_scene;
-(window as any).gameplay_test_scene_1 = gameplay_test_scene_1;
-(window as any).level_editor_test_scene = level_editor_test_scene;
-(window as any).test_scene_1 = test_scene_1;
-(window as any).test_scene_2 = test_scene_2;
