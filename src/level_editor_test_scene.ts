@@ -75,8 +75,8 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._camMover.register();
 
     // every enter: world origin at view center (safety net even if scene were reused)
-    this.camera.pos.x = 0;
-    this.camera.pos.y = 0;
+    this.camera.pos.x = 640 / 2;
+    this.camera.pos.y = 360 / 2;
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
