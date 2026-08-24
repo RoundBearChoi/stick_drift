@@ -6,7 +6,7 @@ import { TestScene1 } from './test_scene_1';
 import { TestScene2 } from './test_scene_2';
 
 //--------------------
-// temporary debug scene cycling (F2 = previous, F4 = next)
+// temporary scene cycling (F2 = previous, F4 = next)
 // creates a brand-new instance every switch and deletes the old one
 //--------------------
 
@@ -61,21 +61,21 @@ async function cycleScene(
   const Ctor: SceneCtor = SCENE_CTORS[nextIndex];
   const nextKey = SCENE_KEYS[nextIndex];
 
-  // 1. brand-new instance (all private fields start undefined → existing if (!this._xxx) guards create everything fresh)
+  // brand-new instance (all private fields start undefined → existing if (!this._xxx) guards create everything fresh)
   const nextScene = new Ctor();
 
-  // 2. remember the old scene before we switch
+  // remember the old scene before we switch
   const oldScene = engine.currentScene;
 
-  // 3. register the new one (overwrites the key if it already existed)
+  // register new scene (overwrites the key if it already existed)
   engine.add(nextKey, nextScene);
 
-  // 4. switch
+  // switch
   await engine.goToScene(nextKey, {
     sceneActivationData: gameContext,
   });
 
-  // 5. old scene is now deactivated → safe to delete so it can be GC'd
+  // old scene is now deactivated → safe to delete so it can be GC'd
   if (oldScene && oldScene !== nextScene) {
     engine.removeScene(oldScene);
   }
@@ -84,6 +84,4 @@ async function cycleScene(
 
   // keep the window debug globals pointing at the live instance
   (window as any)[nextKey] = nextScene;
-
-  //console.log(`[scene_cycle] ${direction === 1 ? 'next' : 'prev'} → ${nextKey} (fresh instance)`);
 }
