@@ -1,4 +1,4 @@
-import { Scene, Label, vec } from 'excalibur';
+import { Scene, Label, vec, CoordPlane } from 'excalibur';
 import { FpsDebug } from './fps_debug';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
@@ -19,6 +19,7 @@ export class FpsOverlay {
         font: createTopLeftFont(),
       });
       this.label.color = DraculaColorScheme.white;
+      this.label.coordPlane = CoordPlane.Screen;
     }
 
     scene.add(this.label);
