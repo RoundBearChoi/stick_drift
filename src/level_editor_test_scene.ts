@@ -65,12 +65,18 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._nearestMouse = new NearestMouseToGrid();
       this.add(this._nearestMouse);
     }
+    // every enter: back to (0, 0) and wait for mouse movement again
+    this._nearestMouse.resetToOrigin();
 
     // free camera mover (arrow keys)
     if (!this._camMover) {
       this._camMover = new LevelEditorCamMover(this, this._game_ctx);
     }
     this._camMover.register();
+
+    // every enter: world origin at view center (safety net even if scene were reused)
+    this.camera.pos.x = 0;
+    this.camera.pos.y = 0;
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {

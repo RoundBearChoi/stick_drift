@@ -32,4 +32,17 @@ export class RunnerContext {
    * states read it and decide whether to transition to fall.
    */
   is_grounded = true;
+
+  /**
+   * clear per-visit simulation state.
+   * tuning values (speeds, anim ticks, collider size, etc.) are left alone.
+   * call from resetRunner / scene enter so buffers do not leak across scenes.
+   */
+  reset(): void {
+    this.horizontal_move_buffer = 0;
+    this.fall_buffer = 0;
+    this.up_force = 0;
+    this.jump_buffer = 0;
+    this.is_grounded = true;
+  }
 }

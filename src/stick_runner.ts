@@ -133,6 +133,9 @@ export class StickRunner extends Actor implements Tickable {
    * (on every onEnter we call playAnimationForState)
    */
   resetRunner(runnerCtx: RunnerContext): void {
+    // clear shared simulation buffers so nothing leaks across scene visits
+    runnerCtx.reset();
+
     this._runner_state.onExit?.(this); // if onExit exists on the current state, call it. if it doesn’t, do nothing.
     this._runner_state = new RunnerIdle();
     this._runner_state.onEnter(this, runnerCtx);

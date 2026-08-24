@@ -66,6 +66,7 @@ async function cycleScene(
 
   // remember the old scene before we switch
   const oldScene = engine.currentScene;
+  const oldKey = engine.currentSceneName;
 
   // register new scene (overwrites the key if it already existed)
   engine.add(nextKey, nextScene);
@@ -80,8 +81,13 @@ async function cycleScene(
     engine.removeScene(oldScene);
   }
 
+  // drop window debug handle for the scene we left so the old instance is not pinned
+  if (oldKey && oldKey !== nextKey) {
+    delete (window as any)[oldKey];
+  }
+
   currentIndex = nextIndex;
 
-  // keep the window debug globals pointing at the live instance
+  // keep the window debug global pointing at the live instance only
   (window as any)[nextKey] = nextScene;
 }
