@@ -10,7 +10,6 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  * visual helper for level_editor_test_scene.
  * snap points match legal brick top-left positions (multiples of CELL_SIZE).
  * this script uses a fully manual page → screen conversion because Excalibur’s lastWorldPos / screenToWorldCoordinates drift under custom CSS integer scaling.
- * starts at world (0, 0). only begins following the mouse after the pointer
  */
 export class NearestMouseToGrid extends Actor {
   private readonly _radius = 3;
@@ -43,7 +42,7 @@ export class NearestMouseToGrid extends Actor {
     const pagePos = pointer.lastPagePos;
     if (!pagePos) return;
 
-    // stay at (0, 0) until the mouse actually moves
+    // stay at (0, 0) until the mouse moves
     if (!this._followMouse) {
       if (this._prevPageX === null || this._prevPageY === null) {
         this._prevPageX = pagePos.x;
@@ -62,7 +61,6 @@ export class NearestMouseToGrid extends Actor {
     const rect = canvas.getBoundingClientRect();
 
     // internal resolution vs displayed CSS size
-    // (this is the part that was drifting)
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
 
