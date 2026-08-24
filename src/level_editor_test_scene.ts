@@ -12,6 +12,7 @@ import { CELL_SIZE } from './solid_grid';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
+import { LevelEditorCamMover } from './level_editor_cam_mover';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -19,6 +20,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _levelBoundaries?: LevelBoundariesDebug;
   private _titleLabel?: Label;
   private _nearestMouse?: NearestMouseToGrid;
+  private _camMover?: LevelEditorCamMover;
 
   onInitialize(_engine: Engine): void {}
 
@@ -60,6 +62,12 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._nearestMouse = new NearestMouseToGrid();
       this.add(this._nearestMouse);
     }
+
+    // free camera mover (arrow keys)
+    if (!this._camMover) {
+      this._camMover = new LevelEditorCamMover(this, this._game_ctx);
+    }
+    this._camMover.register();
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
@@ -67,5 +75,8 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   }
 
   onDeactivate(): void {
+    if (this._camMover) {
+      this._camMover.unregister();
+    }
   }
 }
