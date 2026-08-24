@@ -7,9 +7,8 @@ import { CELL_SIZE } from './solid_grid';
 import { DraculaColorScheme } from './dracula_color_scheme';
 
 /**
- * Pure visual helper for level_editor_test_scene.
- * Draws a small green circle at the nearest grid snap point under the mouse.
- * Snap points are exactly the legal brick top-left positions (multiples of CELL_SIZE).
+ * visual helper for level_editor_test_scene.
+ * snap points are exactly the legal brick top-left positions (multiples of CELL_SIZE).
  */
 export class NearestMouseToGrid extends Actor {
   private readonly _radius = 3;
@@ -18,7 +17,7 @@ export class NearestMouseToGrid extends Actor {
   constructor() {
     super({ name: 'NearestMouseToGrid' });
 
-    // Required so Excalibur does not cull an actor that has no size/graphics
+    // required so Excalibur does not cull an actor that has no size/graphics
     this.graphics.forceOnScreen = true;
 
     this.graphics.onPostDraw = (ctx) => {
