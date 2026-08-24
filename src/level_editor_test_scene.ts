@@ -28,14 +28,14 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._game_ctx.fps_overlay.attach(this);
     this._game_ctx.resolution_debug.attachToScene(this);
 
-    // title text — top-left, below the FPS / resolution lines
+    // title text
     if (!this._titleLabel) {
       this._titleLabel = new Label({
         text: 'TEST LEVEL EDITOR',
-        pos: vec(8, 8 + 16 + 4), // under FPS (y=8) + resolution (y=18)
+        pos: vec(8, 8 + 16 + 4),
         font: createTopLeftFont(),
       });
-      this._titleLabel.color = DraculaColorScheme.cyan; // or .yellow / .white
+      this._titleLabel.color = DraculaColorScheme.cyan;
       this.add(this._titleLabel);
     }
 
@@ -59,6 +59,5 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   }
 
   onDeactivate(): void {
-    // nothing to unregister yet (no tickables registered)
   }
 }
