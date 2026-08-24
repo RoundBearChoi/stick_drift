@@ -11,6 +11,9 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  * visual helper for level_editor_test_scene.
  * Moves itself to the nearest grid point under the mouse and draws a small green circle.
  * Snap points match legal brick top-left positions (multiples of CELL_SIZE).
+ *
+ * Uses a fully manual page → screen conversion because Excalibur’s lastWorldPos /
+ * screenToWorldCoordinates drift under the custom CSS integer scaling.
  */
 export class NearestMouseToGrid extends Actor {
   private readonly _radius = 3;
@@ -30,16 +33,23 @@ export class NearestMouseToGrid extends Actor {
 
   onPreUpdate(engine: Engine): void {
     const pointer = engine.input.pointers.primary;
+    const pagePos = pointer.lastPagePos;
+    if (!pagePos) return;
 
-    // Prefer the more explicit conversion path under CSS scaling
-    let worldPos = pointer.lastWorldPos;
+    const canvas = engine.canvas;
+    const rect = canvas.getBoundingClientRect();
 
-    // Fallback / more reliable path when CSS scale is active
-    if (pointer.lastScreenPos) {
-      worldPos = engine.screen.screenToWorldCoordinates(pointer.lastScreenPos);
-    }
+    // Internal resolution vs displayed CSS size
+    // (this is the part that was drifting before)
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-    if (!worldPos) return;
+    // Page coordinates → internal screen coordinates
+    const screenX = (pagePos.x - rect.left) * scaleX;
+    const screenY = (pagePos.y - rect.top) * scaleY;
+
+    const screenPos = vec(screenX, screenY);
+    const worldPos = engine.screen.screenToWorldCoordinates(screenPos);
 
     // Snap to nearest grid point (matches brick placement)
     this.pos.x = Math.round(worldPos.x / CELL_SIZE) * CELL_SIZE;
