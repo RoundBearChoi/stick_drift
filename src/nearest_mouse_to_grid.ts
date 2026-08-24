@@ -9,10 +9,6 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 /**
  * visual helper for level_editor_test_scene.
  * snap points match legal brick top-left positions (multiples of CELL_SIZE).
- * this script uses a fully manual page → screen conversion because Excalibur’s lastWorldPos / screenToWorldCoordinates drift under custom CSS integer scaling.
- *
- * starts at world (0, 0). only begins following the mouse after the pointer
- * page position actually changes. call resetToOrigin() on scene enter.
  */
 export class NearestMouseToGrid extends Actor {
   private readonly _radius = 3;

@@ -34,8 +34,6 @@ export class RunnerContext {
   is_grounded = true;
 
   /**
-   * clear per-visit simulation state.
-   * tuning values (speeds, anim ticks, collider size, etc.) are left alone.
    * call from resetRunner / scene enter so buffers do not leak across scenes.
    */
   reset(): void {
