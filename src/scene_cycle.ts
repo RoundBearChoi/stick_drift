@@ -1,4 +1,4 @@
-import { Engine, Keys, Scene } from 'excalibur';
+import { Engine, Keys } from 'excalibur';
 import { GameContext } from './game_context';
 import { GameplayTestScene1 } from './gameplay_test_scene_1';
 import { LevelEditorTestScene } from './level_editor_test_scene';
@@ -66,7 +66,6 @@ async function cycleScene(
 
   // 2. remember the old scene before we switch
   const oldScene = engine.currentScene;
-  const oldKey = engine.currentSceneName;
 
   // 3. register the new one (overwrites the key if it already existed)
   engine.add(nextKey, nextScene);
@@ -86,5 +85,5 @@ async function cycleScene(
   // keep the window debug globals pointing at the live instance
   (window as any)[nextKey] = nextScene;
 
-  //console.log(`[scene_cycle] ${direction === 1 ? 'next' : 'prev'}: ${oldKey} → ${nextKey} (fresh instance)`);
+  //console.log(`[scene_cycle] ${direction === 1 ? 'next' : 'prev'} → ${nextKey} (fresh instance)`);
 }
