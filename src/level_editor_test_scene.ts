@@ -11,12 +11,14 @@ import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { CELL_SIZE } from './solid_grid';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _grid?: GridSystem;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _titleLabel?: Label;
+  private _nearestMouse?: NearestMouseToGrid;
 
   onInitialize(_engine: Engine): void {}
 
@@ -51,6 +53,12 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       const heightPx = this._game_ctx.level_height_cells * CELL_SIZE;
       this._levelBoundaries = new LevelBoundariesDebug(widthPx, heightPx);
       this.add(this._levelBoundaries);
+    }
+
+    // green circle that snaps to nearest grid point under the mouse
+    if (!this._nearestMouse) {
+      this._nearestMouse = new NearestMouseToGrid();
+      this.add(this._nearestMouse);
     }
   }
 
