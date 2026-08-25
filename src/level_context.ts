@@ -7,7 +7,7 @@ export const BRICK_SIZE = 16;
  * pure data for the current level.
  * owned by GameContext — scenes read / write this, but never store Actors here.
  */
-export interface BrickPlacement {
+export interface arrBrickPlacement {
   /** world-space top-left (matches brick pivot + SolidGrid.registerRect) */
   x: number;
   y: number;
@@ -27,7 +27,7 @@ export class LevelContext {
    * authoritative list of bricks for the current level.
    * in js array size is fully dynamic.
    */
-  bricks: BrickPlacement[] = [];
+  bricks: arrBrickPlacement[] = [];
 
   get width_px(): number {
     return this.width_cells * CELL_SIZE;
