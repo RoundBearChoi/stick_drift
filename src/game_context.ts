@@ -6,6 +6,7 @@ import { Tickable } from './tickable';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { InputInterpreter } from './input_interpreter';
 import { RunnerContext } from './runner_context';
+import { LevelContext } from './level_context';
 
 export const NATIVE_RESOLUTION = {
   width: 640,
@@ -33,17 +34,30 @@ export class GameContext {
   /** runner tuning values (speed, animation ticks, etc.) */
   readonly runner_ctx = new RunnerContext();
 
+  /** pure level data (dimensions + brick placements). scenes read/write this. */
+  readonly level_ctx = new LevelContext();
+
   /** constant gravity. pixels added to fall_buffer per fixed update while airborne */
   readonly gravity = 4;
 
   /**
-   * current level size in cells.
-   * hard-coded for now (2× native resolution → 1280×720 so the camera has room to chase).
-   * scenes / level loaders can overwrite these when starting a level.
+   * convenience accessors so existing call sites keep working.
+   * preferred path for new code: game_ctx.level_ctx.width_cells / height_cells.
    * IMPORTANT: change only at scene/level start — not mid-frame.
    */
-  level_width_cells = 160;
-  level_height_cells = 90;
+  get level_width_cells(): number {
+    return this.level_ctx.width_cells;
+  }
+  set level_width_cells(value: number) {
+    this.level_ctx.width_cells = value;
+  }
+
+  get level_height_cells(): number {
+    return this.level_ctx.height_cells;
+  }
+  set level_height_cells(value: number) {
+    this.level_ctx.height_cells = value;
+  }
 
   /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();
