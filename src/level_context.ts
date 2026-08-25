@@ -23,7 +23,10 @@ export class LevelContext {
   width_cells = 160;
   height_cells = 90;
 
-  /** authoritative list of bricks for the current level */
+  /**
+   * authoritative list of bricks for the current level
+   * in js array size is fully dynamic
+   */
   bricks: BrickPlacement[] = [];
 
   get width_px(): number {
