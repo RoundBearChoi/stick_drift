@@ -19,10 +19,6 @@ import { SolidGrid, CELL_SIZE } from './solid_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { BRICK_SIZE } from './level_context';
 
-/**
- * gameplay scene that loads bricks from GameContext.level_ctx
- * (populated by the level editor). same runner / collision stack as scene 1.
- */
 export class GameplayTestScene2 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _stick_runner?: StickRunner;
@@ -77,7 +73,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
 
     // bricks from level_ctx
-    this.rebuildBricksFromLevel();
+    this.buildBricksFromLevelCtx();
 
     // grid is added to scene after the runner so it draws on top
     if (!this._grid) {
@@ -143,7 +139,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   }
 
   /** load visual bricks + register solids from level_ctx */
-  private rebuildBricksFromLevel(): void {
+  private buildBricksFromLevelCtx(): void {
     // clear previous visual actors (fresh scene instance normally starts empty)
     for (const actor of this._bricks) {
       actor.kill();
