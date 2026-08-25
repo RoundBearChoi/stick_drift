@@ -4,6 +4,9 @@ import {
   SceneActivationContext,
   Actor,
   vec,
+  Label,
+  CoordPlane,
+  TransformComponent,
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
@@ -17,6 +20,8 @@ import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
 import { SolidGrid, CELL_SIZE } from './solid_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
+import { createTopLeftFont } from './debug_font';
+import { DraculaColorScheme } from './dracula_color_scheme';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -30,12 +35,25 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks?: Actor[]; // keep reference to the actors
   private _solid_grid?: SolidGrid;
+  private _titleLabel?: Label;
 
   onInitialize(_engine: Engine): void {}
 
   onActivate(context: SceneActivationContext<GameContext>): void {
     this._game_ctx = context.data!;
     console.log('🌊 onActivate gameplay_test_scene_1');
+
+    // scene name label (top-left)
+    if (!this._titleLabel) {
+      this._titleLabel = new Label({
+        text: 'gameplay_test_scene_1',
+        pos: vec(8, 8),
+        font: createTopLeftFont(),
+      });
+      this._titleLabel.color = DraculaColorScheme.cyan;
+      this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
+      this.add(this._titleLabel);
+    }
 
     // solid grid — create once using current game_ctx dimensions
     if (!this._solid_grid) {
