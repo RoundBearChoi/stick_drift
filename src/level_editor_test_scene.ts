@@ -92,9 +92,8 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this.camera.pos.y = 360 / 2;
   }
 
+  /** temp hard coded left click */
   onPreUpdate(engine: Engine): void {
-    // PointerAbstraction has no wasPressed (keyboard-only API).
-    // currentFrameDown holds pointer-down events that occurred this frame.
     for (const evt of engine.input.pointers.currentFrameDown) {
       if (evt.button === PointerButton.Left) {
         this.tryPlaceBrickAtCursor();
