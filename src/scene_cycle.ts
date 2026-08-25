@@ -13,16 +13,16 @@ import { TestScene2 } from './test_scene_2';
 
 const SCENE_CTORS = [
   GameplayTestScene1,
-  LevelEditorTestScene,
   GameplayTestScene2,
+  LevelEditorTestScene,
   TestScene1,
   TestScene2,
 ] as const;
 
 const SCENE_KEYS = [
   'gameplay_test_scene_1',
-  'level_editor_test_scene',
   'gameplay_test_scene_2',
+  'level_editor_test_scene',
   'test_scene_1',
   'test_scene_2',
 ] as const;
