@@ -3,6 +3,7 @@ import {
   Engine,
   SceneActivationContext,
   Label,
+  Actor,
   vec,
   CoordPlane,
   TransformComponent,
@@ -15,6 +16,8 @@ import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 import { LevelEditorCamMover } from './level_editor_cam_mover';
+import { createBrick } from './brick_creator';
+import { BRICK_SIZE } from './level_context';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -23,6 +26,8 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _titleLabel?: Label;
   private _nearestMouse?: NearestMouseToGrid;
   private _camMover?: LevelEditorCamMover;
+  /** visual brick actors kept in sync with level_ctx.bricks */
+  private _brickActors: Actor[] = [];
 
   onInitialize(_engine: Engine): void {}
 
@@ -54,17 +59,24 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
     // yellow level edge lines
     if (!this._levelBoundaries) {
-      const widthPx = this._game_ctx.level_width_cells * CELL_SIZE;
-      const heightPx = this._game_ctx.level_height_cells * CELL_SIZE;
+      const widthPx = this._game_ctx.level_ctx.width_px;
+      const heightPx = this._game_ctx.level_ctx.height_px;
       this._levelBoundaries = new LevelBoundariesDebug(widthPx, heightPx);
       this.add(this._levelBoundaries);
     }
+
+    // rebuild visual bricks from shared level data (scene instances are fresh each cycle)
+    this.rebuildBrickActors();
 
     // green circle that snaps to nearest grid point under the mouse
     if (!this._nearestMouse) {
       this._nearestMouse = new NearestMouseToGrid();
       this.add(this._nearestMouse);
     }
+    this._nearestMouse.setLevelBounds(
+      this._game_ctx.level_ctx.width_px,
+      this._game_ctx.level_ctx.height_px
+    );
     // every enter: back to (0, 0) and wait for mouse movement again
     this._nearestMouse.resetToOrigin();
 
@@ -79,6 +91,14 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this.camera.pos.y = 360 / 2;
   }
 
+  onPreUpdate(engine: Engine): void {
+    // left-click → try place a brick at the green-dot snap position
+    const pointer = engine.input.pointers.primary;
+    if (pointer.wasPressed(0)) {
+      this.tryPlaceBrickAtCursor();
+    }
+  }
+
   onPostUpdate(engine: Engine, elapsed: number): void {
     this._game_ctx.update(engine, elapsed);
   }
@@ -86,6 +106,54 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   onDeactivate(): void {
     if (this._camMover) {
       this._camMover.unregister();
+    }
+  }
+
+  /**
+   * place a brick at the current green-dot position if:
+   * 1. green dot is inside the level
+   * 2. the full 16×16 brick fits inside the level
+   * 3. it does not overlap any existing brick
+   */
+  private tryPlaceBrickAtCursor(): void {
+    if (!this._nearestMouse) return;
+
+    // reject when the green dot itself is outside the level
+    if (!this._nearestMouse.isInsideLevel) return;
+
+    const placeX = this._nearestMouse.pos.x;
+    const placeY = this._nearestMouse.pos.y;
+    const level = this._game_ctx.level_ctx;
+
+    if (!level.canPlaceBrick(placeX, placeY, BRICK_SIZE)) {
+      return;
+    }
+
+    // commit data
+    level.addBrick(placeX, placeY);
+
+    // spawn visual
+    const actor = createBrick(this.engine, { pos: vec(placeX, placeY) });
+    this.add(actor);
+    this._brickActors.push(actor);
+
+    console.log(
+      `🧱 placed brick at (${placeX}, ${placeY}) — total ${level.bricks.length}`
+    );
+  }
+
+  /** clear scene brick actors and recreate them from level_ctx */
+  private rebuildBrickActors(): void {
+    for (const actor of this._brickActors) {
+      actor.kill();
+    }
+    this._brickActors = [];
+
+    const level = this._game_ctx.level_ctx;
+    for (const b of level.bricks) {
+      const actor = createBrick(this.engine, { pos: vec(b.x, b.y) });
+      this.add(actor);
+      this._brickActors.push(actor);
     }
   }
 }
