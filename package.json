@@ -1,6 +1,6 @@
 {
   "name": "stick-drift",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "",
   "scripts": {
     "dev": "webpack-dev-server --mode development --open",
