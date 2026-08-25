@@ -64,3 +64,5 @@ engine.start(loader).then(() => {
 (window as any).engine = engine;
 (window as any).game_context = game_context;
 (window as any).resolution_scale = resolution_scale;
+
+//test
