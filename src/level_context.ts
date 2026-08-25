@@ -24,8 +24,8 @@ export class LevelContext {
   height_cells = 90;
 
   /**
-   * authoritative list of bricks for the current level
-   * in js array size is fully dynamic
+   * authoritative list of bricks for the current level.
+   * in js array size is fully dynamic.
    */
   bricks: BrickPlacement[] = [];
 
