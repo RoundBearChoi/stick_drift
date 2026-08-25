@@ -7,6 +7,7 @@ import {
   vec,
   CoordPlane,
   TransformComponent,
+  PointerButton,
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { GridSystem } from './grid_system';
@@ -92,10 +93,13 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   }
 
   onPreUpdate(engine: Engine): void {
-    // left-click → try place a brick at the green-dot snap position
-    const pointer = engine.input.pointers.primary;
-    if (pointer.wasPressed(0)) {
-      this.tryPlaceBrickAtCursor();
+    // PointerAbstraction has no wasPressed (keyboard-only API).
+    // currentFrameDown holds pointer-down events that occurred this frame.
+    for (const evt of engine.input.pointers.currentFrameDown) {
+      if (evt.button === PointerButton.Left) {
+        this.tryPlaceBrickAtCursor();
+        break;
+      }
     }
   }
 
