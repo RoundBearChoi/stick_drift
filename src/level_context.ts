@@ -26,6 +26,7 @@ export class LevelContext {
   /**
    * authoritative list of bricks for the current level.
    * in js array size is fully dynamic.
+   * objects such as Uint8Array, Float32Array, etc do have a fixed length that cannot be changed after creation. plain array is dynamic.
    */
   bricks: arrBrickPlacement[] = [];
 
