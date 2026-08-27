@@ -3,6 +3,8 @@ import { StickRunner } from '../stick_runner';
 import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
+import { RunnerJump } from './runner_jump';
+
 
 export class RunnerFall implements RunnerState {
   readonly state_name = RunnerStateName.FALL;
@@ -19,7 +21,15 @@ export class RunnerFall implements RunnerState {
     input: InputInterpreter,
     runnerCtx: RunnerContext
   ): void {
+
     if (runnerCtx.is_grounded) {
+      // IMPORTANT: if jump is pressed right as runner is hitting ground, switch straight back to jump state instead of idle
+      if (input.wasPressed(InputAction.JUMP)) {
+        runner.queueNewState(new RunnerJump());
+        return;
+      }
+
+      // return to idle if no jump is pressed
       runner.queueNewState(new RunnerIdle());
       return;
     }
