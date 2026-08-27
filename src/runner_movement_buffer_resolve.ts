@@ -30,7 +30,7 @@ export class RunnerMovementBufferResolve implements Tickable {
     this.runner.pos.x += safeDx;
     ctx.horizontal_move_buffer = 0;
 
-    // apply remaining upward energy this tick, then decay on the jump-local interval
+    // apply remaining upward energy this tick, then decay
     if (ctx.current_up_vector > 0) {
       ctx.move_up_buffer = ctx.current_up_vector;
 
@@ -50,7 +50,7 @@ export class RunnerMovementBufferResolve implements Tickable {
       ctx.move_down_buffer = 0;
     }
 
-    // vertical comes after horizontal
+    // vertical move comes after horizontal move
     // ascent has priority — we only fall when there is no upward intent this tick
     if (ctx.move_up_buffer > 0) {
       const safeUp = resolveUpCollision(
@@ -83,7 +83,7 @@ export class RunnerMovementBufferResolve implements Tickable {
       );
       this.runner.pos.y += safeDy;
 
-      // landed → kill fall energy so the next airborne start is 0 again
+      // landed → kill fall energy
       if (safeDy < ctx.move_down_buffer) {
         ctx.fall_acceleration = 0;
       }

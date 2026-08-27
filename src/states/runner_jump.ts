@@ -17,7 +17,6 @@ export class RunnerJump implements RunnerState {
 
     // states should only write to upward energy
     runnerCtx.current_up_vector = runnerCtx.jump_start_momentum;
-    // every jump starts at decay phase 0 so hang time does not depend on global tick parity
     runnerCtx.jump_momentum_decay_counter = 0;
     // up wins — clear any residual fall so ascent starts clean
     runnerCtx.fall_acceleration = 0;
@@ -29,7 +28,7 @@ export class RunnerJump implements RunnerState {
     input: InputInterpreter,
     runnerCtx: RunnerContext
   ): void {
-    // when upward energy is gone, hand off to fall (or idle if we somehow landed)
+    // when upward energy is gone, start falling (or idle if we somehow landed)
     if (runnerCtx.current_up_vector <= 0) {
       if (runnerCtx.is_grounded) {
         runner.queueNewState(new RunnerIdle());
@@ -39,7 +38,6 @@ export class RunnerJump implements RunnerState {
       return;
     }
 
-    // air control — same horizontal intent as run
     const left = input.isHeld(InputAction.MOVE_LEFT);
     const right = input.isHeld(InputAction.MOVE_RIGHT);
 

@@ -23,10 +23,9 @@ export class RunnerContext {
   move_up_buffer = 0; // unchecked move intent before collision check
   current_up_vector = 0;
 
-  jump_start_momentum = 15;
-  jump_momentum_decay = 1;
-  /** 1 = decay every fixed tick, 2 = every other tick. jump-local so phase does not depend on when jump was pressed. */
-  jump_momentum_decay_interval = 2;
+  jump_start_momentum = 12;
+  jump_momentum_decay = 1; // amount per decay
+  jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
   fall_acceleration = 0;
   max_fall_acceleration = 16;
