@@ -90,7 +90,7 @@ export class StickRunner extends Actor implements Tickable {
     this._runner_state = newState;
     this._runner_state.onEnter(this, runnerCtx);
 
-    console.log('state change:', newState.state_name);
+    console.log(' ------ state change: ', newState.state_name, ' ------');
   }
 
   /**
