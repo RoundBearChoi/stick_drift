@@ -63,7 +63,7 @@ export class GroundChecker implements Tickable {
     // constant gravity while airborne.
     // only accumulate fall after all upward_momentum (and therefore jump_buffer) are depleted.
     if (!ctx.is_grounded && ctx.current_up_vector <= 0) {
-      ctx.move_down_buffer += this.gameCtx.gravity;
+      ctx.move_down_buffer = this.gameCtx.gravity;
     }
   }
 
