@@ -41,13 +41,13 @@ export class SolidGrid {
   }
 
   isSolid(cellX: number, cellY: number): boolean {
+    // treating out-of-bounds as solid for now
     if (
       cellX < 0 ||
       cellX >= this.widthCells || // right of the level (top edge)
       cellY < 0 || // above the level
       cellY >= this.heightCells // below the level (bottom edge)
     ) {
-      // treat out-of-bounds as solid for now
       return true;
     }
     return this._arr_level_width_height[cellY * this.widthCells + cellX] === 1;
