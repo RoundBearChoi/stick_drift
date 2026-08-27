@@ -25,7 +25,7 @@ export class RunnerContext {
 
   jump_start_momentum = 15;
   fall_acceleration = 0;
-  max_fall_acceleration = 20;
+  max_fall_acceleration = 16;
 
   /** call from resetRunner / scene enter so buffers do not leak across scenes. */
   reset(): void {
