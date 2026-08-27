@@ -1,7 +1,7 @@
 import { Engine, WebAudio } from 'excalibur';
 import { FixedTimestep } from './fixed_timestep';
 import { FpsOverlay } from './fps_overlay';
-import { ResolutionDebug } from './resolution_debug';
+import { ScreenResolutionDebug } from './screen_resolution_debug';
 import { Tickable } from './tickable';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { InputInterpreter } from './input_interpreter';
@@ -21,23 +21,16 @@ export type Resolution = typeof NATIVE_RESOLUTION;
  */
 export class GameContext {
   readonly native_resolution = NATIVE_RESOLUTION;
-
-  /** single source of truth for game colors (Dracula) */
   readonly dracula_colors = DraculaColorScheme;
 
   /** FPS counter + shared on-screen overlay */
   readonly fps_overlay = new FpsOverlay();
 
-  /** shared on-screen resolution / scale debug label */
-  readonly resolution_debug = new ResolutionDebug();
+  readonly screen_resolution_debug = new ScreenResolutionDebug();
 
-  /** runner tuning values (speed, animation ticks, etc.) */
   readonly runner_ctx = new RunnerContext();
-
-  /** pure level data (dimensions + brick placements). scenes read/write this. */
   readonly level_ctx = new LevelContext();
 
-  /** constant gravity. pixels added to fall_buffer per fixed update while airborne */
   readonly gravity = 4;
 
   /**
@@ -59,7 +52,6 @@ export class GameContext {
     this.level_ctx.height_cells = value;
   }
 
-  /** maintain a set of actors(tickables), cycle through them, call fixed update on each */
   private readonly _tickables = new Set<Tickable>();
 
   private readonly _fixed_timestep = new FixedTimestep(60, 5);
@@ -87,7 +79,6 @@ export class GameContext {
     console.log('✅ WebAudio unlocked');
   }
 
-  /** register for fixed updates */
   registerTickable(tickable: Tickable): void {
     this._tickables.add(tickable);
   }
@@ -100,19 +91,20 @@ export class GameContext {
   update(engine: Engine, realElapsed: number): void {
     this.fps_overlay.update(realElapsed);
 
-    // 1. sample input once for this visual frame
+    // sample input once for this visual frame
     if (this._input_interpreter) {
       this._input_interpreter.sample();
     }
 
-    // 2. run fixed steps (all Tickables see the same input snapshot)
+    // count fixed updates so we know we can clear input after at least 1 fixed update
     let steps = 0;
+
     this._fixed_timestep.step(realElapsed, (dt) => {
       steps++;
       this.fixedUpdate(engine, dt);
     });
 
-    // 3. clear edge flags only after at least one fixed step has read them
+    // clear input only after at least one fixed step has run
     if (this._input_interpreter && steps > 0) {
       this._input_interpreter.endFrame();
     }
@@ -122,7 +114,6 @@ export class GameContext {
   private fixedUpdate(engine: Engine, dt: number): void {
     this.fps_overlay.tickFixed();
 
-    /** fixed update every tickable */
     for (const t of this._tickables) {
       t.fixedUpdate(dt);
     }

@@ -8,7 +8,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  * placed slightly below the FPS text.
  * actor is shared and can be attached to multiple scenes (same pattern as fps_debug).
  */
-export class ResolutionDebug {
+export class ScreenResolutionDebug {
   private label?: Label;
   private scale: ResolutionScale | null = null;
 

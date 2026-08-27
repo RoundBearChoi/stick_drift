@@ -48,8 +48,8 @@ engine.start(loader).then(() => {
   resolution_scale.attachToEngine(engine);
 
   // wire resolution debug so the on-screen label stays in sync
-  game_context.resolution_debug.setScale(resolution_scale);
-  resolution_scale.setDebugRefresh(() => game_context.resolution_debug.refresh());
+  game_context.screen_resolution_debug.setScale(resolution_scale);
+  resolution_scale.setDebugRefresh(() => game_context.screen_resolution_debug.refresh());
 
   engine.goToScene('gesture_scene', {
     sceneActivationData: game_context,

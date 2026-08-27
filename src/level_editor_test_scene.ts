@@ -38,7 +38,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
     // shared debug overlays (same pattern as test_scene_1 / test_scene_2)
     this._game_ctx.fps_overlay.attach(this);
-    this._game_ctx.resolution_debug.attachToScene(this);
+    this._game_ctx.screen_resolution_debug.attachToScene(this);
 
     // title text
     if (!this._titleLabel) {
