@@ -34,6 +34,12 @@ export class RunnerContext {
   is_grounded = true;
 
   /**
+   * shared facing flag. states write it from input.
+   * StickRunner reads it to set scale.x.
+   */
+  is_facing_right_side = true;
+
+  /**
    * call from resetRunner / scene enter so buffers do not leak across scenes.
    */
   reset(): void {
@@ -42,5 +48,6 @@ export class RunnerContext {
     this.up_force = 0;
     this.jump_buffer = 0;
     this.is_grounded = true;
+    this.is_facing_right_side = true;
   }
 }

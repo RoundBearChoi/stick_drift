@@ -41,13 +41,13 @@ export class RunnerRun implements RunnerState {
     const right = input.isHeld(InputAction.MOVE_RIGHT);
 
     if (right && !left) {
-      runner.setFacingRightSide(true);
+      runnerCtx.is_facing_right_side = true;
     } else if (left && !right) {
-      runner.setFacingRightSide(false);
+      runnerCtx.is_facing_right_side = false;
     }
 
     // only write intent — do not touch position here
-    const dir = runner.isFacingRightSide ? 1 : -1;
+    const dir = runnerCtx.is_facing_right_side ? 1 : -1;
     runnerCtx.horizontal_move_buffer = dir * runnerCtx.run_speed;
   }
 }

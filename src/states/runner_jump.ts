@@ -41,10 +41,10 @@ export class RunnerJump implements RunnerState {
     const right = input.isHeld(InputAction.MOVE_RIGHT);
 
     if (right && !left) {
-      runner.setFacingRightSide(true);
+      runnerCtx.is_facing_right_side = true;
       runnerCtx.horizontal_move_buffer = runnerCtx.run_speed;
     } else if (left && !right) {
-      runner.setFacingRightSide(false);
+      runnerCtx.is_facing_right_side = false;
       runnerCtx.horizontal_move_buffer = -runnerCtx.run_speed;
     }
   }

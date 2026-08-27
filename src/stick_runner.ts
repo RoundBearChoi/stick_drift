@@ -22,7 +22,6 @@ export class StickRunner extends Actor implements Tickable {
   private _runner_state: RunnerState = new RunnerIdle(); // starting state (onEnter deferred until reset)
   private _queued_state: RunnerState | null = null;
   private _frame_based_animation!: FrameBasedAnimation;
-  private _isFacingRightSide = true;
 
   /** visual-only collider outline (completely separate from animation + gameplay) */
   private _colliderDebug: RunnerColliderDebug | null = null;
@@ -45,19 +44,15 @@ export class StickRunner extends Actor implements Tickable {
     return this._runner_state.state_name;
   }
 
-  get isFacingRightSide(): boolean {
-    return this._isFacingRightSide;
-  }
-
   /**
-   * sets facing direction and applies horizontal mirror via scale.x.
+   * apply ctx facing to the actor graphic.
    * scale.x = -1 flips around the bottom-center anchor.
    */
-  setFacingRightSide(facingRight: boolean): void {
-    if (this._isFacingRightSide === facingRight) return;
+  syncFacing(runnerCtx: RunnerContext): void {
+    const scaleX = runnerCtx.is_facing_right_side ? 1 : -1;
+    if (this.scale.x === scaleX) return;
 
-    this._isFacingRightSide = facingRight;
-    this.scale.x = facingRight ? 1 : -1;
+    this.scale.x = scaleX;
 
     // keep the debug box un-mirrored (collider is facing-independent)
     this._colliderDebug?.syncFacing(this.scale.x);
@@ -163,8 +158,8 @@ export class StickRunner extends Actor implements Tickable {
 
     this._queued_state = null;
     this.applyState(new RunnerIdle(), runnerCtx);
-    this.setFacingRightSide(true);
     this.anchor = runnerCtx.anchor;
+    this.syncFacing(runnerCtx);
 
     // collider debug (visual only)
     if (!this._colliderDebug) {

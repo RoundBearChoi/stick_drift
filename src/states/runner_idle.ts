@@ -41,9 +41,9 @@ export class RunnerIdle implements RunnerState {
     if (leftPressed || rightPressed || leftHeld || rightHeld) {
       // set facing immediately so the mirror is correct on the first run frame
       if (rightPressed || (rightHeld && !leftHeld)) {
-        runner.setFacingRightSide(true);
+        runnerCtx.is_facing_right_side = true;
       } else if (leftPressed || (leftHeld && !rightHeld)) {
-        runner.setFacingRightSide(false);
+        runnerCtx.is_facing_right_side = false;
       }
 
       runner.queueNewState(new RunnerRun());

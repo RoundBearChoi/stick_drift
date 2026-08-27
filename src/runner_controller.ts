@@ -28,6 +28,8 @@ export class RunnerController implements Tickable {
       this.gameCtx.input,
       this.gameCtx.runner_ctx
     );
+
+    this.runner.syncFacing(this.gameCtx.runner_ctx);
   }
 
   register(): void {
