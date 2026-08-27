@@ -3,7 +3,7 @@ import { RunnerContext } from './runner_context';
 
 /**
  * stops the runner 1 integer pixel above the solid's top, matching horizontal "1 before solid" rule.
- * when a bottom collision clamps the movement, clear residual upward energy.
+ * when a bottom collision clamps the movement, clear residual vertical energy.
  */
 export function resolveDownCollision(
   runnerX: number,
@@ -49,11 +49,11 @@ export function resolveDownCollision(
     }
   }
 
-  // bottom collision detected → clear residual upward energy
-  // (mirrors the ceiling-hit clear of up_force in RunnerMovementBufferResolve)
+  // bottom collision detected → clear residual vertical energy
   if (clampedDy < dy) {
     runnerCtx.current_up_vector = 0;
     runnerCtx.move_up_buffer = 0;
+    runnerCtx.fall_acceleration = 0;
   }
 
   return clampedDy;

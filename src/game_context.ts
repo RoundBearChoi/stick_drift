@@ -31,8 +31,6 @@ export class GameContext {
   readonly runner_ctx = new RunnerContext();
   readonly level_ctx = new LevelContext();
 
-  readonly gravity = 4;
-
   /**
    * convenience accessors so existing call sites keep working.
    * preferred path for new code: game_ctx.level_ctx.width_cells / height_cells.

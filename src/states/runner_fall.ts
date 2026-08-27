@@ -5,7 +5,6 @@ import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerJump } from './runner_jump';
 
-
 export class RunnerFall implements RunnerState {
   readonly state_name = RunnerStateName.FALL;
 
@@ -21,8 +20,9 @@ export class RunnerFall implements RunnerState {
     input: InputInterpreter,
     runnerCtx: RunnerContext
   ): void {
-
     if (runnerCtx.is_grounded) {
+      runnerCtx.fall_acceleration = 0;
+
       // IMPORTANT: if jump is pressed right as runner is hitting ground, switch straight back to jump state instead of idle
       if (input.wasPressed(InputAction.JUMP)) {
         runner.queueNewState(new RunnerJump());
@@ -33,6 +33,12 @@ export class RunnerFall implements RunnerState {
       runner.queueNewState(new RunnerIdle());
       return;
     }
+
+    // states write energy only — resolver copies into move_down_buffer
+    runnerCtx.fall_acceleration = Math.min(
+      runnerCtx.fall_acceleration + 1,
+      runnerCtx.max_fall_acceleration
+    );
 
     // air control — same horizontal intent as run / jump (temp)
     const left = input.isHeld(InputAction.MOVE_LEFT);

@@ -5,7 +5,7 @@ import { RunnerContext } from './runner_context';
 import { SolidGrid, CELL_SIZE } from './solid_grid';
 
 /**
- * this script's sole responsibility is to check if runner is grounded and add vertical move buffer.
+ * this script's sole responsibility is to check if runner is grounded.
  * returns true when at least 2 px of the runner's bottom edge sits 1 px above a solid cell.
  * (matches the horizontal collision "shrink by 2 px" philosophy so 1 px edge contact is ignored)
  */
@@ -41,7 +41,7 @@ export function checkIsGrounded(
 
 /**
  * shared component that keeps runner_ctx.is_grounded up to date every fixed update.
- * also writes to fall_buffer (only after upward energy is fully depleted).
+ * also clears fall energy when grounded or when any upward push is present.
  * does not change states — individual states (Idle, Run, etc.) read the flag and decide.
  */
 export class GroundChecker implements Tickable {
@@ -60,10 +60,14 @@ export class GroundChecker implements Tickable {
       this.solidGrid
     );
 
-    // constant gravity while airborne.
-    // only accumulate fall after all upward_momentum (and therefore jump_buffer) are depleted.
-    if (!ctx.is_grounded && ctx.current_up_vector <= 0) {
-      ctx.move_down_buffer = this.gameCtx.gravity;
+    // up wins, ground cancels fall energy
+    if (
+      ctx.is_grounded ||
+      ctx.current_up_vector > 0 ||
+      ctx.move_up_buffer > 0
+    ) {
+      ctx.fall_acceleration = 0;
+      ctx.move_down_buffer = 0;
     }
   }
 

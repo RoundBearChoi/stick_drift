@@ -22,7 +22,6 @@ export class RunnerContext {
   move_down_buffer = 0; // unchecked move intent before collision check
   move_up_buffer = 0; // unchecked move intent before collision check
   current_up_vector = 0;
-  current_down_vector = 0;
 
   jump_start_momentum = 15;
   fall_acceleration = 0;
@@ -34,6 +33,7 @@ export class RunnerContext {
     this.move_down_buffer = 0;
     this.current_up_vector = 0;
     this.move_up_buffer = 0;
+    this.fall_acceleration = 0;
     this.is_grounded = true;
     this.is_facing_right_side = true;
   }
