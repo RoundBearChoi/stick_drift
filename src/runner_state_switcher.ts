@@ -3,11 +3,8 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 
 /**
- * commits a queued runner state after the current state's onFixedUpdate
- * has fully returned, and before movement buffers are resolved.
- *
- * states never swap themselves mid-update.
- * this object is the only place a queued transition becomes current.
+ * commits a queued runner state after the current state's onFixedUpdate has fully returned.
+ * states shouldn't swap themselves mid-update.
  */
 export class RunnerStateSwitcher implements Tickable {
   constructor(
