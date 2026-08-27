@@ -2,7 +2,7 @@ import { Vector, vec } from 'excalibur';
 
 /** owned by game ctx so all runner-related numbers live in one place */
 export class RunnerContext {
-  run_speed = 8;
+  run_speed = 4;
 
   idle_animation_tick_per_frames = 4;
   run_animation_tick_per_frames = 4;
