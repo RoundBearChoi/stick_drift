@@ -3,7 +3,7 @@ import { RunnerContext } from './runner_context';
 
 /**
  * stops the runner 1 integer pixel above the solid's top, matching horizontal "1 before solid" rule.
- * when a bottom collision clamps the movement, clear residual vertical energy.
+ * when bottom collision clamps movement, clear residual vertical energy.
  */
 export function resolveDownCollision(
   runnerX: number,
