@@ -14,11 +14,13 @@ export interface RunnerOptions {
 }
 
 /**
- * owns current state + animation.
+ * owns current state + queued state + animation.
  * does not read input itself — runner controller feeds input to the current state.
+ * does not swap states mid-update — states queue, RunnerStateSwitcher commits.
  */
 export class StickRunner extends Actor implements Tickable {
   private _runner_state: RunnerState = new RunnerIdle(); // starting state (onEnter deferred until reset)
+  private _queued_state: RunnerState | null = null;
   private _frame_based_animation!: FrameBasedAnimation;
   private _isFacingRightSide = true;
 
@@ -32,7 +34,7 @@ export class StickRunner extends Actor implements Tickable {
 
     // onEnter cannot be called here. at construction time runner does not have access to runner context.
     // constructor only creates the object and sets placeholder state. no animation is attached yet.
-    // onEnter is called either on scene start/reset or when state changes.
+    // onEnter is called either on scene start/reset or when a queued state is committed.
   }
 
   get state(): RunnerState {
@@ -61,8 +63,29 @@ export class StickRunner extends Actor implements Tickable {
     this._colliderDebug?.syncFacing(this.scale.x);
   }
 
-  /** states call this to transition. */
-  setNewState(newState: RunnerState, runnerCtx: RunnerContext): void {
+  /**
+   * states call this during onFixedUpdate.
+   * does not swap yet — RunnerStateSwitcher commits after the state's update returns.
+   * last write wins if queued more than once in one tick.
+   */
+  queueNewState(newState: RunnerState): void {
+    this._queued_state = newState;
+  }
+
+  /**
+   * called by RunnerStateSwitcher after the current state's onFixedUpdate returns.
+   * no-ops when nothing is queued.
+   */
+  commitQueuedState(runnerCtx: RunnerContext): void {
+    if (!this._queued_state) return;
+
+    const next = this._queued_state;
+    this._queued_state = null;
+    this.applyState(next, runnerCtx);
+  }
+
+  /** immediate swap. used by reset and by commitQueuedState. */
+  private applyState(newState: RunnerState, runnerCtx: RunnerContext): void {
     this._runner_state.onExit?.(this);
     this._runner_state = newState;
     this._runner_state.onEnter(this, runnerCtx);
@@ -136,9 +159,8 @@ export class StickRunner extends Actor implements Tickable {
     // clear shared simulation buffers so nothing leaks across scene visits
     runnerCtx.reset();
 
-    this._runner_state.onExit?.(this); // if onExit exists on the current state, call it. if it doesn’t, do nothing.
-    this._runner_state = new RunnerIdle();
-    this._runner_state.onEnter(this, runnerCtx);
+    this._queued_state = null;
+    this.applyState(new RunnerIdle(), runnerCtx);
     this.setFacingRightSide(true);
     this.anchor = runnerCtx.anchor;
 

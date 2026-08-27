@@ -20,7 +20,7 @@ export class RunnerFall implements RunnerState {
     runnerCtx: RunnerContext
   ): void {
     if (runnerCtx.is_grounded) {
-      runner.setNewState(new RunnerIdle(), runnerCtx);
+      runner.queueNewState(new RunnerIdle());
       return;
     }
 

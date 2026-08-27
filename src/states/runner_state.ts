@@ -10,7 +10,9 @@ export enum RunnerStateName {
 }
 
 /**
- * IMPORTANT: on every fixed update, runner ctx is passed to the runner
+ * IMPORTANT: on every fixed update, runner ctx is passed to the runner.
+ * states queue the next state with runner.queueNewState.
+ * RunnerStateSwitcher commits after onFixedUpdate returns.
  */
 export interface RunnerState {
   readonly state_name: RunnerStateName;

@@ -29,9 +29,9 @@ export class RunnerJump implements RunnerState {
     // when upward energy is gone, hand off to fall (or idle if we somehow landed)
     if (runnerCtx.up_force <= 0) {
       if (runnerCtx.is_grounded) {
-        runner.setNewState(new RunnerIdle(), runnerCtx);
+        runner.queueNewState(new RunnerIdle());
       } else {
-        runner.setNewState(new RunnerFall(), runnerCtx);
+        runner.queueNewState(new RunnerFall());
       }
       return;
     }

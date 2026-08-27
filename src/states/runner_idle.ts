@@ -23,12 +23,12 @@ export class RunnerIdle implements RunnerState {
   ): void {
     // leave ground → fall
     if (!runnerCtx.is_grounded) {
-      runner.setNewState(new RunnerFall(), runnerCtx);
+      runner.queueNewState(new RunnerFall());
       return;
     }
 
     if (input.wasPressed(InputAction.JUMP)) {
-      runner.setNewState(new RunnerJump(), runnerCtx);
+      runner.queueNewState(new RunnerJump());
       return;
     }
 
@@ -46,7 +46,7 @@ export class RunnerIdle implements RunnerState {
         runner.setFacingRightSide(false);
       }
 
-      runner.setNewState(new RunnerRun(), runnerCtx);
+      runner.queueNewState(new RunnerRun());
     }
   }
 }

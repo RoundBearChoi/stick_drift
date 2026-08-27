@@ -11,6 +11,7 @@ import {
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerController } from './runner_controller';
+import { RunnerStateSwitcher } from './state_switcher';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { GroundChecker } from './runner_ground_checker';
 import { createRunner } from './runner_creator';
@@ -27,6 +28,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
   private _stick_runner?: StickRunner;
   private _runner_controller?: RunnerController;
+  private _state_switcher?: RunnerStateSwitcher;
   private _runner_move_buffer_resolve?: RunnerMovementBufferResolve;
   private _ground_checker?: GroundChecker;
   private _camera_controller?: CameraController;
@@ -71,6 +73,13 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
     if (!this._runner_controller) {
       this._runner_controller = new RunnerController(
+        this._stick_runner,
+        this._game_ctx
+      );
+    }
+
+    if (!this._state_switcher) {
+      this._state_switcher = new RunnerStateSwitcher(
         this._stick_runner,
         this._game_ctx
       );
@@ -175,11 +184,12 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._camera_controller.snapToTarget();
 
     // IMPORTANT: register tickables so they receive fixedUpdate. order matters.
-    // runner (anim) → controller (state / write buffer) → movement resolve (apply dx)
-    // → ground checker (read final pos, update is_grounded, may force Fall)
+    // runner (anim) → controller (state / write buffer) → state switcher (commit queued)
+    // → movement resolve (apply dx) → ground checker (read final pos, update is_grounded)
     // → camera
     this._stick_runner.register(this._game_ctx);
     this._runner_controller.register();
+    this._state_switcher.register();
     this._runner_move_buffer_resolve.register();
     this._ground_checker.register();
     this._camera_controller.register();
@@ -197,6 +207,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
     if (this._runner_controller) {
       this._runner_controller.unregister();
+    }
+    if (this._state_switcher) {
+      this._state_switcher.unregister();
     }
     if (this._runner_move_buffer_resolve) {
       this._runner_move_buffer_resolve.unregister();

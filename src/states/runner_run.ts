@@ -23,17 +23,17 @@ export class RunnerRun implements RunnerState {
   ): void {
     // leave ground → fall
     if (!runnerCtx.is_grounded) {
-      runner.setNewState(new RunnerFall(), runnerCtx);
+      runner.queueNewState(new RunnerFall());
       return;
     }
 
     if (input.wasPressed(InputAction.JUMP)) {
-      runner.setNewState(new RunnerJump(), runnerCtx);
+      runner.queueNewState(new RunnerJump());
       return;
     }
 
     if (!input.isHeld(InputAction.MOVE_LEFT) && !input.isHeld(InputAction.MOVE_RIGHT)) {
-      runner.setNewState(new RunnerIdle(), runnerCtx);
+      runner.queueNewState(new RunnerIdle());
       return;
     }
 
