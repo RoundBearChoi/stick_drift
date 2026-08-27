@@ -16,9 +16,8 @@ export class RunnerController implements Tickable {
   ) {}
 
   fixedUpdate(_dt: number): void {
-    // temp debug: J is bound to InputAction.JUMP
     if (this.gameCtx.input.wasPressed(InputAction.JUMP)) {
-      console.debug('JUMP pressed (J)');
+      console.log('JUMP pressed (J)');
     }
 
     // controller gets the buffer and hands it + runner tuning to the current state.
