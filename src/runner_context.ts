@@ -29,6 +29,9 @@ export class RunnerContext {
   jump_momentum_decay_counter = 0;
   fall_acceleration = 0;
   max_fall_acceleration = 16;
+  fall_acceleration_step = 1; // amount per increase
+  fall_acceleration_interval = 2; // increase every other update
+  fall_acceleration_counter = 0;
 
   /** call from resetRunner / scene enter so buffers do not leak across scenes. */
   reset(): void {
@@ -38,6 +41,7 @@ export class RunnerContext {
     this.move_up_buffer = 0;
     this.jump_momentum_decay_counter = 0;
     this.fall_acceleration = 0;
+    this.fall_acceleration_counter = 0;
     this.is_grounded = true;
     this.is_facing_right_side = true;
   }

@@ -13,6 +13,9 @@ export class RunnerFall implements RunnerState {
       this.state_name,
       runnerCtx.fall_animation_tick_per_frames
     );
+
+    // every fall starts at phase 0 so drop timing does not depend on global tick parity
+    runnerCtx.fall_acceleration_counter = 0;
   }
 
   onFixedUpdate(
@@ -22,6 +25,7 @@ export class RunnerFall implements RunnerState {
   ): void {
     if (runnerCtx.is_grounded) {
       runnerCtx.fall_acceleration = 0;
+      runnerCtx.fall_acceleration_counter = 0;
 
       // IMPORTANT: if jump is pressed right as runner is hitting ground, switch straight back to jump state instead of idle
       if (input.wasPressed(InputAction.JUMP)) {
@@ -35,10 +39,14 @@ export class RunnerFall implements RunnerState {
     }
 
     // states write energy only — resolver copies into move_down_buffer
-    runnerCtx.fall_acceleration = Math.min(
-      runnerCtx.fall_acceleration + 1,
-      runnerCtx.max_fall_acceleration
-    );
+    runnerCtx.fall_acceleration_counter++;
+    if (runnerCtx.fall_acceleration_counter >= runnerCtx.fall_acceleration_interval) {
+      runnerCtx.fall_acceleration_counter = 0;
+      runnerCtx.fall_acceleration = Math.min(
+        runnerCtx.fall_acceleration + runnerCtx.fall_acceleration_step,
+        runnerCtx.max_fall_acceleration
+      );
+    }
 
     // air control — same horizontal intent as run / jump (temp)
     const left = input.isHeld(InputAction.MOVE_LEFT);

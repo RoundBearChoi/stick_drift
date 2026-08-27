@@ -20,6 +20,7 @@ export class RunnerJump implements RunnerState {
     runnerCtx.jump_momentum_decay_counter = 0;
     // up wins — clear any residual fall so ascent starts clean
     runnerCtx.fall_acceleration = 0;
+    runnerCtx.fall_acceleration_counter = 0;
     runnerCtx.move_down_buffer = 0;
   }
 
