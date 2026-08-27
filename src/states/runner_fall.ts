@@ -14,7 +14,6 @@ export class RunnerFall implements RunnerState {
       runnerCtx.fall_animation_tick_per_frames
     );
 
-    // every fall starts at phase 0 so drop timing does not depend on global tick parity
     runnerCtx.fall_acceleration_counter = 0;
   }
 
@@ -33,7 +32,6 @@ export class RunnerFall implements RunnerState {
         return;
       }
 
-      // return to idle if no jump is pressed
       runner.queueNewState(new RunnerIdle());
       return;
     }
@@ -48,7 +46,6 @@ export class RunnerFall implements RunnerState {
       );
     }
 
-    // air control — same horizontal intent as run / jump (temp)
     const left = input.isHeld(InputAction.MOVE_LEFT);
     const right = input.isHeld(InputAction.MOVE_RIGHT);
 

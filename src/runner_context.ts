@@ -30,7 +30,7 @@ export class RunnerContext {
   fall_acceleration = 0;
   max_fall_acceleration = 16;
   fall_acceleration_step = 1; // amount per increase
-  fall_acceleration_interval = 2; // increase every other update
+  fall_acceleration_interval = 1;
   fall_acceleration_counter = 0;
 
   /** call from resetRunner / scene enter so buffers do not leak across scenes. */
