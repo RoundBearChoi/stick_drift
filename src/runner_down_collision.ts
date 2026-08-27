@@ -11,7 +11,7 @@ export function resolveDownCollision(
   runnerCtx: RunnerContext,
   solidGrid: SolidGrid
 ): number {
-  const dy = runnerCtx.fall_buffer;
+  const dy = runnerCtx.move_down_buffer;
 
   if (dy === 0) return 0;
 
@@ -52,8 +52,8 @@ export function resolveDownCollision(
   // bottom collision detected → clear residual upward energy
   // (mirrors the ceiling-hit clear of up_force in RunnerMovementBufferResolve)
   if (clampedDy < dy) {
-    runnerCtx.up_force = 0;
-    runnerCtx.jump_buffer = 0;
+    runnerCtx.current_up_vector = 0;
+    runnerCtx.move_up_buffer = 0;
   }
 
   return clampedDy;

@@ -10,7 +10,7 @@ export function resolveUpCollision(
   runnerCtx: RunnerContext,
   solidGrid: SolidGrid
 ): number {
-  const up = runnerCtx.jump_buffer;
+  const up = runnerCtx.move_up_buffer;
 
   if (up <= 0) return 0;
 

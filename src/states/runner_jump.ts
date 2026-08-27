@@ -16,9 +16,9 @@ export class RunnerJump implements RunnerState {
     );
 
     // states should only write to upward_momentum
-    runnerCtx.up_force = runnerCtx.jump_initial_momentum;
+    runnerCtx.current_up_vector = runnerCtx.jump_start_momentum;
     // clear any residual fall so ascent starts clean
-    runnerCtx.fall_buffer = 0;
+    runnerCtx.move_down_buffer = 0;
   }
 
   onFixedUpdate(
@@ -27,7 +27,7 @@ export class RunnerJump implements RunnerState {
     runnerCtx: RunnerContext
   ): void {
     // when upward energy is gone, hand off to fall (or idle if we somehow landed)
-    if (runnerCtx.up_force <= 0) {
+    if (runnerCtx.current_up_vector <= 0) {
       if (runnerCtx.is_grounded) {
         runner.queueNewState(new RunnerIdle());
       } else {

@@ -22,9 +22,9 @@ export class RunnerMovementBufferResolve implements Tickable {
 
     // 1. feed jump from momentum (states only write upward_momentum)
     // decrease upward_momentum by 1 every fixed update while it remains
-    if (ctx.up_force > 0) {
-      ctx.jump_buffer = ctx.up_force;
-      ctx.up_force = Math.max(0, ctx.up_force - 1);
+    if (ctx.current_up_vector > 0) {
+      ctx.move_up_buffer = ctx.current_up_vector;
+      ctx.current_up_vector = Math.max(0, ctx.current_up_vector - 1);
     }
 
     // 2. horizontal first
@@ -39,7 +39,7 @@ export class RunnerMovementBufferResolve implements Tickable {
 
     // 3. vertical after (uses the updated x so we can land on platforms we just moved onto)
     // ascent has priority — we only fall after all upward_momentum and jump_buffer are depleted
-    if (ctx.jump_buffer > 0) {
+    if (ctx.move_up_buffer > 0) {
       const safeUp = resolveUpCollision(
         this.runner.pos.x,
         this.runner.pos.y,
@@ -49,11 +49,11 @@ export class RunnerMovementBufferResolve implements Tickable {
       this.runner.pos.y -= safeUp;
 
       // hit a ceiling → kill remaining upward push so we start falling next frames
-      if (safeUp < ctx.jump_buffer) {
-        ctx.up_force = 0;
+      if (safeUp < ctx.move_up_buffer) {
+        ctx.current_up_vector = 0;
       }
 
-      ctx.jump_buffer = 0;
+      ctx.move_up_buffer = 0;
     } else {
       const safeDy = resolveDownCollision(
         this.runner.pos.x,
@@ -62,7 +62,7 @@ export class RunnerMovementBufferResolve implements Tickable {
         this.solidGrid
       );
       this.runner.pos.y += safeDy;
-      ctx.fall_buffer = 0;
+      ctx.move_down_buffer = 0;
     }
   }
 
