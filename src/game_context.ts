@@ -106,12 +106,14 @@ export class GameContext {
     }
 
     // 2. run fixed steps (all Tickables see the same input snapshot)
+    let steps = 0;
     this._fixed_timestep.step(realElapsed, (dt) => {
+      steps++;
       this.fixedUpdate(engine, dt);
     });
 
-    // 3. clear edge flags after all fixed steps
-    if (this._input_interpreter) {
+    // 3. clear edge flags only after at least one fixed step has read them
+    if (this._input_interpreter && steps > 0) {
       this._input_interpreter.endFrame();
     }
   }

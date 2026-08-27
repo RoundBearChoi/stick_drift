@@ -12,7 +12,8 @@ export enum InputAction {
 /**
  * - samples keyboard once per visual frame (every frame because we don't wanna miss any input).
  * - exposes pressed / held / released state.
- * - edges are cleared in endFrame() after all fixed steps finish.
+ * - pressed / released latch across visual frames that run zero fixed steps.
+ * - edges are cleared in endFrame() after at least one fixed step has run.
  * - does not implement Tickable; other systems simply read from it during their own fixedUpdate.
  */
 export class InputInterpreter {
@@ -39,8 +40,8 @@ export class InputInterpreter {
   /** called once per visual frame, before fixed update */
   sample(): void {
     this.held.clear();
-    this.pressed.clear();
-    this.released.clear();
+    // pressed / released stay latched until endFrame()
+    // so a 0-step visual frame cannot erase an edge
 
     const keyboard = this.engine.input.keyboard;
 
