@@ -30,10 +30,18 @@ export class RunnerMovementBufferResolve implements Tickable {
     this.runner.pos.x += safeDx;
     ctx.horizontal_move_buffer = 0;
 
-    // decrease upward energy by 1 every fixed update while it remains
+    // apply remaining upward energy this tick, then decay on the jump-local interval
     if (ctx.current_up_vector > 0) {
       ctx.move_up_buffer = ctx.current_up_vector;
-      ctx.current_up_vector = Math.max(0, ctx.current_up_vector - 1);
+
+      ctx.jump_momentum_decay_counter++;
+      if (ctx.jump_momentum_decay_counter >= ctx.jump_momentum_decay_interval) {
+        ctx.jump_momentum_decay_counter = 0;
+        ctx.current_up_vector = Math.max(
+          0,
+          ctx.current_up_vector - ctx.jump_momentum_decay
+        );
+      }
     }
 
     // any ascent cancels fall energy

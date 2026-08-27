@@ -17,6 +17,8 @@ export class RunnerJump implements RunnerState {
 
     // states should only write to upward energy
     runnerCtx.current_up_vector = runnerCtx.jump_start_momentum;
+    // every jump starts at decay phase 0 so hang time does not depend on global tick parity
+    runnerCtx.jump_momentum_decay_counter = 0;
     // up wins — clear any residual fall so ascent starts clean
     runnerCtx.fall_acceleration = 0;
     runnerCtx.move_down_buffer = 0;

@@ -24,6 +24,10 @@ export class RunnerContext {
   current_up_vector = 0;
 
   jump_start_momentum = 15;
+  jump_momentum_decay = 1;
+  /** 1 = decay every fixed tick, 2 = every other tick. jump-local so phase does not depend on when jump was pressed. */
+  jump_momentum_decay_interval = 2;
+  jump_momentum_decay_counter = 0;
   fall_acceleration = 0;
   max_fall_acceleration = 16;
 
@@ -33,6 +37,7 @@ export class RunnerContext {
     this.move_down_buffer = 0;
     this.current_up_vector = 0;
     this.move_up_buffer = 0;
+    this.jump_momentum_decay_counter = 0;
     this.fall_acceleration = 0;
     this.is_grounded = true;
     this.is_facing_right_side = true;
