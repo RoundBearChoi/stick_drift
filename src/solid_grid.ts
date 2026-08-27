@@ -43,9 +43,9 @@ export class SolidGrid {
   isSolid(cellX: number, cellY: number): boolean {
     if (
       cellX < 0 ||
-      cellX >= this.widthCells ||
-      cellY < 0 ||
-      cellY >= this.heightCells
+      cellX >= this.widthCells || // right of the level (top edge)
+      cellY < 0 || // above the level
+      cellY >= this.heightCells // below the level (bottom edge)
     ) {
       // treat out-of-bounds as solid for now
       return true;
