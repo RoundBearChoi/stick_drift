@@ -23,7 +23,7 @@ export class RunnerContext {
   move_up_buffer = 0; // unchecked move intent before collision check
   current_up_vector = 0;
 
-  jump_start_momentum = 12;
+  jump_starting_momentum = 12;
   jump_momentum_decay = 1; // amount per decay
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
