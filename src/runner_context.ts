@@ -2,13 +2,11 @@ import { Vector, vec } from 'excalibur';
 
 /** owned by game ctx so all runner-related numbers live in one place */
 export class RunnerContext {
-  run_speed = 4;
-
   idle_animation_tick_per_frames = 4;
   run_animation_tick_per_frames = 4;
   fall_animation_tick_per_frames = 4;
 
-  /** bottom-center pivot */
+  // bottom-center pivot
   readonly anchor: Vector = vec(0.5, 1);
 
   is_grounded = true;
@@ -17,10 +15,12 @@ export class RunnerContext {
   collider_width = 20;
   collider_height = 30;
 
-  /** live-togglable visual debug. not cleared by reset() */
+  // live-togglable visual debug. not cleared by reset()
   show_collider_debug = true;
   show_jump_debug = true;
   show_fall_debug = true;
+
+  run_speed = 5;
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check
