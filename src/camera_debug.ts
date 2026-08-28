@@ -27,13 +27,13 @@ export class CameraDebug extends Actor {
   }
 
   private draw(ctx: ExcaliburGraphicsContext): void {
-    // clone so we do not mutate the shared DraculaColorScheme.red
+    // IMPORTANT: clone() so we do not mutate the shared DraculaColorScheme.red
     const transparent_red: Color = DraculaColorScheme.red.clone();
     transparent_red.a = 0.12;
 
     const half = 4;
 
-    // ── X at world origin (0, 0) ────────────────────────────────
+    // X at world origin (0, 0)
     ctx.drawLine(
       vec(0 - half, 0 - half),
       vec(0 + half, 0 + half),
@@ -54,7 +54,7 @@ export class CameraDebug extends Actor {
       ctx.drawLine(vec(0, 0), cam.pos, transparent_red, 1);
     }
 
-    // ── existing desired-target X + line ───────────────────────
+    // existing desired-target X + line
     const desired = this.cameraController.getDesiredTargetPos();
     if (!desired) return;
     if (!cam) return;
