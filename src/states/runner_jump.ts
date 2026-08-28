@@ -8,10 +8,8 @@ import { RunnerIdle } from './runner_idle';
 export class RunnerJump implements RunnerState {
   readonly state_name = RunnerStateName.JUMP;
 
-  /** jump fixed update count. onEnter does not count as an update. */
-  private _ticks_in_jump = 0;
-  /** once true, this jump cannot regain momentum even if jump is held again */
-  private _release_hang_started = false;
+  private _ticks_in_jump = 0; // dedicated fixed update count for jump state. onEnter does not count as an update.
+  private _release_hang_started = false; // once this becomes true, jump cannot regain momentum
 
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
     // for now jump reuses idle animation + idle tick rate

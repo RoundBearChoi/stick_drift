@@ -32,11 +32,9 @@ export class RunnerContext {
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
 
-  min_jump_ticks_before_cut = 2; // minimum jump fixed updates before cancel
-  /** fixed updates of 1-up after jump release, before Fall */
-  release_hang_time = 3;
-  /** remaining hang ticks for the current jump. 0 when not hanging */
-  release_hang_ticks_remaining = 0;
+  min_jump_ticks_before_cut = 1; // minimum jump fixed updates before cancel
+  release_hang_time = 6; // hang time before jump is completely cancelled by release
+  release_hang_ticks_remaining = 0; // remaining hang time for current jump
   fall_acceleration = 0;
   max_fall_acceleration = 16;
   fall_acceleration_step = 1; // amount per increase
