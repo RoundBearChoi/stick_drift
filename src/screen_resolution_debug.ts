@@ -31,7 +31,7 @@ export class ScreenResolutionDebug {
         pos: vec(8, 8 + 8 + 2), // slightly below FPS text at (8, 8)
         font: createTopLeftFont(),
       });
-      this.label.color = DraculaColorScheme.white.clone();
+      this.label.color = DraculaColorScheme.white;
       this.label.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
     }
 

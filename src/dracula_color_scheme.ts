@@ -46,7 +46,7 @@ const palette = {
  */
 export const DraculaColorScheme = {
   get background() {
-    return palette.background.clone();
+    return palette.background;
   },
   get selection_color() {
     return palette.selection_color.clone();

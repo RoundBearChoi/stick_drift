@@ -14,7 +14,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  */
 export class NearestMouseToGrid extends Actor {
   private readonly _radius = 3;
-  private readonly _color = DraculaColorScheme.green.clone();
+  private readonly _color = DraculaColorScheme.green;
 
   /** false until we observe a real mouse move */
   private _followMouse = false;

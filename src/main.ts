@@ -14,7 +14,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 const engine = new Engine({
   width: NATIVE_RESOLUTION.width,
   height: NATIVE_RESOLUTION.height,
-  backgroundColor: DraculaColorScheme.background.clone(),
+  backgroundColor: DraculaColorScheme.background,
   displayMode: DisplayMode.Fixed, // important for clean integer CSS scaling
   antialiasing: {
     pixelArtSampler: false,
