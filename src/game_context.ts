@@ -85,7 +85,7 @@ export class GameContext {
     this._tickables.delete(tickable);
   }
 
-  /** this gets called on every visual frame from scene's onPostUpdate. passes real elapsed time from Excalibur for fixed updates. */
+  /** run on every visual frame from scene's onPostUpdate. pass real elapsed time from Excalibur for fixed updates. */
   update(engine: Engine, realElapsed: number): void {
     this.fps_overlay.update(realElapsed);
 
