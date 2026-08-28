@@ -4,12 +4,6 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 
 /**
  * visual-only jump-momentum bar.
- * three 1px columns at x = -1, 0, and +1, from collider top
- * up to jump_starting_momentum (drawn at 2x so the bar is easier to see).
- *
- * green = remaining current_up_vector
- * red   = spent portion up to the original max
- *
  * only drawn while the host runner is in jump state.
  * symmetric around x = 0, so facing-flip does not change the picture.
  */
@@ -29,7 +23,7 @@ export class RunnerJumpDebug {
       // local origin stays at the runner’s pivot (bottom-center)
     });
 
-    // same safety flag GridSystem / CameraController use
+    // safety flag to make sure it renders
     debug.graphics.forceOnScreen = true;
 
     debug.graphics.onPostDraw = (ctx) => {
@@ -45,7 +39,6 @@ export class RunnerJumpDebug {
     if (!runnerCtx || !runnerCtx.show_jump_debug) return;
 
     // host is StickRunner. read stateName without importing StickRunner
-    // (that would cycle: stick_runner -> runner_jump_debug -> stick_runner).
     const stateName = (this.host as Actor & { stateName?: string }).stateName;
     if (stateName !== 'jump') return;
 
@@ -58,7 +51,7 @@ export class RunnerJumpDebug {
     );
     const spent = max - remaining;
 
-    // visual-only scale. does not change jump physics.
+    // visual-only scale
     const heightScale = 2;
 
     // local space relative to bottom-center pivot
