@@ -15,7 +15,7 @@ export class RunnerContext {
   collider_width = 20;
   collider_height = 30;
 
-  // live-togglable visual debug. not cleared by reset()
+  // live toggle visual debug. not cleared by reset()
   show_collider_debug = true;
   show_jump_debug = true;
   show_fall_debug = true;
@@ -31,8 +31,8 @@ export class RunnerContext {
   jump_momentum_decay = 1; // amount per decay
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
-  /** jump-state fixed updates that always rise before a release can cut the jump */
-  min_jump_ticks_before_cut = 2;
+
+  min_jump_ticks_before_cut = 2; // minimum jump fixed updates before cancel
   fall_acceleration = 0;
   max_fall_acceleration = 16;
   fall_acceleration_step = 1; // amount per increase

@@ -8,7 +8,7 @@ import { RunnerIdle } from './runner_idle';
 export class RunnerJump implements RunnerState {
   readonly state_name = RunnerStateName.JUMP;
 
-  /** jump-state fixed updates only. onEnter is not a movement tick. */
+  /** jump fixed update count. onEnter does not count as an update. */
   private _ticks_in_jump = 0;
 
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
@@ -36,7 +36,7 @@ export class RunnerJump implements RunnerState {
   ): void {
     this._ticks_in_jump++;
 
-    // release = virtual ceiling. first N jump ticks always rise.
+    // release = virtual ceiling, except first minimum jump updates
     if (
       this._ticks_in_jump > runnerCtx.min_jump_ticks_before_cut &&
       !input.isHeld(InputAction.JUMP)
