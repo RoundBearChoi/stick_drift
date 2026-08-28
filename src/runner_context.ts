@@ -36,6 +36,7 @@ export class RunnerContext {
    * minimum jump fixed updates before cancel.
    * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
    */
+  release_hang_time = 6
   min_jump_ticks_before_cut = 1;
   release_hang_ticks_remaining = 0; // remaining hang time for current jump
   fall_acceleration = 0;
