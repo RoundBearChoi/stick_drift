@@ -1,10 +1,10 @@
 import { Color } from 'excalibur';
 
 /**
- * single source of truth for all game colors.
+ * canonical palette. never hand these objects out directly.
  * https://draculatheme.com/contribute
  */
-export const DraculaColorScheme = {
+const palette = {
   /** #282a36 – official Dracula background */
   background: Color.fromHex('#282a36'),
 
@@ -38,5 +38,46 @@ export const DraculaColorScheme = {
   /** #f1fa8c – yellow (good for bricks / platforms) */
   yellow: Color.fromHex('#f1fa8c'),
 } as const;
+
+/**
+ * single source of truth for all game colors.
+ * every access returns a clone so a local variant (alpha, tint, …)
+ * cannot mutate the palette.
+ */
+export const DraculaColorScheme = {
+  get background() {
+    return palette.background.clone();
+  },
+  get selection_color() {
+    return palette.selection_color.clone();
+  },
+  get white() {
+    return palette.white.clone();
+  },
+  get comment_color() {
+    return palette.comment_color.clone();
+  },
+  get cyan() {
+    return palette.cyan.clone();
+  },
+  get green() {
+    return palette.green.clone();
+  },
+  get orange() {
+    return palette.orange.clone();
+  },
+  get pink() {
+    return palette.pink.clone();
+  },
+  get purple() {
+    return palette.purple.clone();
+  },
+  get red() {
+    return palette.red.clone();
+  },
+  get yellow() {
+    return palette.yellow.clone();
+  },
+};
 
 export type DraculaColorScheme = typeof DraculaColorScheme;
