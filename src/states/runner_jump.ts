@@ -10,6 +10,8 @@ export class RunnerJump implements RunnerState {
 
   /** jump fixed update count. onEnter does not count as an update. */
   private _ticks_in_jump = 0;
+  /** once true, this jump cannot regain momentum even if jump is held again */
+  private _release_hang_started = false;
 
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
     // for now jump reuses idle animation + idle tick rate
@@ -25,8 +27,10 @@ export class RunnerJump implements RunnerState {
     runnerCtx.fall_acceleration = 0;
     runnerCtx.fall_acceleration_counter = 0;
     runnerCtx.move_down_buffer = 0;
+    runnerCtx.release_hang_ticks_remaining = 0;
 
     this._ticks_in_jump = 0;
+    this._release_hang_started = false;
   }
 
   onFixedUpdate(
@@ -36,12 +40,24 @@ export class RunnerJump implements RunnerState {
   ): void {
     this._ticks_in_jump++;
 
-    // release = virtual ceiling, except first minimum jump updates
-    if (
-      this._ticks_in_jump > runnerCtx.min_jump_ticks_before_cut &&
-      !input.isHeld(InputAction.JUMP)
-    ) {
-      runnerCtx.cancelUpwardMomentum();
+    const pastMinJump =
+      this._ticks_in_jump > runnerCtx.min_jump_ticks_before_cut;
+    const jumpHeld = input.isHeld(InputAction.JUMP);
+
+    if (!this._release_hang_started && pastMinJump && !jumpHeld) {
+      this._release_hang_started = true;
+      runnerCtx.release_hang_ticks_remaining = runnerCtx.release_hang_time;
+    }
+
+    if (this._release_hang_started) {
+      if (runnerCtx.release_hang_ticks_remaining > 0) {
+        // hang: keep 1 up-force. freeze decay so the resolver cannot eat it.
+        runnerCtx.current_up_vector = 1;
+        runnerCtx.jump_momentum_decay_counter = 0;
+        runnerCtx.release_hang_ticks_remaining--;
+      } else {
+        runnerCtx.cancelUpwardMomentum();
+      }
     }
 
     // when upward energy is gone, start falling (or idle if we somehow landed)
