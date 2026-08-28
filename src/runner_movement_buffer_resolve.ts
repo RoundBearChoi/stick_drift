@@ -63,7 +63,7 @@ export class RunnerMovementBufferResolve implements Tickable {
 
       // hit a ceiling → kill remaining upward push so we start falling next frames
       if (safeUp < ctx.move_up_buffer) {
-        ctx.current_up_vector = 0;
+        ctx.cancelUpwardMomentum();
       }
 
       ctx.move_up_buffer = 0;
