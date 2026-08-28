@@ -47,7 +47,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
         pos: vec(8, 8 + 16 + 4),
         font: createTopLeftFont(),
       });
-      this._titleLabel.color = DraculaColorScheme.cyan;
+      this._titleLabel.color = DraculaColorScheme.cyan.clone();
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
       this.add(this._titleLabel);
     }

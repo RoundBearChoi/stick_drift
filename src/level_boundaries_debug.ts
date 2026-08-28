@@ -12,7 +12,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 export class LevelBoundariesDebug extends Actor {
   private readonly _width: number;
   private readonly _height: number;
-  private readonly _color = DraculaColorScheme.yellow;
+  private readonly _color = DraculaColorScheme.yellow.clone();
   private readonly _thickness = 1;
 
   /**

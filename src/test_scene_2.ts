@@ -14,7 +14,7 @@ export class TestScene2 extends Scene<GameContext> {
   private titleLabel?: Label;
 
   onInitialize(engine: Engine): void {
-    this.backgroundColor = DraculaColorScheme.pink;
+    this.backgroundColor = DraculaColorScheme.pink.clone();
   }
 
   onActivate(context: SceneActivationContext<GameContext>): void {
