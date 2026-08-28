@@ -18,6 +18,7 @@ export class RunnerContext {
   collider_height = 30;
   show_collider_debug = true;
   show_jump_debug = true;
+  show_fall_debug = true;
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check

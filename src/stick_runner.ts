@@ -9,6 +9,7 @@ import { RunnerState, RunnerStateName } from './states/runner_state';
 import { RunnerIdle } from './states/runner_idle';
 import { RunnerColliderDebug } from './runner_collider_debug';
 import { RunnerJumpDebug } from './runner_jump_debug';
+import { RunnerFallDebug } from './runner_fall_debug';
 
 export interface RunnerOptions {
   pos?: Vector;
@@ -29,6 +30,9 @@ export class StickRunner extends Actor implements Tickable {
 
   /** visual-only jump-momentum bar (completely separate from animation + gameplay) */
   private _jumpDebug: RunnerJumpDebug | null = null;
+
+  /** visual-only fall-acceleration bar (completely separate from animation + gameplay) */
+  private _fallDebug: RunnerFallDebug | null = null;
 
   constructor(options: RunnerOptions = {}) {
     super({
@@ -176,6 +180,12 @@ export class StickRunner extends Actor implements Tickable {
       this._jumpDebug = new RunnerJumpDebug(this);
     }
     this._jumpDebug.ensure(runnerCtx);
+
+    // fall acceleration debug (visual only)
+    if (!this._fallDebug) {
+      this._fallDebug = new RunnerFallDebug(this);
+    }
+    this._fallDebug.ensure(runnerCtx);
   }
 
   get currentFrameIndex(): number {
