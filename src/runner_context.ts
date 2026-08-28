@@ -20,7 +20,9 @@ export class RunnerContext {
   show_jump_debug = true;
   show_fall_debug = true;
 
-  run_speed = 5;
+  run_accel_per_update = 1;
+  current_run_accel = 0;
+  max_run_speed = 5;
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check

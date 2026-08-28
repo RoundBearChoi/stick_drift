@@ -48,6 +48,6 @@ export class RunnerRun implements RunnerState {
 
     // only write intent — do not touch position here
     const dir = runnerCtx.is_facing_right_side ? 1 : -1;
-    runnerCtx.horizontal_move_buffer = dir * runnerCtx.run_speed;
+    runnerCtx.horizontal_move_buffer = dir * runnerCtx.max_run_speed;
   }
 }

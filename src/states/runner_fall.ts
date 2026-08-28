@@ -51,10 +51,10 @@ export class RunnerFall implements RunnerState {
 
     if (right && !left) {
       runnerCtx.is_facing_right_side = true;
-      runnerCtx.horizontal_move_buffer = runnerCtx.run_speed;
+      runnerCtx.horizontal_move_buffer = runnerCtx.max_run_speed;
     } else if (left && !right) {
       runnerCtx.is_facing_right_side = false;
-      runnerCtx.horizontal_move_buffer = -runnerCtx.run_speed;
+      runnerCtx.horizontal_move_buffer = -runnerCtx.max_run_speed;
     }
   }
 }
