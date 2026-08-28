@@ -4,6 +4,7 @@ import { Vector, vec } from 'excalibur';
 export class RunnerContext {
   idle_animation_tick_per_frames = 4;
   run_animation_tick_per_frames = 4;
+  run_accel_animation_tick_per_frames = 4;
   fall_animation_tick_per_frames = 4;
 
   // bottom-center pivot
@@ -65,6 +66,7 @@ export class RunnerContext {
     this.release_hang_ticks_remaining = 0;
     this.fall_acceleration = 0;
     this.fall_acceleration_counter = 0;
+    this.current_run_accel = 0;
     this.is_grounded = true;
     this.is_facing_right_side = true;
   }

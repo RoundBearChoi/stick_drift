@@ -2,7 +2,7 @@ import { InputAction, InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
 import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
-import { RunnerRun } from './runner_run';
+import { RunnerRunAccel } from './runner_run_accel';
 import { RunnerFall } from './runner_fall';
 import { RunnerJump } from './runner_jump';
 
@@ -46,7 +46,7 @@ export class RunnerIdle implements RunnerState {
         runnerCtx.is_facing_right_side = false;
       }
 
-      runner.queueNewState(new RunnerRun());
+      runner.queueNewState(new RunnerRunAccel());
     }
   }
 }
