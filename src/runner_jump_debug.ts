@@ -4,7 +4,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 
 /**
  * visual-only jump-momentum bar.
- * two 1px columns at x = -1 and x = +1, from collider top
+ * three 1px columns at x = -1, 0, and +1, from collider top
  * up to jump_starting_momentum.
  *
  * green = remaining current_up_vector
@@ -57,7 +57,7 @@ export class RunnerJumpDebug {
     const yCurrent = yColliderTop - remaining;
     const yMax = yColliderTop - max;
 
-    const columns = [-1, 1];
+    const columns = [-1, 0, 1];
 
     for (const x of columns) {
       if (remaining > 0) {
