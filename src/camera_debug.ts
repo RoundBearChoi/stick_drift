@@ -29,7 +29,7 @@ export class CameraDebug extends Actor {
   private draw(ctx: ExcaliburGraphicsContext): void {
     // IMPORTANT: clone() so we do not mutate the shared DraculaColorScheme.red
     const transparent_red: Color = DraculaColorScheme.red;
-    transparent_red.a = 0.12;
+    transparent_red.a = 0.16;
 
     const half = 4;
 

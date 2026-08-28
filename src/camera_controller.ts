@@ -9,7 +9,6 @@ import { GameContext } from './game_context';
 
 /**
  * fixed-timestep camera that follows a target with deadzones and integer axis-aligned steps.
- *
  * future-friendly stuff:
  * - setFollowTarget() so the follow source can change later
  * - snapToTarget() for scene transitions and/or resets
@@ -30,7 +29,7 @@ export class CameraController implements Tickable {
    * this is negative because y increases downward in excalibur.
    * runner sprites are 32 by 32 with bottom-center anchor, so roughly 32 + 16 = 48
    */
-  targetOffsetY = -48;
+  targetOffsetY = -32;
 
   private _followTarget: Actor | null = null;
 
