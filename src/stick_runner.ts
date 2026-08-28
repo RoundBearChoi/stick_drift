@@ -57,6 +57,7 @@ export class StickRunner extends Actor implements Tickable {
     const scaleX = runnerCtx.is_facing_right_side ? 1 : -1;
     if (this.scale.x === scaleX) return;
 
+    // flip the render based on facing
     this.scale.x = scaleX;
 
     // keep the debug box un-mirrored (collider is facing-independent)
