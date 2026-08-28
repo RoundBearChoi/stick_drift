@@ -8,6 +8,9 @@ import { RunnerIdle } from './runner_idle';
 export class RunnerJump implements RunnerState {
   readonly state_name = RunnerStateName.JUMP;
 
+  /** jump-state fixed updates only. onEnter is not a movement tick. */
+  private _ticks_in_jump = 0;
+
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
     // for now jump reuses idle animation + idle tick rate
     runner.playAnimationForState(
@@ -22,6 +25,8 @@ export class RunnerJump implements RunnerState {
     runnerCtx.fall_acceleration = 0;
     runnerCtx.fall_acceleration_counter = 0;
     runnerCtx.move_down_buffer = 0;
+
+    this._ticks_in_jump = 0;
   }
 
   onFixedUpdate(
@@ -29,6 +34,16 @@ export class RunnerJump implements RunnerState {
     input: InputInterpreter,
     runnerCtx: RunnerContext
   ): void {
+    this._ticks_in_jump++;
+
+    // release = virtual ceiling. first N jump ticks always rise.
+    if (
+      this._ticks_in_jump > runnerCtx.min_jump_ticks_before_cut &&
+      !input.isHeld(InputAction.JUMP)
+    ) {
+      runnerCtx.cancelUpwardMomentum();
+    }
+
     // when upward energy is gone, start falling (or idle if we somehow landed)
     if (runnerCtx.current_up_vector <= 0) {
       if (runnerCtx.is_grounded) {
