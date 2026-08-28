@@ -32,8 +32,11 @@ export class RunnerContext {
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
 
-  min_jump_ticks_before_cut = 1; // minimum jump fixed updates before cancel
-  release_hang_time = 6; // hang time before jump is completely cancelled by release
+  /**
+   * minimum jump fixed updates before cancel.
+   * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
+   */
+  min_jump_ticks_before_cut = 1;
   release_hang_ticks_remaining = 0; // remaining hang time for current jump
   fall_acceleration = 0;
   max_fall_acceleration = 16;
