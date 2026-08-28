@@ -25,10 +25,8 @@ export class StickRunner extends Actor implements Tickable {
   private _queued_state: RunnerState | null = null;
   private _frame_based_animation!: FrameBasedAnimation;
 
-  private _showColliderDebug = true; // maybe move to runner ctx
+  /** visual-only collider outline (completely separate from animation + gameplay) */
   private _colliderDebug: RunnerColliderDebug | null = null;
-
-  private _showJumpAndFallDebug = true; // maybe move to runner ctx
   private _jumpDebug: RunnerJumpDebug | null = null;
   private _fallDebug: RunnerFallDebug | null = null;
 
@@ -171,27 +169,22 @@ export class StickRunner extends Actor implements Tickable {
     this.anchor = runnerCtx.anchor;
     this.syncFacing(runnerCtx);
 
-    if (this._showColliderDebug)
-    {
-      if (!this._colliderDebug) {
-        this._colliderDebug = new RunnerColliderDebug(this);
-      }
-      this._colliderDebug.ensure(runnerCtx);
+    // always attach debug actors so ctx flags can be live-toggled.
+    // draw() already no-ops when the matching show_* flag is false.
+    if (!this._colliderDebug) {
+      this._colliderDebug = new RunnerColliderDebug(this);
     }
+    this._colliderDebug.ensure(runnerCtx);
 
-    if (this._showJumpAndFallDebug)
-    {
-      if (!this._jumpDebug) {
-        this._jumpDebug = new RunnerJumpDebug(this);
-      }
-      this._jumpDebug.ensure(runnerCtx);
-
-      // fall acceleration debug (visual only)
-      if (!this._fallDebug) {
-        this._fallDebug = new RunnerFallDebug(this);
-      }
-      this._fallDebug.ensure(runnerCtx);
+    if (!this._jumpDebug) {
+      this._jumpDebug = new RunnerJumpDebug(this);
     }
+    this._jumpDebug.ensure(runnerCtx);
+
+    if (!this._fallDebug) {
+      this._fallDebug = new RunnerFallDebug(this);
+    }
+    this._fallDebug.ensure(runnerCtx);
   }
 
   get currentFrameIndex(): number {

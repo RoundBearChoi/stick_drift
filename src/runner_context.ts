@@ -16,6 +16,8 @@ export class RunnerContext {
 
   collider_width = 20;
   collider_height = 30;
+
+  /** live-togglable visual debug. not cleared by reset() */
   show_collider_debug = true;
   show_jump_debug = true;
   show_fall_debug = true;
