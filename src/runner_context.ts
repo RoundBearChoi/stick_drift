@@ -33,6 +33,10 @@ export class RunnerContext {
   jump_momentum_decay_counter = 0;
 
   min_jump_ticks_before_cut = 2; // minimum jump fixed updates before cancel
+  /** fixed updates of 1-up after jump release, before Fall */
+  release_hang_time = 3;
+  /** remaining hang ticks for the current jump. 0 when not hanging */
+  release_hang_ticks_remaining = 0;
   fall_acceleration = 0;
   max_fall_acceleration = 16;
   fall_acceleration_step = 1; // amount per increase
@@ -44,6 +48,7 @@ export class RunnerContext {
     this.current_up_vector = 0;
     this.move_up_buffer = 0;
     this.jump_momentum_decay_counter = 0;
+    this.release_hang_ticks_remaining = 0;
   }
 
   /** call from resetRunner / scene enter so buffers do not leak across scenes. */
@@ -53,6 +58,7 @@ export class RunnerContext {
     this.current_up_vector = 0;
     this.move_up_buffer = 0;
     this.jump_momentum_decay_counter = 0;
+    this.release_hang_ticks_remaining = 0;
     this.fall_acceleration = 0;
     this.fall_acceleration_counter = 0;
     this.is_grounded = true;
