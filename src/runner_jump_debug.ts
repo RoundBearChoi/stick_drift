@@ -5,7 +5,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 /**
  * visual-only jump-momentum bar.
  * three 1px columns at x = -1, 0, and +1, from collider top
- * up to jump_starting_momentum.
+ * up to jump_starting_momentum (drawn at 2x so the bar is easier to see).
  *
  * green = remaining current_up_vector
  * red   = spent portion up to the original max
@@ -52,10 +52,13 @@ export class RunnerJumpDebug {
     );
     const spent = max - remaining;
 
+    // visual-only scale. does not change jump physics.
+    const heightScale = 2;
+
     // local space relative to bottom-center pivot
     const yColliderTop = -runnerCtx.collider_height;
-    const yCurrent = yColliderTop - remaining;
-    const yMax = yColliderTop - max;
+    const yCurrent = yColliderTop - remaining * heightScale;
+    const yMax = yColliderTop - max * heightScale;
 
     const columns = [-1, 0, 1];
 
