@@ -5,6 +5,7 @@ import { RunnerContext } from '../runner_context';
 export enum RunnerStateName {
   IDLE = 'idle',
   RUN = 'run',
+  RUN_ACCEL = 'run_accel',
   JUMP = 'jump',
   FALL = 'fall',
 }
