@@ -31,11 +31,20 @@ export class RunnerContext {
   jump_momentum_decay = 1; // amount per decay
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
+  /** jump-state fixed updates that always rise before a release can cut the jump */
+  min_jump_ticks_before_cut = 2;
   fall_acceleration = 0;
   max_fall_acceleration = 16;
   fall_acceleration_step = 1; // amount per increase
   fall_acceleration_interval = 1;
   fall_acceleration_counter = 0;
+
+  /** same kill used by a real ceiling and by jump-release */
+  cancelUpwardMomentum(): void {
+    this.current_up_vector = 0;
+    this.move_up_buffer = 0;
+    this.jump_momentum_decay_counter = 0;
+  }
 
   /** call from resetRunner / scene enter so buffers do not leak across scenes. */
   reset(): void {
