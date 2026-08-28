@@ -25,9 +25,10 @@ export class StickRunner extends Actor implements Tickable {
   private _queued_state: RunnerState | null = null;
   private _frame_based_animation!: FrameBasedAnimation;
 
+  private _showColliderDebug = true; // maybe move to runner ctx
   private _colliderDebug: RunnerColliderDebug | null = null;
 
-  private _showJumpAndFallDebug = true;
+  private _showJumpAndFallDebug = true; // maybe move to runner ctx
   private _jumpDebug: RunnerJumpDebug | null = null;
   private _fallDebug: RunnerFallDebug | null = null;
 
@@ -61,7 +62,10 @@ export class StickRunner extends Actor implements Tickable {
     this.scale.x = scaleX;
 
     // keep the debug box un-mirrored (collider is facing-independent)
-    this._colliderDebug?.syncFacing(this.scale.x);
+    if (this._colliderDebug)
+    {
+      this._colliderDebug?.syncFacing(this.scale.x);
+    }
   }
 
   /**
@@ -167,10 +171,13 @@ export class StickRunner extends Actor implements Tickable {
     this.anchor = runnerCtx.anchor;
     this.syncFacing(runnerCtx);
 
-    if (!this._colliderDebug) {
-      this._colliderDebug = new RunnerColliderDebug(this);
+    if (this._showColliderDebug)
+    {
+      if (!this._colliderDebug) {
+        this._colliderDebug = new RunnerColliderDebug(this);
+      }
+      this._colliderDebug.ensure(runnerCtx);
     }
-    this._colliderDebug.ensure(runnerCtx);
 
     if (this._showJumpAndFallDebug)
     {
