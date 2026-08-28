@@ -4,11 +4,6 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 
 /**
  * visual-only fall-acceleration bar.
- * only drawn while the host runner is in fall state.
- * symmetric around x = 0, so facing-flip does not change the picture.
- *
- * starts full green. red grows from the collider bottom downward
- * as fall_acceleration increases, up to max_fall_acceleration.
  */
 export class RunnerFallDebug {
   private _actor: Actor | null = null;
