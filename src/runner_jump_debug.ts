@@ -10,6 +10,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
  * green = remaining current_up_vector
  * red   = spent portion up to the original max
  *
+ * only drawn while the host runner is in jump state.
  * symmetric around x = 0, so facing-flip does not change the picture.
  */
 export class RunnerJumpDebug {
@@ -42,6 +43,11 @@ export class RunnerJumpDebug {
   private draw(ctx: ExcaliburGraphicsContext): void {
     const runnerCtx = this._runnerCtx;
     if (!runnerCtx || !runnerCtx.show_jump_debug) return;
+
+    // host is StickRunner. read stateName without importing StickRunner
+    // (that would cycle: stick_runner -> runner_jump_debug -> stick_runner).
+    const stateName = (this.host as Actor & { stateName?: string }).stateName;
+    if (stateName !== 'jump') return;
 
     const max = runnerCtx.jump_starting_momentum;
     if (max <= 0) return;
