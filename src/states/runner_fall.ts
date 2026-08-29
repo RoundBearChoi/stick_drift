@@ -4,6 +4,7 @@ import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerJump } from './runner_jump';
+import { RunnerRunAccel } from './runner_run_accel';
 import { seedJumpRunMomentumFromStandstill } from '../runner_air_run';
 
 export class RunnerFall implements RunnerState {
@@ -31,6 +32,18 @@ export class RunnerFall implements RunnerState {
       if (input.wasPressed(InputAction.JUMP)) {
         seedJumpRunMomentumFromStandstill(runnerCtx);
         runner.queueNewState(new RunnerJump());
+        return;
+      }
+
+      const left = input.isHeld(InputAction.MOVE_LEFT);
+      const right = input.isHeld(InputAction.MOVE_RIGHT);
+
+      // held left/right on land → run accel, keep air momentum instead of resetting through idle
+      if (right !== left) {
+        runnerCtx.is_facing_right_side = right;
+        runner.queueNewState(
+          new RunnerRunAccel(Math.abs(runnerCtx.jump_run_momentum))
+        );
         return;
       }
 

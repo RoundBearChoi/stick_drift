@@ -11,14 +11,19 @@ import { seedJumpRunMomentumFromRunAccel } from '../runner_air_run';
 export class RunnerRunAccel implements RunnerState {
   readonly state_name = RunnerStateName.RUN_ACCEL;
 
+  constructor(private readonly _initial_run_accel = 0) {}
+
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
     runner.playAnimationForState(
       this.state_name,
       runnerCtx.run_accel_animation_tick_per_frames
     );
 
-    // start from a standstill every time we enter this state
-    runnerCtx.current_run_accel = 0;
+    // idle → accel still starts at 0. fall → accel can pass jump_run_momentum in.
+    runnerCtx.current_run_accel = Math.min(
+      Math.max(0, this._initial_run_accel),
+      runnerCtx.max_run_speed
+    );
   }
 
   onFixedUpdate(
