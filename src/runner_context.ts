@@ -48,7 +48,7 @@ export class RunnerContext {
    * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
    */
   readonly min_jump_updates_before_cut = 1;
-  readonly release_hang_time = 6; // runner stays in air for N fixed updates before falling
+  readonly release_hang_time = 4; // runner stays in air for N fixed updates before falling
   readonly max_fall_acceleration = 15;
   readonly fall_accel_amount = 1; // amount per increase
   readonly fall_accel_interval = 1;
