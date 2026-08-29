@@ -14,7 +14,6 @@ import { RunnerController } from './runner_controller';
 import { RunnerStateSwitcher } from './runner_state_switcher';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { GroundChecker } from './runner_ground_checker';
-import { createRunner } from './runner_creator';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
@@ -65,7 +64,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
     // stick runner
     if (!this._stick_runner) {
-      this._stick_runner = createRunner({
+      this._stick_runner = new StickRunner({
         pos: vec(320, 280),
       });
       this.add(this._stick_runner);
