@@ -69,6 +69,6 @@ export class RunnerJump implements RunnerState {
       return;
     }
 
-    applyAirRun(input, runnerCtx);
+    applyAirRun(input, runnerCtx, this._ticks_in_jump);
   }
 }

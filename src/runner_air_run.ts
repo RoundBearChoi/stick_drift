@@ -5,7 +5,9 @@ import { RunnerContext } from './runner_context';
  * sole responsibility: signed horizontal momentum while airborne.
  * states call this. this script does not swap states and does not touch position.
  * max magnitude equals max_run_speed.
- * acceleration per update equals run_accel_per_update.
+ * amount per accel / coast step equals run_accel_per_update.
+ * interval equals jump_run_accel_per_update (every N jump ticks).
+ * opposite input brakes at 2x that amount and does not cross 0 in that step.
  */
 
 export function seedJumpRunMomentumFromRunAccel(runnerCtx: RunnerContext): void {
@@ -23,43 +25,93 @@ export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): voi
   runnerCtx.jump_run_momentum = 0;
 }
 
-function steerJumpRunMomentum(runnerCtx: RunnerContext, target: number): void {
+function shouldApplyAirRunStep(runnerCtx: RunnerContext, ticksInJump: number): boolean {
+  const interval = runnerCtx.jump_run_accel_per_update;
+  if (interval <= 1) return true;
+  return ticksInJump % interval === 0;
+}
+
+function steerJumpRunMomentum(
+  runnerCtx: RunnerContext,
+  target: number,
+  step: number
+): void {
   const max = runnerCtx.max_run_speed;
-  const accel = runnerCtx.run_accel_per_update;
   const clampedTarget = Math.max(-max, Math.min(max, target));
 
   if (runnerCtx.jump_run_momentum < clampedTarget) {
     runnerCtx.jump_run_momentum = Math.min(
       clampedTarget,
-      runnerCtx.jump_run_momentum + accel
+      runnerCtx.jump_run_momentum + step
     );
   } else if (runnerCtx.jump_run_momentum > clampedTarget) {
     runnerCtx.jump_run_momentum = Math.max(
       clampedTarget,
-      runnerCtx.jump_run_momentum - accel
+      runnerCtx.jump_run_momentum - step
     );
   }
+}
+
+function decayJumpRunMomentum(runnerCtx: RunnerContext, step: number): void {
+  if (runnerCtx.jump_run_momentum > 0) {
+    runnerCtx.jump_run_momentum = Math.max(
+      0,
+      runnerCtx.jump_run_momentum - step
+    );
+  } else if (runnerCtx.jump_run_momentum < 0) {
+    runnerCtx.jump_run_momentum = Math.min(
+      0,
+      runnerCtx.jump_run_momentum + step
+    );
+  }
+}
+
+function isOpposingCurrentMomentum(
+  runnerCtx: RunnerContext,
+  desiredDir: number
+): boolean {
+  return runnerCtx.jump_run_momentum * desiredDir < 0;
 }
 
 /**
  * call once per jump fixed update after vertical / hang logic.
  * facing flips on input immediately.
- * no left/right input keeps current jump_run_momentum.
- * always writes horizontal_move_buffer so releasing keys does not kill air speed.
+ * left/right steers toward ±max_run_speed.
+ * opposite input brakes toward 0 at 2x, then accel the new way on a later interval.
+ * no left/right input decays toward 0 at 1x.
+ * always writes horizontal_move_buffer.
  */
 export function applyAirRun(
   input: InputInterpreter,
-  runnerCtx: RunnerContext
+  runnerCtx: RunnerContext,
+  ticksInJump: number
 ): void {
   const left = input.isHeld(InputAction.MOVE_LEFT);
   const right = input.isHeld(InputAction.MOVE_RIGHT);
+  const applyStep = shouldApplyAirRunStep(runnerCtx, ticksInJump);
+  const base = runnerCtx.run_accel_per_update;
+  const brake = base * 2;
 
   if (right && !left) {
     runnerCtx.is_facing_right_side = true;
-    steerJumpRunMomentum(runnerCtx, runnerCtx.max_run_speed);
+    if (applyStep) {
+      if (isOpposingCurrentMomentum(runnerCtx, 1)) {
+        decayJumpRunMomentum(runnerCtx, brake);
+      } else {
+        steerJumpRunMomentum(runnerCtx, runnerCtx.max_run_speed, base);
+      }
+    }
   } else if (left && !right) {
     runnerCtx.is_facing_right_side = false;
-    steerJumpRunMomentum(runnerCtx, -runnerCtx.max_run_speed);
+    if (applyStep) {
+      if (isOpposingCurrentMomentum(runnerCtx, -1)) {
+        decayJumpRunMomentum(runnerCtx, brake);
+      } else {
+        steerJumpRunMomentum(runnerCtx, -runnerCtx.max_run_speed, base);
+      }
+    }
+  } else if (applyStep) {
+    decayJumpRunMomentum(runnerCtx, base);
   }
 
   runnerCtx.horizontal_move_buffer = runnerCtx.jump_run_momentum;
