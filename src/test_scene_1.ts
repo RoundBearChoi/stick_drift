@@ -61,7 +61,7 @@ export class TestScene1 extends Scene<GameContext> {
 
     // create runner once
     if (!this._stick_runner) {
-      this._stick_runner = createRunner(this.engine);
+      this._stick_runner = createRunner();
       this.add(this._stick_runner);
     }
 
