@@ -22,8 +22,9 @@ export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): voi
 }
 
 function shouldApplyAirRunStep(runnerCtx: RunnerContext): boolean {
-  const interval = runnerCtx.jump_run_accel_amount;
+  const interval = Math.max(1, runnerCtx.jump_run_accel_interval);
   if (interval <= 1) return true;
+  // count is checked before increment so a fresh airborne period (count = 0) applies immediately
   return runnerCtx.air_run_update_count % interval === 0;
 }
 
@@ -81,12 +82,12 @@ export function applyAirRun(
   input: InputInterpreter,
   runnerCtx: RunnerContext
 ): void {
-  runnerCtx.air_run_update_count++;
-
   const left = input.isHeld(InputAction.MOVE_LEFT);
   const right = input.isHeld(InputAction.MOVE_RIGHT);
   const applyStep = shouldApplyAirRunStep(runnerCtx);
-  const base = runnerCtx.run_accel_amount;
+  runnerCtx.air_run_update_count++;
+
+  const base = runnerCtx.jump_run_accel_amount;
   const brake = base * 2;
 
   if (right && !left) {

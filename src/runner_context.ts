@@ -21,15 +21,15 @@ export class RunnerContext {
   show_jump_debug = true;
   show_fall_debug = true;
 
-  max_run_speed = 5; // IMPORTANT: determines both grounded and airborne run accel
-  run_accel_amount = 1;
-  run_accel_interval = 2; // apply run accel every N updates
+  max_run_speed = 5; // cap for both grounded and airborne run
+  run_accel_amount = 1; // ground speed added when a run-accel step fires
+  run_accel_interval = 2; // apply run accel every N grounded updates
+  run_accel_counter = 0;
   current_run_accel = 0;
 
-
   jump_run_momentum = 0; // signed. max magnitude equals max_run_speed
-  jump_run_accel_amount = 1; // apply air accel or brake every N air-run ticks
-  jump_run_accel_interval = 2;
+  jump_run_accel_amount = 1; // air accel / brake delta per step
+  jump_run_accel_interval = 2; // apply air accel or brake every N air-run ticks
   air_run_update_count = 0; // shared jump + fall cadence
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
@@ -74,6 +74,7 @@ export class RunnerContext {
     this.fall_acceleration = 0;
     this.fall_acceleration_counter = 0;
     this.current_run_accel = 0;
+    this.run_accel_counter = 0;
     this.jump_run_momentum = 0;
     this.air_run_update_count = 0;
     this.is_grounded = true;
