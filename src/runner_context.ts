@@ -30,6 +30,7 @@ export class RunnerContext {
 
   readonly ground_decel_amount = 1;
   readonly ground_decel_interval = 1;
+  ground_decel_update_count = 0;
 
   readonly jump_run_accel_amount = 1;
   readonly jump_run_accel_interval = 1;
@@ -79,6 +80,7 @@ export class RunnerContext {
     this.fall_update_count = 0;
     this.current_run_accel = 0;
     this.run_accel_update_count = 0;
+    this.ground_decel_update_count = 0;
     this.current_jump_run_accel = 0;
     this.air_run_update_count = 0;
     this.is_grounded = true;

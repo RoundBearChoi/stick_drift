@@ -15,6 +15,9 @@ export class RunnerIdle implements RunnerState {
       this.state_name,
       runnerCtx.idle_animation_tick_per_frames
     );
+
+    runnerCtx.current_run_accel = 0;
+    runnerCtx.ground_decel_update_count = 0;
   }
 
   onFixedUpdate(

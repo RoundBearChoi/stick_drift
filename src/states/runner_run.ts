@@ -2,10 +2,10 @@ import { InputAction, InputInterpreter } from '../input_interpreter';
 import { StickRunner } from '../stick_runner';
 import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
-import { RunnerIdle } from './runner_idle';
 import { RunnerFall } from './runner_fall';
 import { RunnerJump } from './runner_jump';
 import { seedJumpRunMomentumFromRunAccel } from '../runner_air_run';
+import { RunnerDecel, shouldEnterGroundDecel } from './runner_decel';
 
 export class RunnerRun implements RunnerState {
   readonly state_name = RunnerStateName.RUN;
@@ -41,8 +41,8 @@ export class RunnerRun implements RunnerState {
       return;
     }
 
-    if (!input.isHeld(InputAction.MOVE_LEFT) && !input.isHeld(InputAction.MOVE_RIGHT)) {
-      runner.queueNewState(new RunnerIdle());
+    if (shouldEnterGroundDecel(input, runnerCtx)) {
+      runner.queueNewState(new RunnerDecel());
       return;
     }
 
