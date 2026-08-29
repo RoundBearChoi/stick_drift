@@ -8,7 +8,6 @@ import {
 import { GameContext } from './game_context';
 import { Resources } from './resources';
 import { StickRunner } from './stick_runner';
-import { createRunner } from './runner_creator';
 
 export class TestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -61,7 +60,7 @@ export class TestScene1 extends Scene<GameContext> {
 
     // create runner once
     if (!this._stick_runner) {
-      this._stick_runner = createRunner();
+      this._stick_runner = new StickRunner();
       this.add(this._stick_runner);
     }
 
