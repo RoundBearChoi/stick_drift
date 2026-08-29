@@ -21,13 +21,16 @@ export class RunnerContext {
   show_jump_debug = true;
   show_fall_debug = true;
 
-  run_accel_per_update = 1; // IMPORTANT: determines both grounded and airborne run accel
+  max_run_speed = 5; // IMPORTANT: determines both grounded and airborne run accel
+  run_accel_amount = 1;
+  run_accel_interval = 2; // apply run accel every N updates
   current_run_accel = 0;
-  max_run_speed = 5;
+
 
   jump_run_momentum = 0; // signed. max magnitude equals max_run_speed
-  jump_run_accel_per_update = 2; // apply air accel or brake every N air-run ticks
-  air_run_ticks = 0; // shared jump + fall cadence. jump onEnter / walk-off reset. jump → fall does not.
+  jump_run_accel_amount = 1; // apply air accel or brake every N air-run ticks
+  jump_run_accel_interval = 2;
+  air_run_update_count = 0; // shared jump + fall cadence
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check
@@ -39,13 +42,11 @@ export class RunnerContext {
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
 
-
-
   /**
    * minimum jump fixed updates before cancel.
    * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
    */
-  min_jump_ticks_before_cut = 1;
+  min_jump_updates_before_cut = 1;
   release_hang_time = 6;
   release_hang_ticks_remaining = 0; // remaining hang time for current jump
   fall_acceleration = 0;
@@ -74,7 +75,7 @@ export class RunnerContext {
     this.fall_acceleration_counter = 0;
     this.current_run_accel = 0;
     this.jump_run_momentum = 0;
-    this.air_run_ticks = 0;
+    this.air_run_update_count = 0;
     this.is_grounded = true;
     this.is_facing_right_side = true;
   }

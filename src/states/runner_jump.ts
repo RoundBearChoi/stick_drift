@@ -28,7 +28,7 @@ export class RunnerJump implements RunnerState {
     runnerCtx.move_down_buffer = 0;
     runnerCtx.release_hang_ticks_remaining = 0;
     // new jump starts a fresh air-run cadence. jump → fall must not reset this.
-    runnerCtx.air_run_ticks = 0;
+    runnerCtx.air_run_update_count = 0;
 
     this._ticks_in_jump = 0;
     this._release_hang_started = false;
@@ -42,7 +42,7 @@ export class RunnerJump implements RunnerState {
     this._ticks_in_jump++;
 
     const pastMinJump =
-      this._ticks_in_jump > runnerCtx.min_jump_ticks_before_cut;
+      this._ticks_in_jump > runnerCtx.min_jump_updates_before_cut;
     const jumpHeld = input.isHeld(InputAction.JUMP);
 
     if (!this._release_hang_started && pastMinJump && !jumpHeld) {

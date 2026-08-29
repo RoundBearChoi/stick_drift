@@ -61,6 +61,7 @@ export class RunnerFall implements RunnerState {
       );
     }
 
+    // IMPORTANT: same air run (horizontal movement) logic is applied to jump & fall
     applyAirRun(input, runnerCtx);
   }
 }

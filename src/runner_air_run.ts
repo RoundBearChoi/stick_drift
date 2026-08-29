@@ -3,10 +3,6 @@ import { RunnerContext } from './runner_context';
 
 /**
  * sole responsibility: signed horizontal momentum while airborne.
- * jump and fall both call this. this script does not swap states and does not touch position.
- * max magnitude equals max_run_speed.
- * amount per accel / coast step equals run_accel_per_update.
- * interval equals jump_run_accel_per_update (every N air-run ticks).
  * opposite input brakes at 2x that amount and does not cross 0 in that step.
  */
 
@@ -26,9 +22,9 @@ export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): voi
 }
 
 function shouldApplyAirRunStep(runnerCtx: RunnerContext): boolean {
-  const interval = runnerCtx.jump_run_accel_per_update;
+  const interval = runnerCtx.jump_run_accel_amount;
   if (interval <= 1) return true;
-  return runnerCtx.air_run_ticks % interval === 0;
+  return runnerCtx.air_run_update_count % interval === 0;
 }
 
 function steerJumpRunMomentum(
@@ -85,12 +81,12 @@ export function applyAirRun(
   input: InputInterpreter,
   runnerCtx: RunnerContext
 ): void {
-  runnerCtx.air_run_ticks++;
+  runnerCtx.air_run_update_count++;
 
   const left = input.isHeld(InputAction.MOVE_LEFT);
   const right = input.isHeld(InputAction.MOVE_RIGHT);
   const applyStep = shouldApplyAirRunStep(runnerCtx);
-  const base = runnerCtx.run_accel_per_update;
+  const base = runnerCtx.run_accel_amount;
   const brake = base * 2;
 
   if (right && !left) {

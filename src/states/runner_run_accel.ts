@@ -34,7 +34,7 @@ export class RunnerRunAccel implements RunnerState {
     // leave ground → fall
     if (!runnerCtx.is_grounded) {
       seedJumpRunMomentumFromRunAccel(runnerCtx);
-      runnerCtx.air_run_ticks = 0;
+      runnerCtx.air_run_update_count = 0;
       runner.queueNewState(new RunnerFall());
       return;
     }
@@ -59,7 +59,7 @@ export class RunnerRunAccel implements RunnerState {
       runnerCtx.is_facing_right_side = false;
     }
 
-    runnerCtx.current_run_accel += runnerCtx.run_accel_per_update;
+    runnerCtx.current_run_accel += runnerCtx.run_accel_amount;
 
     if (runnerCtx.current_run_accel >= runnerCtx.max_run_speed) {
       runnerCtx.current_run_accel = runnerCtx.max_run_speed;
