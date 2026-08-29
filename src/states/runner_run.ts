@@ -16,7 +16,6 @@ export class RunnerRun implements RunnerState {
       runnerCtx.run_animation_tick_per_frames
     );
 
-    // RUN means "at cap". max_run_speed only clamps the live accel field.
     runnerCtx.current_run_accel = Math.min(
       runnerCtx.current_run_accel,
       runnerCtx.max_run_speed
