@@ -13,7 +13,7 @@ import { StickRunner } from './stick_runner';
 import { RunnerController } from './runner_controller';
 import { RunnerStateSwitcher } from './runner_state_switcher';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
-import { GroundChecker } from './runner_ground_checker';
+import { RunnerGroundChecker } from './runner_ground_checker';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
@@ -29,7 +29,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _runner_controller?: RunnerController;
   private _state_switcher?: RunnerStateSwitcher;
   private _runner_move_buffer_resolve?: RunnerMovementBufferResolve;
-  private _ground_checker?: GroundChecker;
+  private _ground_checker?: RunnerGroundChecker;
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
   private _grid?: GridSystem;
@@ -95,7 +95,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
 
     if (!this._ground_checker) {
-      this._ground_checker = new GroundChecker(
+      this._ground_checker = new RunnerGroundChecker(
         this._stick_runner,
         this._game_ctx,
         this._solid_grid

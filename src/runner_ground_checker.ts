@@ -44,7 +44,7 @@ export function checkIsGrounded(
  * also clears fall energy when grounded or when any upward push is present.
  * does not change states — individual states (Idle, Run, etc.) read the flag and decide.
  */
-export class GroundChecker implements Tickable {
+export class RunnerGroundChecker implements Tickable {
   constructor(
     private readonly runner: StickRunner,
     private readonly gameCtx: GameContext,
