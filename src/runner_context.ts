@@ -35,6 +35,8 @@ export class RunnerContext {
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
 
+  jump_run_momentum = 0;
+
   /**
    * minimum jump fixed updates before cancel.
    * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
