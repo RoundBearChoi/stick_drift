@@ -35,7 +35,7 @@ export class RunnerContext {
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
 
-  jump_run_momentum = 0;
+  jump_run_momentum = 0; // max momentum equals max_run_speed
 
   /**
    * minimum jump fixed updates before cancel.
