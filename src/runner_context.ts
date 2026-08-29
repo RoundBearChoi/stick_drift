@@ -5,6 +5,7 @@ export class RunnerContext {
   idle_animation_tick_per_frames = 4;
   run_animation_tick_per_frames = 4;
   run_accel_animation_tick_per_frames = 4;
+  decel_animation_tick_per_frames = 4;
   fall_animation_tick_per_frames = 4;
 
   // bottom-center pivot

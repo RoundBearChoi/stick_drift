@@ -6,6 +6,7 @@ export enum RunnerStateName {
   IDLE = 'idle',
   RUN = 'run',
   RUN_ACCEL = 'run_accel',
+  DECEL = 'decel',
   JUMP = 'jump',
   FALL = 'fall',
 }

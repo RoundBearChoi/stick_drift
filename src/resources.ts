@@ -9,6 +9,7 @@ export const Resources = {
   stick_runner_jump: new AsepriteResource('./res/sprites/stick_runner_jump.aseprite'),
   stick_runner_fall: new AsepriteResource('./res/sprites/stick_runner_fall.aseprite'),
   stick_runner_run_accel: new AsepriteResource('./res/sprites/stick_runner_run_accel.aseprite'),
+  stick_runner_decel: new AsepriteResource('./res/sprites/stick_runner_decel.aseprite'),
 
   work_in_progress: new AsepriteResource('./res/sprites/work_in_progress.aseprite'),
 
@@ -24,6 +25,7 @@ loader.addResource(Resources.stick_runner_run);
 loader.addResource(Resources.stick_runner_jump);
 loader.addResource(Resources.stick_runner_fall);
 loader.addResource(Resources.stick_runner_run_accel);
+loader.addResource(Resources.stick_runner_decel);
 loader.addResource(Resources.work_in_progress);
 loader.addResource(Resources.brick);
 

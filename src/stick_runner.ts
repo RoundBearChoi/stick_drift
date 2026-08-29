@@ -111,6 +111,9 @@ export class StickRunner extends Actor implements Tickable {
       case RunnerStateName.RUN_ACCEL:
         resource = Resources.stick_runner_run_accel;
         break;
+      case RunnerStateName.DECEL:
+        resource = Resources.stick_runner_decel;
+        break;
       case RunnerStateName.JUMP:
         resource = Resources.stick_runner_jump;
         break;
