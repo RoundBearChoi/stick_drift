@@ -35,7 +35,8 @@ export class RunnerContext {
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
 
-  jump_run_momentum = 0; // signed. max magnitude equals max_run_speed
+  jump_run_momentum = 0; // max magnitude equals max_run_speed
+  jump_run_accel_per_update = 2;
 
   /**
    * minimum jump fixed updates before cancel.
