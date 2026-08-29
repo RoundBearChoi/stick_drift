@@ -67,7 +67,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
     // stick runner
     if (!this._stick_runner) {
-      this._stick_runner = createRunner(this.engine);
+      this._stick_runner = createRunner({
+        pos: vec(320, 280),
+      });
       this.add(this._stick_runner);
     }
 
