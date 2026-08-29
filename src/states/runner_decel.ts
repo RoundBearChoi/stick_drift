@@ -8,7 +8,6 @@ import { RunnerJump } from './runner_jump';
 import { RunnerRunAccel } from './runner_run_accel';
 import { seedJumpRunMomentumFromRunAccel } from '../runner_air_run';
 
-/** no exclusive direction, or exclusive direction against current facing */
 export function shouldEnterGroundDecel(
   input: InputInterpreter,
   runnerCtx: RunnerContext
@@ -95,7 +94,8 @@ export class RunnerDecel implements RunnerState {
       return;
     }
 
-    // still sliding the original way — facing does not flip during decel
+    // still sliding the original way
+    // IMPORTANT: facing does not flip during decel
     const dir = runnerCtx.is_facing_right_side ? 1 : -1;
     runnerCtx.horizontal_move_buffer = dir * runnerCtx.current_run_accel;
   }
