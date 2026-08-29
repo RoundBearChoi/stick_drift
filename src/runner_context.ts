@@ -28,6 +28,9 @@ export class RunnerContext {
   run_accel_update_count = 0;
   current_run_accel = 0;
 
+  readonly ground_decel_amount = 1;
+  readonly ground_decel_interval = 1;
+
   readonly jump_run_accel_amount = 1;
   readonly jump_run_accel_interval = 1;
   air_run_update_count = 0;
