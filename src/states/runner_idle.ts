@@ -5,6 +5,7 @@ import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerRunAccel } from './runner_run_accel';
 import { RunnerFall } from './runner_fall';
 import { RunnerJump } from './runner_jump';
+import { seedJumpRunMomentumFromStandstill } from '../runner_air_run';
 
 export class RunnerIdle implements RunnerState {
   readonly state_name = RunnerStateName.IDLE;
@@ -28,6 +29,7 @@ export class RunnerIdle implements RunnerState {
     }
 
     if (input.wasPressed(InputAction.JUMP)) {
+      seedJumpRunMomentumFromStandstill(runnerCtx);
       runner.queueNewState(new RunnerJump());
       return;
     }

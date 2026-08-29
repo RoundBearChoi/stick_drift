@@ -35,7 +35,7 @@ export class RunnerContext {
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
 
-  jump_run_momentum = 0; // max momentum equals max_run_speed
+  jump_run_momentum = 0; // signed. max magnitude equals max_run_speed
 
   /**
    * minimum jump fixed updates before cancel.
@@ -69,6 +69,7 @@ export class RunnerContext {
     this.fall_acceleration = 0;
     this.fall_acceleration_counter = 0;
     this.current_run_accel = 0;
+    this.jump_run_momentum = 0;
     this.is_grounded = true;
     this.is_facing_right_side = true;
   }
