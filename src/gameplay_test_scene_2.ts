@@ -19,7 +19,7 @@ import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
-import { SolidGrid, CELL_SIZE } from './solid_grid';
+import { SolidGrid } from './solid_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { BRICK_SIZE } from './level_context';
 import { createTopLeftFont } from './debug_font';
@@ -65,7 +65,9 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
     // stick runner
     if (!this._stick_runner) {
-      this._stick_runner = createRunner(this.engine);
+      this._stick_runner = createRunner({
+        pos: vec(320, 280),
+      });
       this.add(this._stick_runner);
     }
 
