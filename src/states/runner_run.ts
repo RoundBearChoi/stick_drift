@@ -5,7 +5,7 @@ import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerFall } from './runner_fall';
 import { RunnerJump } from './runner_jump';
-import { seedJumpRunMomentumFromMaxRunSpeed } from '../runner_air_run';
+import { seedJumpRunMomentumFromRunAccel } from '../runner_air_run';
 
 export class RunnerRun implements RunnerState {
   readonly state_name = RunnerStateName.RUN;
@@ -14,6 +14,12 @@ export class RunnerRun implements RunnerState {
     runner.playAnimationForState(
       this.state_name,
       runnerCtx.run_animation_tick_per_frames
+    );
+
+    // RUN means "at cap". max_run_speed only clamps the live accel field.
+    runnerCtx.current_run_accel = Math.min(
+      runnerCtx.current_run_accel,
+      runnerCtx.max_run_speed
     );
   }
 
@@ -24,14 +30,14 @@ export class RunnerRun implements RunnerState {
   ): void {
     // leave ground → fall
     if (!runnerCtx.is_grounded) {
-      seedJumpRunMomentumFromMaxRunSpeed(runnerCtx);
+      seedJumpRunMomentumFromRunAccel(runnerCtx);
       runnerCtx.air_run_update_count = 0;
       runner.queueNewState(new RunnerFall());
       return;
     }
 
     if (input.wasPressed(InputAction.JUMP)) {
-      seedJumpRunMomentumFromMaxRunSpeed(runnerCtx);
+      seedJumpRunMomentumFromRunAccel(runnerCtx);
       runner.queueNewState(new RunnerJump());
       return;
     }
@@ -50,8 +56,13 @@ export class RunnerRun implements RunnerState {
       runnerCtx.is_facing_right_side = false;
     }
 
+    runnerCtx.current_run_accel = Math.min(
+      runnerCtx.current_run_accel,
+      runnerCtx.max_run_speed
+    );
+
     // only write intent — do not touch position here
     const dir = runnerCtx.is_facing_right_side ? 1 : -1;
-    runnerCtx.horizontal_move_buffer = dir * runnerCtx.max_run_speed;
+    runnerCtx.horizontal_move_buffer = dir * runnerCtx.current_run_accel;
   }
 }

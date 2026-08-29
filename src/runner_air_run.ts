@@ -12,11 +12,6 @@ export function seedJumpRunMomentumFromRunAccel(runnerCtx: RunnerContext): void 
     dir * Math.min(runnerCtx.current_run_accel, runnerCtx.max_run_speed);
 }
 
-export function seedJumpRunMomentumFromMaxRunSpeed(runnerCtx: RunnerContext): void {
-  const dir = runnerCtx.is_facing_right_side ? 1 : -1;
-  runnerCtx.current_jump_run_accel = dir * runnerCtx.max_run_speed;
-}
-
 export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): void {
   runnerCtx.current_jump_run_accel = 0;
 }
@@ -76,7 +71,7 @@ function isOpposingCurrentMomentum(
  * left/right steers toward ±max_run_speed.
  * opposite input brakes toward 0 at 2x, then accel the new way on a later interval.
  * no left/right input decays toward 0 at 1x.
- * always writes horizontal_move_buffer from jump_run_momentum.
+ * always writes horizontal_move_buffer from current_jump_run_accel.
  */
 export function applyAirRun(
   input: InputInterpreter,
