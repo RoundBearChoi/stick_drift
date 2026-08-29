@@ -3,10 +3,10 @@ import { RunnerContext } from './runner_context';
 
 /**
  * sole responsibility: signed horizontal momentum while airborne.
- * states call this. this script does not swap states and does not touch position.
+ * jump and fall both call this. this script does not swap states and does not touch position.
  * max magnitude equals max_run_speed.
  * amount per accel / coast step equals run_accel_per_update.
- * interval equals jump_run_accel_per_update (every N jump ticks).
+ * interval equals jump_run_accel_per_update (every N air-run ticks).
  * opposite input brakes at 2x that amount and does not cross 0 in that step.
  */
 
@@ -25,10 +25,10 @@ export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): voi
   runnerCtx.jump_run_momentum = 0;
 }
 
-function shouldApplyAirRunStep(runnerCtx: RunnerContext, ticksInJump: number): boolean {
+function shouldApplyAirRunStep(runnerCtx: RunnerContext): boolean {
   const interval = runnerCtx.jump_run_accel_per_update;
   if (interval <= 1) return true;
-  return ticksInJump % interval === 0;
+  return runnerCtx.air_run_ticks % interval === 0;
 }
 
 function steerJumpRunMomentum(
@@ -74,21 +74,22 @@ function isOpposingCurrentMomentum(
 }
 
 /**
- * call once per jump fixed update after vertical / hang logic.
+ * call once per airborne fixed update after vertical / hang logic.
  * facing flips on input immediately.
  * left/right steers toward ±max_run_speed.
  * opposite input brakes toward 0 at 2x, then accel the new way on a later interval.
  * no left/right input decays toward 0 at 1x.
- * always writes horizontal_move_buffer.
+ * always writes horizontal_move_buffer from jump_run_momentum.
  */
 export function applyAirRun(
   input: InputInterpreter,
-  runnerCtx: RunnerContext,
-  ticksInJump: number
+  runnerCtx: RunnerContext
 ): void {
+  runnerCtx.air_run_ticks++;
+
   const left = input.isHeld(InputAction.MOVE_LEFT);
   const right = input.isHeld(InputAction.MOVE_RIGHT);
-  const applyStep = shouldApplyAirRunStep(runnerCtx, ticksInJump);
+  const applyStep = shouldApplyAirRunStep(runnerCtx);
   const base = runnerCtx.run_accel_per_update;
   const brake = base * 2;
 

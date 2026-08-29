@@ -33,6 +33,8 @@ export class RunnerRunAccel implements RunnerState {
   ): void {
     // leave ground → fall
     if (!runnerCtx.is_grounded) {
+      seedJumpRunMomentumFromRunAccel(runnerCtx);
+      runnerCtx.air_run_ticks = 0;
       runner.queueNewState(new RunnerFall());
       return;
     }

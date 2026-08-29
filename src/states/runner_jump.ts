@@ -27,6 +27,8 @@ export class RunnerJump implements RunnerState {
     runnerCtx.fall_acceleration_counter = 0;
     runnerCtx.move_down_buffer = 0;
     runnerCtx.release_hang_ticks_remaining = 0;
+    // new jump starts a fresh air-run cadence. jump → fall must not reset this.
+    runnerCtx.air_run_ticks = 0;
 
     this._ticks_in_jump = 0;
     this._release_hang_started = false;
@@ -69,6 +71,6 @@ export class RunnerJump implements RunnerState {
       return;
     }
 
-    applyAirRun(input, runnerCtx, this._ticks_in_jump);
+    applyAirRun(input, runnerCtx);
   }
 }

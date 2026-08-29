@@ -24,6 +24,8 @@ export class RunnerRun implements RunnerState {
   ): void {
     // leave ground → fall
     if (!runnerCtx.is_grounded) {
+      seedJumpRunMomentumFromMaxRunSpeed(runnerCtx);
+      runnerCtx.air_run_ticks = 0;
       runner.queueNewState(new RunnerFall());
       return;
     }

@@ -26,7 +26,8 @@ export class RunnerContext {
   max_run_speed = 5;
 
   jump_run_momentum = 0; // signed. max magnitude equals max_run_speed
-  jump_run_accel_per_update = 2; // apply air accel or brake every N jump ticks
+  jump_run_accel_per_update = 2; // apply air accel or brake every N air-run ticks
+  air_run_ticks = 0; // shared jump + fall cadence. jump onEnter / walk-off reset. jump → fall does not.
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check
@@ -73,6 +74,7 @@ export class RunnerContext {
     this.fall_acceleration_counter = 0;
     this.current_run_accel = 0;
     this.jump_run_momentum = 0;
+    this.air_run_ticks = 0;
     this.is_grounded = true;
     this.is_facing_right_side = true;
   }

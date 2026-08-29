@@ -5,7 +5,7 @@ import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerJump } from './runner_jump';
 import { RunnerRunAccel } from './runner_run_accel';
-import { seedJumpRunMomentumFromStandstill } from '../runner_air_run';
+import { applyAirRun, seedJumpRunMomentumFromStandstill } from '../runner_air_run';
 
 export class RunnerFall implements RunnerState {
   readonly state_name = RunnerStateName.FALL;
@@ -61,15 +61,6 @@ export class RunnerFall implements RunnerState {
       );
     }
 
-    const left = input.isHeld(InputAction.MOVE_LEFT);
-    const right = input.isHeld(InputAction.MOVE_RIGHT);
-
-    if (right && !left) {
-      runnerCtx.is_facing_right_side = true;
-      runnerCtx.horizontal_move_buffer = runnerCtx.max_run_speed;
-    } else if (left && !right) {
-      runnerCtx.is_facing_right_side = false;
-      runnerCtx.horizontal_move_buffer = -runnerCtx.max_run_speed;
-    }
+    applyAirRun(input, runnerCtx);
   }
 }

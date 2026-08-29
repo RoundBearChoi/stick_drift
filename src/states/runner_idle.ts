@@ -24,6 +24,8 @@ export class RunnerIdle implements RunnerState {
   ): void {
     // leave ground → fall
     if (!runnerCtx.is_grounded) {
+      seedJumpRunMomentumFromStandstill(runnerCtx);
+      runnerCtx.air_run_ticks = 0;
       runner.queueNewState(new RunnerFall());
       return;
     }
