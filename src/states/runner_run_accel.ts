@@ -26,7 +26,7 @@ export class RunnerRunAccel implements RunnerState {
     );
 
     // prime so the first fixed update applies a step immediately
-    runnerCtx.run_accel_counter =
+    runnerCtx.run_accel_update_count =
       Math.max(1, runnerCtx.run_accel_interval) - 1;
   }
 
@@ -64,9 +64,9 @@ export class RunnerRunAccel implements RunnerState {
     }
 
     const interval = Math.max(1, runnerCtx.run_accel_interval);
-    runnerCtx.run_accel_counter++;
-    if (runnerCtx.run_accel_counter >= interval) {
-      runnerCtx.run_accel_counter = 0;
+    runnerCtx.run_accel_update_count++;
+    if (runnerCtx.run_accel_update_count >= interval) {
+      runnerCtx.run_accel_update_count = 0;
       runnerCtx.current_run_accel += runnerCtx.run_accel_amount;
     }
 

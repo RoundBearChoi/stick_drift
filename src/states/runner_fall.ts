@@ -16,7 +16,7 @@ export class RunnerFall implements RunnerState {
       runnerCtx.fall_animation_tick_per_frames
     );
 
-    runnerCtx.fall_acceleration_counter = 0;
+    runnerCtx.fall_update_count = 0;
   }
 
   onFixedUpdate(
@@ -25,8 +25,8 @@ export class RunnerFall implements RunnerState {
     runnerCtx: RunnerContext
   ): void {
     if (runnerCtx.is_grounded) {
-      runnerCtx.fall_acceleration = 0;
-      runnerCtx.fall_acceleration_counter = 0;
+      runnerCtx.current_fall_accel = 0;
+      runnerCtx.fall_update_count = 0;
 
       // IMPORTANT: if jump is pressed right as runner is hitting ground, switch straight back to jump state instead of idle
       if (input.wasPressed(InputAction.JUMP)) {
@@ -42,7 +42,7 @@ export class RunnerFall implements RunnerState {
       if (right !== left) {
         runnerCtx.is_facing_right_side = right;
         runner.queueNewState(
-          new RunnerRunAccel(Math.abs(runnerCtx.jump_run_momentum))
+          new RunnerRunAccel(Math.abs(runnerCtx.current_jump_run_accel))
         );
         return;
       }
@@ -52,11 +52,11 @@ export class RunnerFall implements RunnerState {
     }
 
     // states write energy only — resolver copies into move_down_buffer
-    runnerCtx.fall_acceleration_counter++;
-    if (runnerCtx.fall_acceleration_counter >= runnerCtx.fall_acceleration_interval) {
-      runnerCtx.fall_acceleration_counter = 0;
-      runnerCtx.fall_acceleration = Math.min(
-        runnerCtx.fall_acceleration + runnerCtx.fall_acceleration_step,
+    runnerCtx.fall_update_count++;
+    if (runnerCtx.fall_update_count >= runnerCtx.fall_accel_interval) {
+      runnerCtx.fall_update_count = 0;
+      runnerCtx.current_fall_accel = Math.min(
+        runnerCtx.current_fall_accel + runnerCtx.fall_accel_amount,
         runnerCtx.max_fall_acceleration
       );
     }

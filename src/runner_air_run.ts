@@ -8,17 +8,17 @@ import { RunnerContext } from './runner_context';
 
 export function seedJumpRunMomentumFromRunAccel(runnerCtx: RunnerContext): void {
   const dir = runnerCtx.is_facing_right_side ? 1 : -1;
-  runnerCtx.jump_run_momentum =
+  runnerCtx.current_jump_run_accel =
     dir * Math.min(runnerCtx.current_run_accel, runnerCtx.max_run_speed);
 }
 
 export function seedJumpRunMomentumFromMaxRunSpeed(runnerCtx: RunnerContext): void {
   const dir = runnerCtx.is_facing_right_side ? 1 : -1;
-  runnerCtx.jump_run_momentum = dir * runnerCtx.max_run_speed;
+  runnerCtx.current_jump_run_accel = dir * runnerCtx.max_run_speed;
 }
 
 export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): void {
-  runnerCtx.jump_run_momentum = 0;
+  runnerCtx.current_jump_run_accel = 0;
 }
 
 function shouldApplyAirRunStep(runnerCtx: RunnerContext): boolean {
@@ -36,29 +36,29 @@ function steerJumpRunMomentum(
   const max = runnerCtx.max_run_speed;
   const clampedTarget = Math.max(-max, Math.min(max, target));
 
-  if (runnerCtx.jump_run_momentum < clampedTarget) {
-    runnerCtx.jump_run_momentum = Math.min(
+  if (runnerCtx.current_jump_run_accel < clampedTarget) {
+    runnerCtx.current_jump_run_accel = Math.min(
       clampedTarget,
-      runnerCtx.jump_run_momentum + step
+      runnerCtx.current_jump_run_accel + step
     );
-  } else if (runnerCtx.jump_run_momentum > clampedTarget) {
-    runnerCtx.jump_run_momentum = Math.max(
+  } else if (runnerCtx.current_jump_run_accel > clampedTarget) {
+    runnerCtx.current_jump_run_accel = Math.max(
       clampedTarget,
-      runnerCtx.jump_run_momentum - step
+      runnerCtx.current_jump_run_accel - step
     );
   }
 }
 
 function decayJumpRunMomentum(runnerCtx: RunnerContext, step: number): void {
-  if (runnerCtx.jump_run_momentum > 0) {
-    runnerCtx.jump_run_momentum = Math.max(
+  if (runnerCtx.current_jump_run_accel > 0) {
+    runnerCtx.current_jump_run_accel = Math.max(
       0,
-      runnerCtx.jump_run_momentum - step
+      runnerCtx.current_jump_run_accel - step
     );
-  } else if (runnerCtx.jump_run_momentum < 0) {
-    runnerCtx.jump_run_momentum = Math.min(
+  } else if (runnerCtx.current_jump_run_accel < 0) {
+    runnerCtx.current_jump_run_accel = Math.min(
       0,
-      runnerCtx.jump_run_momentum + step
+      runnerCtx.current_jump_run_accel + step
     );
   }
 }
@@ -67,7 +67,7 @@ function isOpposingCurrentMomentum(
   runnerCtx: RunnerContext,
   desiredDir: number
 ): boolean {
-  return runnerCtx.jump_run_momentum * desiredDir < 0;
+  return runnerCtx.current_jump_run_accel * desiredDir < 0;
 }
 
 /**
@@ -112,5 +112,5 @@ export function applyAirRun(
     decayJumpRunMomentum(runnerCtx, base);
   }
 
-  runnerCtx.horizontal_move_buffer = runnerCtx.jump_run_momentum;
+  runnerCtx.horizontal_move_buffer = runnerCtx.current_jump_run_accel;
 }

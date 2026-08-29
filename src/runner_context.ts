@@ -22,15 +22,15 @@ export class RunnerContext {
   show_fall_debug = true;
 
   max_run_speed = 5; // cap for both grounded and airborne run
-  run_accel_amount = 1; // ground speed added when a run-accel step fires
-  run_accel_interval = 2; // apply run accel every N grounded updates
-  run_accel_counter = 0;
+  run_accel_amount = 1;
+  run_accel_interval = 1;
+  run_accel_update_count = 0;
   current_run_accel = 0;
 
-  jump_run_momentum = 0; // signed. max magnitude equals max_run_speed
-  jump_run_accel_amount = 1; // air accel / brake delta per step
-  jump_run_accel_interval = 2; // apply air accel or brake every N air-run ticks
-  air_run_update_count = 0; // shared jump + fall cadence
+  jump_run_accel_amount = 1;
+  jump_run_accel_interval = 1;
+  air_run_update_count = 0;
+  current_jump_run_accel = 0;
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check
@@ -47,13 +47,13 @@ export class RunnerContext {
    * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
    */
   min_jump_updates_before_cut = 1;
-  release_hang_time = 6;
-  release_hang_ticks_remaining = 0; // remaining hang time for current jump
-  fall_acceleration = 0;
-  max_fall_acceleration = 16;
-  fall_acceleration_step = 1; // amount per increase
-  fall_acceleration_interval = 1;
-  fall_acceleration_counter = 0;
+  release_hang_time = 6; // runner stays in air for N fixed updates before falling
+  release_hang_ticks_remaining = 0;
+  max_fall_acceleration = 15;
+  fall_accel_amount = 1; // amount per increase
+  fall_accel_interval = 1;
+  fall_update_count = 0;
+  current_fall_accel = 0;
 
   /** same kill used by a real ceiling and by jump-release */
   cancelUpwardMomentum(): void {
@@ -71,11 +71,11 @@ export class RunnerContext {
     this.move_up_buffer = 0;
     this.jump_momentum_decay_counter = 0;
     this.release_hang_ticks_remaining = 0;
-    this.fall_acceleration = 0;
-    this.fall_acceleration_counter = 0;
+    this.current_fall_accel = 0;
+    this.fall_update_count = 0;
     this.current_run_accel = 0;
-    this.run_accel_counter = 0;
-    this.jump_run_momentum = 0;
+    this.run_accel_update_count = 0;
+    this.current_jump_run_accel = 0;
     this.air_run_update_count = 0;
     this.is_grounded = true;
     this.is_facing_right_side = true;

@@ -53,7 +53,7 @@ export function resolveDownCollision(
   if (clampedDy < dy) {
     runnerCtx.current_up_vector = 0;
     runnerCtx.move_up_buffer = 0;
-    runnerCtx.fall_acceleration = 0;
+    runnerCtx.current_fall_accel = 0;
   }
 
   return clampedDy;

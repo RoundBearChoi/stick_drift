@@ -23,8 +23,8 @@ export class RunnerJump implements RunnerState {
     runnerCtx.current_up_vector = runnerCtx.jump_starting_momentum;
     runnerCtx.jump_momentum_decay_counter = 0;
     // up wins — clear any residual fall so ascent starts clean
-    runnerCtx.fall_acceleration = 0;
-    runnerCtx.fall_acceleration_counter = 0;
+    runnerCtx.current_fall_accel = 0;
+    runnerCtx.fall_update_count = 0;
     runnerCtx.move_down_buffer = 0;
     runnerCtx.release_hang_ticks_remaining = 0;
     // new jump starts a fresh air-run cadence. jump → fall must not reset this.

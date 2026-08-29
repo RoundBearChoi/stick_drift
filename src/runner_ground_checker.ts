@@ -66,7 +66,7 @@ export class GroundChecker implements Tickable {
       ctx.current_up_vector > 0 ||
       ctx.move_up_buffer > 0
     ) {
-      ctx.fall_acceleration = 0;
+      ctx.current_fall_accel = 0;
       ctx.move_down_buffer = 0;
     }
   }

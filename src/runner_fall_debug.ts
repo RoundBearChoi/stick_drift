@@ -45,7 +45,7 @@ export class RunnerFallDebug {
 
     const current = Math.max(
       0,
-      Math.min(runnerCtx.fall_acceleration, max)
+      Math.min(runnerCtx.current_fall_accel, max)
     );
     const remaining = max - current;
 
