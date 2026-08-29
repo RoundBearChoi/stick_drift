@@ -21,9 +21,12 @@ export class RunnerContext {
   show_jump_debug = true;
   show_fall_debug = true;
 
-  run_accel_per_update = 1;
+  run_accel_per_update = 1; // IMPORTANT: determines both grounded and airborne run accel
   current_run_accel = 0;
   max_run_speed = 5;
+
+  jump_run_momentum = 0; // signed. max magnitude equals max_run_speed
+  jump_run_accel_per_update = 2; // apply air accel or brake every N jump ticks
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check
@@ -35,8 +38,7 @@ export class RunnerContext {
   jump_momentum_decay_interval = 2; // decay every other update
   jump_momentum_decay_counter = 0;
 
-  jump_run_momentum = 0; // signed. max magnitude equals max_run_speed
-  jump_run_accel_per_update = 2; // apply air accel / coast / brake every N jump ticks
+
 
   /**
    * minimum jump fixed updates before cancel.
