@@ -14,6 +14,7 @@ import { RunnerController } from './runner_controller';
 import { RunnerStateSwitcher } from './runner_state_switcher';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { RunnerGroundChecker } from './runner_ground_checker';
+import { RunnerWallSlideCheck } from './runner_wall_slide_check';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
@@ -31,6 +32,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _runner_state_switcher?: RunnerStateSwitcher;
   private _runner_move_buffer_resolve?: RunnerMovementBufferResolve;
   private _runner_ground_checker?: RunnerGroundChecker;
+  private _wall_slide_check?: RunnerWallSlideCheck;
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
   private _grid?: GridSystem;
@@ -84,7 +86,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       );
     }
 
-    // movement resolve + ground checker need the solid grid — recreate when grid is new
+    // movement resolve + contact checkers need the solid grid — recreate when grid is new
     this._runner_move_buffer_resolve = new RunnerMovementBufferResolve(
       this._stick_runner,
       this._game_ctx,
@@ -92,6 +94,12 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     );
 
     this._runner_ground_checker = new RunnerGroundChecker(
+      this._stick_runner,
+      this._game_ctx,
+      this._solid_grid
+    );
+
+    this._wall_slide_check = new RunnerWallSlideCheck(
       this._stick_runner,
       this._game_ctx,
       this._solid_grid
@@ -136,6 +144,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     // IMPORTANT: order matters.
     this._runner_controller.register();
     this._runner_ground_checker.register();
+    this._wall_slide_check.register();
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
     this._runner_state_switcher.register();
@@ -161,6 +170,9 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     }
     if (this._runner_ground_checker) {
       this._runner_ground_checker.unregister();
+    }
+    if (this._wall_slide_check) {
+      this._wall_slide_check.unregister();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();

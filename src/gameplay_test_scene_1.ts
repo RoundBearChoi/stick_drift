@@ -14,6 +14,7 @@ import { RunnerController } from './runner_controller';
 import { RunnerStateSwitcher } from './runner_state_switcher';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { RunnerGroundChecker } from './runner_ground_checker';
+import { RunnerWallSlideCheck } from './runner_wall_slide_check';
 import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
@@ -30,6 +31,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _state_switcher?: RunnerStateSwitcher;
   private _runner_move_buffer_resolve?: RunnerMovementBufferResolve;
   private _ground_checker?: RunnerGroundChecker;
+  private _wall_slide_check?: RunnerWallSlideCheck;
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
   private _grid?: GridSystem;
@@ -102,6 +104,14 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       );
     }
 
+    if (!this._wall_slide_check) {
+      this._wall_slide_check = new RunnerWallSlideCheck(
+        this._stick_runner,
+        this._game_ctx,
+        this._solid_grid
+      );
+    }
+
     // reset every time we enter the scene.
     // this is where the runner context is first passed to runner.
     // later it's also passed on every fixed update.
@@ -113,10 +123,23 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
       const baseY = 280;
 
-      // left side
-      const brick0 = createBrick(this.engine, {
-        pos: vec(64, baseY - 8),
-      });
+      // tall side walls — a single 16px brick cannot satisfy the 25px overlap rule
+      const wallBrickCount = 4; // 64px
+      const wallBaseY = baseY - 8;
+      const leftWallX = 64;
+      const rightWallX = 144 + 160 + 160 + 160;
+
+      for (let i = 0; i < wallBrickCount; i++) {
+        const leftBrick = createBrick(this.engine, {
+          pos: vec(leftWallX, wallBaseY - i * 16),
+        });
+        const rightBrick = createBrick(this.engine, {
+          pos: vec(rightWallX, wallBaseY - i * 16),
+        });
+        this.add(leftBrick);
+        this.add(rightBrick);
+        this._bricks.push(leftBrick, rightBrick);
+      }
 
       // bottom
       const brick1 = createBrick(this.engine, {
@@ -132,21 +155,12 @@ export class GameplayTestScene1 extends Scene<GameContext> {
         pos: vec(144 + 160 + 160 + 16 + 16, baseY),
       });
 
-      // right side
-      const brick5 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160 + 160, baseY - 8),
-      });
-
-      // add bricks to the scene
-      this.add(brick0);
       this.add(brick1);
       this.add(brick2);
       this.add(brick3);
       this.add(brick4);
-      this.add(brick5);
 
-      // keep reference to the bricks. later you can use the reference to delete or whatever.
-      this._bricks.push(brick0, brick1, brick2, brick3, brick4, brick5);
+      this._bricks.push(brick1, brick2, brick3, brick4);
 
       // register to solid grid for collision check
       this._solid_grid.clearSolidData();
@@ -187,6 +201,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // IMPORTANT: order matters.
     this._runner_controller.register();
     this._ground_checker.register();
+    this._wall_slide_check.register();
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
     this._state_switcher.register();
@@ -214,6 +229,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
     if (this._ground_checker) {
       this._ground_checker.unregister();
+    }
+    if (this._wall_slide_check) {
+      this._wall_slide_check.unregister();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();
