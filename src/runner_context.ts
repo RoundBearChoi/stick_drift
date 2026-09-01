@@ -57,6 +57,10 @@ export class RunnerContext {
   get fall_accel_amount() { return 1; }
   get fall_accel_interval() { return 1; }
 
+  get wall_slide_down_accel_amount() { return 1; }
+  get wall_slide_down_accel_interval() { return 2; }
+  current_wall_slide_down_accel = 0;
+
   release_hang_ticks_remaining = 0;
   fall_update_count = 0;
   current_fall_accel = 0;
