@@ -5,7 +5,9 @@ import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerJump } from './runner_jump';
 import { RunnerRunAccel } from './runner_run_accel';
+import { RunnerWallSlide } from './runner_wall_slide';
 import { applyAirRun, seedJumpRunMomentumFromStandstill } from '../runner_air_run';
+import { canEnterWallSlide } from '../runner_wall_slide_check';
 
 export class RunnerFall implements RunnerState {
   readonly state_name = RunnerStateName.FALL;
@@ -48,6 +50,11 @@ export class RunnerFall implements RunnerState {
       }
 
       runner.queueNewState(new RunnerIdle());
+      return;
+    }
+
+    if (canEnterWallSlide(input, runnerCtx)) {
+      runner.queueNewState(new RunnerWallSlide());
       return;
     }
 

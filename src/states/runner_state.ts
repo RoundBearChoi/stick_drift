@@ -9,6 +9,7 @@ export enum RunnerStateName {
   DECEL = 'decel',
   JUMP = 'jump',
   FALL = 'fall',
+  WALL_SLIDE = 'wall_slide',
 }
 
 /**

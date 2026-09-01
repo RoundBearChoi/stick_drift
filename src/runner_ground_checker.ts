@@ -60,13 +60,14 @@ export class RunnerGroundChecker implements Tickable {
       this.solidGrid
     );
 
-    // up wins, ground cancels fall energy
+    // up wins, ground cancels fall / wall-slide energy
     if (
       ctx.is_grounded ||
       ctx.current_up_vector > 0 ||
       ctx.move_up_buffer > 0
     ) {
       ctx.current_fall_accel = 0;
+      ctx.current_wall_slide_down_accel = 0;
       ctx.move_down_buffer = 0;
     }
   }

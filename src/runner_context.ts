@@ -7,12 +7,15 @@ export class RunnerContext {
   get run_accel_animation_tick_per_frames() { return 4; }
   get decel_animation_tick_per_frames() { return 4; }
   get fall_animation_tick_per_frames() { return 4; }
+  get wall_slide_animation_tick_per_frames() { return 4; }
 
   // bottom-center pivot
   get anchor(): Vector { return vec(0.5, 1); }
 
   is_grounded = true;
   is_facing_right_side = true;
+  wall_contact_left = false;
+  wall_contact_right = false;
 
   get collider_width() { return 20; }
   get collider_height() { return 30; }
@@ -59,7 +62,9 @@ export class RunnerContext {
 
   get wall_slide_down_accel_amount() { return 1; }
   get wall_slide_down_accel_interval() { return 2; }
+  get max_wall_slide_down_acceleration() { return 8; }
   current_wall_slide_down_accel = 0;
+  wall_slide_update_count = 0;
 
   release_hang_ticks_remaining = 0;
   fall_update_count = 0;
@@ -88,6 +93,10 @@ export class RunnerContext {
     this.ground_decel_update_count = 0;
     this.current_jump_run_accel = 0;
     this.air_run_update_count = 0;
+    this.current_wall_slide_down_accel = 0;
+    this.wall_slide_update_count = 0;
+    this.wall_contact_left = false;
+    this.wall_contact_right = false;
     this.is_grounded = true;
     this.is_facing_right_side = true;
   }

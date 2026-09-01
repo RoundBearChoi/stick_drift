@@ -4,7 +4,9 @@ import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerFall } from './runner_fall';
 import { RunnerIdle } from './runner_idle';
+import { RunnerWallSlide } from './runner_wall_slide';
 import { applyAirRun } from '../runner_air_run';
+import { canEnterWallSlide } from '../runner_wall_slide_check';
 
 export class RunnerJump implements RunnerState {
   readonly state_name = RunnerStateName.JUMP;
@@ -40,6 +42,11 @@ export class RunnerJump implements RunnerState {
     runnerCtx: RunnerContext
   ): void {
     this._ticks_in_jump++;
+
+    if (canEnterWallSlide(input, runnerCtx)) {
+      runner.queueNewState(new RunnerWallSlide());
+      return;
+    }
 
     const pastMinJump =
       this._ticks_in_jump > runnerCtx.min_jump_updates_before_cut;

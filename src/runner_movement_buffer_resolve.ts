@@ -44,9 +44,10 @@ export class RunnerMovementBufferResolve implements Tickable {
       }
     }
 
-    // any ascent cancels fall energy
+    // any ascent cancels fall / wall-slide energy
     if (ctx.current_up_vector > 0 || ctx.move_up_buffer > 0) {
       ctx.current_fall_accel = 0;
+      ctx.current_wall_slide_down_accel = 0;
       ctx.move_down_buffer = 0;
     }
 
@@ -70,7 +71,9 @@ export class RunnerMovementBufferResolve implements Tickable {
       return;
     }
 
-    if (ctx.current_fall_accel > 0) {
+    if (ctx.current_wall_slide_down_accel > 0) {
+      ctx.move_down_buffer = ctx.current_wall_slide_down_accel;
+    } else if (ctx.current_fall_accel > 0) {
       ctx.move_down_buffer = ctx.current_fall_accel;
     }
 
@@ -83,9 +86,10 @@ export class RunnerMovementBufferResolve implements Tickable {
       );
       this.runner.pos.y += safeDy;
 
-      // landed → kill fall energy
+      // landed → kill fall / slide energy
       if (safeDy < ctx.move_down_buffer) {
         ctx.current_fall_accel = 0;
+        ctx.current_wall_slide_down_accel = 0;
       }
 
       ctx.move_down_buffer = 0;
