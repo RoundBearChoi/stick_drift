@@ -5,13 +5,8 @@ import { RunnerContext } from './runner_context';
 import { SolidGrid, CELL_SIZE } from './solid_grid';
 import { InputAction, InputInterpreter } from './input_interpreter';
 
-/** how much of the 30px collider must overlap the adjacent wall column */
 export const WALL_SLIDE_MIN_OVERLAP = 25;
 
-/**
- * solid coverage along a 1px-wide vertical strip.
- * range is [top, bottom] = collider height (30).
- */
 function solidOverlapInColumn(
   checkX: number,
   top: number,

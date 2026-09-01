@@ -15,13 +15,13 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.wall_slide_animation_tick_per_frames
     );
 
-    // lose all jump momentum (vertical + air-run)
+    // temp: lose all jump momentum (vertical + air-run)
     runnerCtx.cancelUpwardMomentum();
     runnerCtx.current_jump_run_accel = 0;
     runnerCtx.air_run_update_count = 0;
     runnerCtx.horizontal_move_buffer = 0;
 
-    // drop any leftover free-fall energy, then slide from 0
+    // temp: drop any leftover free-fall energy, then slide from 0
     runnerCtx.current_fall_accel = 0;
     runnerCtx.fall_update_count = 0;
     runnerCtx.move_down_buffer = 0;
@@ -61,7 +61,6 @@ export class RunnerWallSlide implements RunnerState {
       : runnerCtx.wall_contact_left;
 
     // wall ended, or player pushed off → regular fall
-    // (wall jump / wall_slide_up_accel comes later)
     if (!stillOnWall || pressingAway) {
       runnerCtx.current_fall_accel = runnerCtx.current_wall_slide_down_accel;
       runnerCtx.current_wall_slide_down_accel = 0;
@@ -84,7 +83,7 @@ export class RunnerWallSlide implements RunnerState {
       );
     }
 
-    // press into the wall so resolve keeps us 1px off it
+    // stay on the wall
     runnerCtx.horizontal_move_buffer = runnerCtx.is_facing_right_side ? 1 : -1;
   }
 }

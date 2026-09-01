@@ -43,22 +43,12 @@ export class RunnerContext {
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check
   move_up_buffer = 0; // unchecked move intent before collision check
-  current_up_vector = 0;
 
-  get jump_starting_momentum() { return 12; }
-  get jump_momentum_decay() { return 1; }
-  get jump_momentum_decay_interval() { return 2; }
-  jump_momentum_decay_counter = 0;
-
-  /**
-   * minimum jump fixed updates before cancel.
-   * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
-   */
-  get min_jump_updates_before_cut() { return 1; }
-  get release_hang_time() { return 4; }
   get max_fall_acceleration() { return 15; }
   get fall_accel_amount() { return 1; }
   get fall_accel_interval() { return 1; }
+  fall_update_count = 0;
+  current_fall_accel = 0;
 
   get wall_slide_down_accel_amount() { return 1; }
   get wall_slide_down_accel_interval() { return 2; }
@@ -66,9 +56,19 @@ export class RunnerContext {
   current_wall_slide_down_accel = 0;
   wall_slide_update_count = 0;
 
+  get jump_starting_momentum() { return 12; }
+  get jump_momentum_decay() { return 1; }
+  get jump_momentum_decay_interval() { return 2; }
+  jump_momentum_decay_counter = 0;
+  current_up_vector = 0;
+
+  /**
+   * minimum jump fixed updates before cancel.
+   * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
+   */
+  get min_jump_updates_before_cut() { return 1; }
+  get release_hang_time() { return 4; }
   release_hang_ticks_remaining = 0;
-  fall_update_count = 0;
-  current_fall_accel = 0;
 
   /** same kill used by a real ceiling and by jump-release */
   cancelUpwardMomentum(): void {
