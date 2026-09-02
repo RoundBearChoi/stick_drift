@@ -24,12 +24,6 @@ nvm use
 node -v    # v24.19.0
 ```
 
-select the pinned Node version:
-
-```bash
-nvm use
-```
-
 ## Install dependencies
 
 ```bash
