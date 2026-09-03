@@ -8,7 +8,7 @@ import { resolveUpCollision } from './runner_up_collision';
 
 /**
  * sole responsibility: apply movement buffers (horizontal then vertical) after collision resolution. then zero the buffers.
- * ascent has priority over fall.
+ * IMPORTANT: ascent has priority over fall.
  */
 export class RunnerMovementBufferResolve implements Tickable {
   constructor(

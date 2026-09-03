@@ -16,7 +16,7 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.wall_slide_animation_tick_per_frames
     );
 
-    // remaining air-up becomes wall-slide-up (~85%, integer table). then air-up is gone.
+    // remaining air-up becomes wall-slide-up (~85%, integer table).
     const remainingAirUp = runnerCtx.current_air_up_vector;
     runnerCtx.cancelUpwardMomentum();
     runnerCtx.current_wall_slide_up_vector = transferAirUpToWallSlideUp(remainingAirUp);
