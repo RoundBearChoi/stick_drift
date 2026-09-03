@@ -1,21 +1,3 @@
-/**
- * integer-only ~85% transfer when up-energy crosses air <-> wall-slide.
- * 12 is jump max. anything above 12 uses the 12 row.
- *
- * 12 -> 10
- * 11 -> 9
- * 10 -> 9
- *  9 -> 8
- *  8 -> 7
- *  7 -> 6
- *  6 -> 5
- *  5 -> 4
- *  4 -> 3
- *  3 -> 3
- *  2 -> 2
- *  1 -> 1
- *  0 -> 0
- */
 export function transferUpVectorAcrossWallSlide(up_vector: number): number {
   if (up_vector <= 0) return 0;
   if (up_vector >= 12) return 10;
