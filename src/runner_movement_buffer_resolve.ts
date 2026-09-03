@@ -35,11 +35,11 @@ export class RunnerMovementBufferResolve implements Tickable {
       ctx.move_up_buffer = ctx.current_air_up_vector;
 
       ctx.air_up_vector_decay_counter++;
-      if (ctx.air_up_vector_decay_counter >= ctx.jump_momentum_decay_interval) {
+      if (ctx.air_up_vector_decay_counter >= ctx.jump_up_momentum_decay_interval) {
         ctx.air_up_vector_decay_counter = 0;
         ctx.current_air_up_vector = Math.max(
           0,
-          ctx.current_air_up_vector - ctx.jump_momentum_decay
+          ctx.current_air_up_vector - ctx.jump_up_momentum_decay_amount
         );
       }
     }
