@@ -42,10 +42,28 @@ export class RunnerMovementBufferResolve implements Tickable {
           ctx.current_air_up_vector - ctx.jump_up_momentum_decay_amount
         );
       }
+    } else if (ctx.current_wall_slide_up_vector > 0) {
+      ctx.move_up_buffer = ctx.current_wall_slide_up_vector;
+
+      ctx.wall_slide_up_vector_decay_counter++;
+      if (
+        ctx.wall_slide_up_vector_decay_counter >=
+        ctx.wall_slide_up_vector_decay_interval
+      ) {
+        ctx.wall_slide_up_vector_decay_counter = 0;
+        ctx.current_wall_slide_up_vector = Math.max(
+          0,
+          ctx.current_wall_slide_up_vector - ctx.wall_slide_up_vector_decay_amount
+        );
+      }
     }
 
-    // any ascent cancels fall / wall-slide energy
-    if (ctx.current_air_up_vector > 0 || ctx.move_up_buffer > 0) {
+    // any ascent cancels fall / wall-slide-down energy
+    if (
+      ctx.current_air_up_vector > 0 ||
+      ctx.current_wall_slide_up_vector > 0 ||
+      ctx.move_up_buffer > 0
+    ) {
       ctx.current_fall_accel = 0;
       ctx.current_wall_slide_down_accel = 0;
       ctx.move_down_buffer = 0;

@@ -62,6 +62,11 @@ export class RunnerContext {
   current_wall_slide_down_accel = 0;
   wall_slide_update_count = 0;
 
+  current_wall_slide_up_vector = 0;
+  wall_slide_up_vector_decay_counter = 0;
+  get wall_slide_up_vector_decay_amount() { return 1; }
+  get wall_slide_up_vector_decay_interval() { return 2; }
+
   /**
    * minimum jump fixed updates before cancel.
    * immediate release does not snap to 1-up on the first jump tick. we still have full force until minimum jump ticks, AND THEN hang at 1.
@@ -76,6 +81,8 @@ export class RunnerContext {
     this.move_up_buffer = 0;
     this.air_up_vector_decay_counter = 0;
     this.release_hang_ticks_remaining = 0;
+    this.current_wall_slide_up_vector = 0;
+    this.wall_slide_up_vector_decay_counter = 0;
   }
 
   /** call from resetRunner / scene enter so buffers do not leak across scenes. */
@@ -95,6 +102,8 @@ export class RunnerContext {
     this.air_run_update_count = 0;
     this.current_wall_slide_down_accel = 0;
     this.wall_slide_update_count = 0;
+    this.current_wall_slide_up_vector = 0;
+    this.wall_slide_up_vector_decay_counter = 0;
     this.wall_contact_left = false;
     this.wall_contact_right = false;
     this.is_grounded = true;

@@ -5,6 +5,7 @@ import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerFall } from './runner_fall';
 import { applyAirRun } from '../runner_air_run';
+import { transferAirUpToWallSlideUp } from '../up_vector_wall_slide_transfer';
 
 export class RunnerWallSlide implements RunnerState {
   readonly state_name = RunnerStateName.WALL_SLIDE;
@@ -15,13 +16,17 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.wall_slide_animation_tick_per_frames
     );
 
-    // temp: lose all jump momentum (vertical + air-run)
+    // remaining air-up becomes wall-slide-up (~85%, integer table). then air-up is gone.
+    const remainingAirUp = runnerCtx.current_air_up_vector;
     runnerCtx.cancelUpwardMomentum();
+    runnerCtx.current_wall_slide_up_vector = transferAirUpToWallSlideUp(remainingAirUp);
+    runnerCtx.wall_slide_up_vector_decay_counter = 0;
+
     runnerCtx.current_air_run_accel = 0;
     runnerCtx.air_run_update_count = 0;
     runnerCtx.horizontal_move_buffer = 0;
 
-    // temp: drop any leftover free-fall energy, then slide from 0
+    // drop leftover free-fall energy. down-slide starts only after wall-slide-up is gone.
     runnerCtx.current_fall_accel = 0;
     runnerCtx.fall_update_count = 0;
     runnerCtx.move_down_buffer = 0;
@@ -44,6 +49,8 @@ export class RunnerWallSlide implements RunnerState {
     if (runnerCtx.is_grounded) {
       runnerCtx.current_wall_slide_down_accel = 0;
       runnerCtx.wall_slide_update_count = 0;
+      runnerCtx.current_wall_slide_up_vector = 0;
+      runnerCtx.wall_slide_up_vector_decay_counter = 0;
       runnerCtx.current_fall_accel = 0;
       runnerCtx.fall_update_count = 0;
       runner.queueNewState(new RunnerIdle());
@@ -65,8 +72,24 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.current_fall_accel = runnerCtx.current_wall_slide_down_accel;
       runnerCtx.current_wall_slide_down_accel = 0;
       runnerCtx.wall_slide_update_count = 0;
+
+      // leftover climb becomes regular air-up so peel-off can keep rising for a bit
+      if (runnerCtx.current_wall_slide_up_vector > 0) {
+        runnerCtx.current_air_up_vector = runnerCtx.current_wall_slide_up_vector;
+        runnerCtx.air_up_vector_decay_counter = 0;
+        runnerCtx.current_wall_slide_up_vector = 0;
+        runnerCtx.wall_slide_up_vector_decay_counter = 0;
+        runnerCtx.current_fall_accel = 0;
+      }
+
       applyAirRun(input, runnerCtx);
       runner.queueNewState(new RunnerFall());
+      return;
+    }
+
+    // still climbing the wall — up has priority, no down energy yet
+    if (runnerCtx.current_wall_slide_up_vector > 0) {
+      runnerCtx.horizontal_move_buffer = runnerCtx.is_facing_right_side ? 1 : -1;
       return;
     }
 
