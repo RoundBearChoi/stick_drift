@@ -15,6 +15,8 @@ export class RunnerJump implements RunnerState {
   private _release_hang_started = false; // once this becomes true, jump cannot regain momentum
 
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
+    //console.log("entering jump state");
+
     // for now jump reuses idle animation + idle tick rate
     runner.playAnimationForState(
       this.state_name,

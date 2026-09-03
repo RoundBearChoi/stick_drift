@@ -11,6 +11,8 @@ export class RunnerWallSlide implements RunnerState {
   readonly state_name = RunnerStateName.WALL_SLIDE;
 
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
+    console.log("entering wall slide state");
+
     runner.playAnimationForState(
       this.state_name,
       runnerCtx.wall_slide_animation_tick_per_frames
