@@ -52,24 +52,31 @@ export function checkWallSlideContact(
   };
 }
 
-/** held into a contacted wall. grounded is a separate gate. */
-export function wallSlideInputSide(
+/** exclusive hold away from a single contacted wall. grounded is a separate gate. */
+export function isPressingAwayFromWall(
   input: InputInterpreter,
   runnerCtx: RunnerContext
-): 'left' | 'right' | null {
+): boolean {
   const left = input.isHeld(InputAction.MOVE_LEFT);
   const right = input.isHeld(InputAction.MOVE_RIGHT);
-  if (right === left) return null;
-  if (right && runnerCtx.wall_contact_right) return 'right';
-  if (left && runnerCtx.wall_contact_left) return 'left';
-  return null;
+  if (right === left) return false;
+
+  if (runnerCtx.wall_contact_right && !runnerCtx.wall_contact_left) {
+    return left && !right;
+  }
+  if (runnerCtx.wall_contact_left && !runnerCtx.wall_contact_right) {
+    return right && !left;
+  }
+  return false;
 }
 
 export function canEnterWallSlide(
   input: InputInterpreter,
   runnerCtx: RunnerContext
 ): boolean {
-  return !runnerCtx.is_grounded && wallSlideInputSide(input, runnerCtx) !== null;
+  if (runnerCtx.is_grounded) return false;
+  if (!runnerCtx.wall_contact_left && !runnerCtx.wall_contact_right) return false;
+  return !isPressingAwayFromWall(input, runnerCtx);
 }
 
 /**
