@@ -5,7 +5,7 @@ import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerFall } from './runner_fall';
 import { applyAirRun } from '../runner_air_run';
-import { transferAirUpToWallSlideUp } from '../up_vector_wall_slide_transfer';
+import { transferUpVectorAcrossWallSlide } from '../up_vector_wall_slide_transfer';
 
 export class RunnerWallSlide implements RunnerState {
   readonly state_name = RunnerStateName.WALL_SLIDE;
@@ -19,7 +19,8 @@ export class RunnerWallSlide implements RunnerState {
     // remaining air-up becomes wall-slide-up (~85%, integer table).
     const remainingAirUp = runnerCtx.current_air_up_vector;
     runnerCtx.cancelUpwardMomentum();
-    runnerCtx.current_wall_slide_up_vector = transferAirUpToWallSlideUp(remainingAirUp);
+    runnerCtx.current_wall_slide_up_vector =
+      transferUpVectorAcrossWallSlide(remainingAirUp);
     runnerCtx.wall_slide_up_vector_decay_counter = 0;
 
     runnerCtx.current_air_run_accel = 0;
@@ -73,9 +74,11 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.current_wall_slide_down_accel = 0;
       runnerCtx.wall_slide_update_count = 0;
 
-      // leftover climb becomes regular air-up so peel-off can keep rising for a bit
+      // leftover climb goes back to air-up through the same ~85% table
       if (runnerCtx.current_wall_slide_up_vector > 0) {
-        runnerCtx.current_air_up_vector = runnerCtx.current_wall_slide_up_vector;
+        runnerCtx.current_air_up_vector = transferUpVectorAcrossWallSlide(
+          runnerCtx.current_wall_slide_up_vector
+        );
         runnerCtx.air_up_vector_decay_counter = 0;
         runnerCtx.current_wall_slide_up_vector = 0;
         runnerCtx.wall_slide_up_vector_decay_counter = 0;
