@@ -22,7 +22,7 @@ export class RunnerJump implements RunnerState {
     );
 
     // states should only write to upward energy
-    runnerCtx.current_air_up_vector = runnerCtx.jump_starting_momentum;
+    runnerCtx.current_air_up_vector = runnerCtx.jump_up_starting_momentum;
     runnerCtx.air_up_vector_decay_counter = 0;
     // up wins — clear any residual fall so ascent starts clean
     runnerCtx.current_fall_accel = 0;

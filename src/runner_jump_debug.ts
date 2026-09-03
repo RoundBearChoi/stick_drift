@@ -42,7 +42,7 @@ export class RunnerJumpDebug {
     const stateName = (this.host as Actor & { stateName?: string }).stateName;
     if (stateName !== 'jump') return;
 
-    const max = runnerCtx.jump_starting_momentum;
+    const max = runnerCtx.jump_up_starting_momentum;
     if (max <= 0) return;
 
     const remaining = Math.max(

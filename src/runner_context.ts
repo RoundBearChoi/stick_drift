@@ -44,7 +44,7 @@ export class RunnerContext {
   move_down_buffer = 0; // unchecked move intent before collision check
   move_up_buffer = 0; // unchecked move intent before collision check
 
-  get jump_starting_momentum() { return 12; }
+  get jump_up_starting_momentum() { return 12; }
   get jump_momentum_decay() { return 1; }
   get jump_momentum_decay_interval() { return 2; }
   air_up_vector_decay_counter = 0;
