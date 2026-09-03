@@ -22,7 +22,7 @@ export class RunnerJump implements RunnerState {
     );
 
     // states should only write to upward energy
-    runnerCtx.current_up_vector = runnerCtx.jump_starting_momentum;
+    runnerCtx.current_air_up_vector = runnerCtx.jump_starting_momentum;
     runnerCtx.jump_momentum_decay_counter = 0;
     // up wins — clear any residual fall so ascent starts clean
     runnerCtx.current_fall_accel = 0;
@@ -60,7 +60,7 @@ export class RunnerJump implements RunnerState {
     if (this._release_hang_started) {
       if (runnerCtx.release_hang_ticks_remaining > 0) {
         // hang: keep 1 up-force. freeze decay so the resolver cannot eat it.
-        runnerCtx.current_up_vector = 1;
+        runnerCtx.current_air_up_vector = 1;
         runnerCtx.jump_momentum_decay_counter = 0;
         runnerCtx.release_hang_ticks_remaining--;
       } else {
@@ -69,7 +69,7 @@ export class RunnerJump implements RunnerState {
     }
 
     // when upward energy is gone, start falling (or idle if we somehow landed)
-    if (runnerCtx.current_up_vector <= 0) {
+    if (runnerCtx.current_air_up_vector <= 0) {
       if (runnerCtx.is_grounded) {
         runner.queueNewState(new RunnerIdle());
       } else {

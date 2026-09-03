@@ -47,7 +47,7 @@ export class RunnerJumpDebug {
 
     const remaining = Math.max(
       0,
-      Math.min(runnerCtx.current_up_vector, max)
+      Math.min(runnerCtx.current_air_up_vector, max)
     );
     const spent = max - remaining;
 

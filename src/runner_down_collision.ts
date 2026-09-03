@@ -51,7 +51,7 @@ export function resolveDownCollision(
 
   // bottom collision detected → clear residual vertical energy
   if (clampedDy < dy) {
-    runnerCtx.current_up_vector = 0;
+    runnerCtx.current_air_up_vector = 0;
     runnerCtx.move_up_buffer = 0;
     runnerCtx.current_fall_accel = 0;
     runnerCtx.current_wall_slide_down_accel = 0;

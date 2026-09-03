@@ -38,7 +38,7 @@ export class RunnerContext {
   get jump_run_accel_amount() { return 1; }
   get jump_run_accel_interval() { return 1; }
   air_run_update_count = 0;
-  current_jump_run_accel = 0;
+  current_air_run_accel = 0;
 
   horizontal_move_buffer = 0; // unchecked move intent before collision check
   move_down_buffer = 0; // unchecked move intent before collision check
@@ -48,7 +48,7 @@ export class RunnerContext {
   get jump_momentum_decay() { return 1; }
   get jump_momentum_decay_interval() { return 2; }
   jump_momentum_decay_counter = 0;
-  current_up_vector = 0;
+  current_air_up_vector = 0;
 
   get max_fall_acceleration() { return 15; }
   get fall_accel_amount() { return 1; }
@@ -72,7 +72,7 @@ export class RunnerContext {
 
   /** same kill used by a real ceiling and by jump-release */
   cancelUpwardMomentum(): void {
-    this.current_up_vector = 0;
+    this.current_air_up_vector = 0;
     this.move_up_buffer = 0;
     this.jump_momentum_decay_counter = 0;
     this.release_hang_ticks_remaining = 0;
@@ -82,7 +82,7 @@ export class RunnerContext {
   reset(): void {
     this.horizontal_move_buffer = 0;
     this.move_down_buffer = 0;
-    this.current_up_vector = 0;
+    this.current_air_up_vector = 0;
     this.move_up_buffer = 0;
     this.jump_momentum_decay_counter = 0;
     this.release_hang_ticks_remaining = 0;
@@ -91,7 +91,7 @@ export class RunnerContext {
     this.current_run_accel = 0;
     this.run_accel_update_count = 0;
     this.ground_decel_update_count = 0;
-    this.current_jump_run_accel = 0;
+    this.current_air_run_accel = 0;
     this.air_run_update_count = 0;
     this.current_wall_slide_down_accel = 0;
     this.wall_slide_update_count = 0;

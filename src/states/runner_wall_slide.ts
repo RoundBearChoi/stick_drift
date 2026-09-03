@@ -17,7 +17,7 @@ export class RunnerWallSlide implements RunnerState {
 
     // temp: lose all jump momentum (vertical + air-run)
     runnerCtx.cancelUpwardMomentum();
-    runnerCtx.current_jump_run_accel = 0;
+    runnerCtx.current_air_run_accel = 0;
     runnerCtx.air_run_update_count = 0;
     runnerCtx.horizontal_move_buffer = 0;
 

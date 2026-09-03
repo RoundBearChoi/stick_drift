@@ -44,7 +44,7 @@ export class RunnerFall implements RunnerState {
       if (right !== left) {
         runnerCtx.is_facing_right_side = right;
         runner.queueNewState(
-          new RunnerRunAccel(Math.abs(runnerCtx.current_jump_run_accel))
+          new RunnerRunAccel(Math.abs(runnerCtx.current_air_run_accel))
         );
         return;
       }

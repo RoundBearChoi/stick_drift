@@ -63,7 +63,7 @@ export class RunnerGroundChecker implements Tickable {
     // up wins, ground cancels fall / wall-slide energy
     if (
       ctx.is_grounded ||
-      ctx.current_up_vector > 0 ||
+      ctx.current_air_up_vector > 0 ||
       ctx.move_up_buffer > 0
     ) {
       ctx.current_fall_accel = 0;

@@ -31,21 +31,21 @@ export class RunnerMovementBufferResolve implements Tickable {
     ctx.horizontal_move_buffer = 0;
 
     // apply remaining upward energy this tick, then decay
-    if (ctx.current_up_vector > 0) {
-      ctx.move_up_buffer = ctx.current_up_vector;
+    if (ctx.current_air_up_vector > 0) {
+      ctx.move_up_buffer = ctx.current_air_up_vector;
 
       ctx.jump_momentum_decay_counter++;
       if (ctx.jump_momentum_decay_counter >= ctx.jump_momentum_decay_interval) {
         ctx.jump_momentum_decay_counter = 0;
-        ctx.current_up_vector = Math.max(
+        ctx.current_air_up_vector = Math.max(
           0,
-          ctx.current_up_vector - ctx.jump_momentum_decay
+          ctx.current_air_up_vector - ctx.jump_momentum_decay
         );
       }
     }
 
     // any ascent cancels fall / wall-slide energy
-    if (ctx.current_up_vector > 0 || ctx.move_up_buffer > 0) {
+    if (ctx.current_air_up_vector > 0 || ctx.move_up_buffer > 0) {
       ctx.current_fall_accel = 0;
       ctx.current_wall_slide_down_accel = 0;
       ctx.move_down_buffer = 0;
