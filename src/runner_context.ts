@@ -44,6 +44,12 @@ export class RunnerContext {
   move_down_buffer = 0; // unchecked move intent before collision check
   move_up_buffer = 0; // unchecked move intent before collision check
 
+  get jump_starting_momentum() { return 12; }
+  get jump_momentum_decay() { return 1; }
+  get jump_momentum_decay_interval() { return 2; }
+  jump_momentum_decay_counter = 0;
+  current_up_vector = 0;
+
   get max_fall_acceleration() { return 15; }
   get fall_accel_amount() { return 1; }
   get fall_accel_interval() { return 1; }
@@ -52,15 +58,9 @@ export class RunnerContext {
 
   get wall_slide_down_accel_amount() { return 1; }
   get wall_slide_down_accel_interval() { return 2; }
-  get max_wall_slide_down_acceleration() { return 8; }
+  get max_wall_slide_down_acceleration() { return 12; }
   current_wall_slide_down_accel = 0;
   wall_slide_update_count = 0;
-
-  get jump_starting_momentum() { return 12; }
-  get jump_momentum_decay() { return 1; }
-  get jump_momentum_decay_interval() { return 2; }
-  jump_momentum_decay_counter = 0;
-  current_up_vector = 0;
 
   /**
    * minimum jump fixed updates before cancel.
