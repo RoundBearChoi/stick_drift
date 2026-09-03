@@ -47,7 +47,7 @@ export class RunnerContext {
   get jump_starting_momentum() { return 12; }
   get jump_momentum_decay() { return 1; }
   get jump_momentum_decay_interval() { return 2; }
-  jump_momentum_decay_counter = 0;
+  air_up_vector_decay_counter = 0;
   current_air_up_vector = 0;
 
   get max_fall_acceleration() { return 15; }
@@ -74,7 +74,7 @@ export class RunnerContext {
   cancelUpwardMomentum(): void {
     this.current_air_up_vector = 0;
     this.move_up_buffer = 0;
-    this.jump_momentum_decay_counter = 0;
+    this.air_up_vector_decay_counter = 0;
     this.release_hang_ticks_remaining = 0;
   }
 
@@ -84,7 +84,7 @@ export class RunnerContext {
     this.move_down_buffer = 0;
     this.current_air_up_vector = 0;
     this.move_up_buffer = 0;
-    this.jump_momentum_decay_counter = 0;
+    this.air_up_vector_decay_counter = 0;
     this.release_hang_ticks_remaining = 0;
     this.current_fall_accel = 0;
     this.fall_update_count = 0;
