@@ -98,7 +98,7 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.current_wall_slide_down_accel = 0;
       runnerCtx.wall_slide_update_count = 0;
 
-      // leftover climb goes back to air-up through the same ~85% table
+      // leftover climb goes back to air-up
       if (runnerCtx.current_wall_slide_up_vector > 0) {
         runnerCtx.current_air_up_vector = transferUpVectorAcrossWallSlide(
           runnerCtx.current_wall_slide_up_vector
