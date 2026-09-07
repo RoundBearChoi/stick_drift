@@ -82,7 +82,7 @@ export class RunnerContext {
   wall_jump_away_ticks_remaining = 0;
 
   // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
-  get wall_jump_coyote_ticks() { return 3; }
+  get wall_jump_coyote_ticks() { return 6; }
   wall_jump_coyote_ticks_remaining = 0;
   // facing toward the wall at the moment slide ended. air-run may flip facing before jump.
   wall_jump_coyote_from_right = true;
