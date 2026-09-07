@@ -44,7 +44,7 @@ export function resolveHorizontalCollision(
         if (verticalOverlapWithCell(top, bottom, row) < MIN_CONTACT_OVERLAP_PX) continue;
 
         const solidLeft = col * CELL_SIZE;
-        const maxRight = solidLeft - 1; // IMPORTANT: 1 integer before the brick
+        const maxRight = solidLeft - 1; // 1px before the first solid pixel
         const allowedDx = maxRight - right;
         if (allowedDx < clampedDx) {
           clampedDx = Math.max(0, allowedDx);
@@ -65,8 +65,8 @@ export function resolveHorizontalCollision(
       if (!solidGrid.isSolid(col, row)) continue;
       if (verticalOverlapWithCell(top, bottom, row) < MIN_CONTACT_OVERLAP_PX) continue;
 
-      const solidRight = (col + 1) * CELL_SIZE;
-      const minLeft = solidRight + 1; // IMPORTANT: 1 integer after the brick
+      const solidRight = (col + 1) * CELL_SIZE; // exclusive end; last solid pixel is solidRight - 1
+      const minLeft = solidRight; // 1px after the last solid pixel (mirrors maxRight = solidLeft - 1)
       const allowedDx = minLeft - left;
       if (allowedDx > clampedDx) {
         // allowedDx is less negative (or zero) → more restrictive

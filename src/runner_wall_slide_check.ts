@@ -2,7 +2,12 @@ import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerContext } from './runner_context';
-import { SolidGrid, CELL_SIZE } from './solid_grid';
+import {
+  SolidGrid,
+  CELL_SIZE,
+  MIN_CONTACT_OVERLAP_PX,
+  verticalOverlapWithCell,
+} from './solid_grid';
 import { InputAction, InputInterpreter } from './input_interpreter';
 
 export const WALL_SLIDE_MIN_OVERLAP = 25;
@@ -21,10 +26,10 @@ function solidOverlapInColumn(
   for (let row = rowStart; row <= rowEnd; row++) {
     if (!solidGrid.isSolid(col, row)) continue;
 
-    const cellTop = row * CELL_SIZE;
-    const cellBottom = cellTop + CELL_SIZE;
-    const amount = Math.min(bottom, cellBottom) - Math.max(top, cellTop);
-    if (amount > 0) overlap += amount;
+    const amount = verticalOverlapWithCell(top, bottom, row);
+    // same 2px floor as wall / landing rows — a 1px head or foot scrape does not count.
+    if (amount < MIN_CONTACT_OVERLAP_PX) continue;
+    overlap += amount;
   }
   return overlap;
 }
@@ -41,8 +46,7 @@ export function checkWallSlideContact(
   const top = runnerY - runnerCtx.collider_height;
   const bottom = runnerY;
 
-  // horizontal resolve stops 1 integer before the brick,
-  // so the first solid pixel is immediately outside the collider.
+  // resolve now leaves a 1px gap on both sides, so left-1 / right+1 are solid pixels.
   const leftOverlap = solidOverlapInColumn(left - 1, top, bottom, solidGrid);
   const rightOverlap = solidOverlapInColumn(right + 1, top, bottom, solidGrid);
 
