@@ -5,8 +5,11 @@
  */
 export const CELL_SIZE = 8;
 
-/** minimum horizontal overlap (px) for a cell to count as landing or ceiling contact. */
-export const MIN_VERTICAL_CONTACT_OVERLAP_PX = 2;
+/** minimum overlap (px) for a cell to count as contact. */
+export const MIN_CONTACT_OVERLAP_PX = 2;
+
+/** @deprecated use MIN_CONTACT_OVERLAP_PX. kept so landing / grounded imports stay stable. */
+export const MIN_VERTICAL_CONTACT_OVERLAP_PX = MIN_CONTACT_OVERLAP_PX;
 
 /**
  * pixels of [left, right] that sit inside column `col`.
@@ -16,6 +19,16 @@ export function horizontalOverlapWithCell(left: number, right: number, col: numb
   const cellLeft = col * CELL_SIZE;
   const cellRight = cellLeft + CELL_SIZE;
   return Math.min(right, cellRight) - Math.max(left, cellLeft);
+}
+
+/**
+ * pixels of [top, bottom] that sit inside row `row`.
+ * cell range is [row * CELL_SIZE, (row + 1) * CELL_SIZE).
+ */
+export function verticalOverlapWithCell(top: number, bottom: number, row: number): number {
+  const cellTop = row * CELL_SIZE;
+  const cellBottom = cellTop + CELL_SIZE;
+  return Math.min(bottom, cellBottom) - Math.max(top, cellTop);
 }
 
 export class SolidGrid {

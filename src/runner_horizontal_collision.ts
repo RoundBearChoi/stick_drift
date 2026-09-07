@@ -1,4 +1,9 @@
-import { CELL_SIZE, SolidGrid } from './solid_grid';
+import {
+  CELL_SIZE,
+  MIN_CONTACT_OVERLAP_PX,
+  SolidGrid,
+  verticalOverlapWithCell,
+} from './solid_grid';
 import { RunnerContext } from './runner_context';
 
 /**
@@ -21,11 +26,10 @@ export function resolveHorizontalCollision(
   const top = runnerY - runnerCtx.collider_height;
   const bottom = runnerY;
 
-  // rows the collider must occupy for side checks.
-  // shrink the bottom by 2px so a side wall can only block when there is at least 2px of vertical overlap.
-  // this means exact edge contact (1px overlap) with the floor does not make the floor act as walls.
+  // candidate rows the collider covers. a row only blocks when at least 2px sit inside it —
+  // same test as landing / grounded, so a 1px scrape at the head or the feet is ignored.
   const rowStart = Math.floor(top / CELL_SIZE);
-  const rowEnd = Math.floor((bottom - 2) / CELL_SIZE);
+  const rowEnd = Math.floor((bottom - 1) / CELL_SIZE);
 
   if (dx > 0) {
     // leading edge is the right side. look at cells the right edge will enter.
@@ -36,13 +40,14 @@ export function resolveHorizontalCollision(
 
     for (let col = startCol; col <= endCol; col++) {
       for (let row = rowStart; row <= rowEnd; row++) {
-        if (solidGrid.isSolid(col, row)) {
-          const solidLeft = col * CELL_SIZE;
-          const maxRight = solidLeft - 1; // IMPORTANT: 1 integer before the brick
-          const allowedDx = maxRight - right;
-          if (allowedDx < clampedDx) {
-            clampedDx = Math.max(0, allowedDx);
-          }
+        if (!solidGrid.isSolid(col, row)) continue;
+        if (verticalOverlapWithCell(top, bottom, row) < MIN_CONTACT_OVERLAP_PX) continue;
+
+        const solidLeft = col * CELL_SIZE;
+        const maxRight = solidLeft - 1; // IMPORTANT: 1 integer before the brick
+        const allowedDx = maxRight - right;
+        if (allowedDx < clampedDx) {
+          clampedDx = Math.max(0, allowedDx);
         }
       }
     }
@@ -57,14 +62,15 @@ export function resolveHorizontalCollision(
 
   for (let col = startCol; col >= endCol; col--) {
     for (let row = rowStart; row <= rowEnd; row++) {
-      if (solidGrid.isSolid(col, row)) {
-        const solidRight = (col + 1) * CELL_SIZE;
-        const minLeft = solidRight + 1; // IMPORTANT: 1 integer after the brick
-        const allowedDx = minLeft - left;
-        if (allowedDx > clampedDx) {
-          // allowedDx is less negative (or zero) → more restrictive
-          clampedDx = Math.min(0, allowedDx);
-        }
+      if (!solidGrid.isSolid(col, row)) continue;
+      if (verticalOverlapWithCell(top, bottom, row) < MIN_CONTACT_OVERLAP_PX) continue;
+
+      const solidRight = (col + 1) * CELL_SIZE;
+      const minLeft = solidRight + 1; // IMPORTANT: 1 integer after the brick
+      const allowedDx = minLeft - left;
+      if (allowedDx > clampedDx) {
+        // allowedDx is less negative (or zero) → more restrictive
+        clampedDx = Math.min(0, allowedDx);
       }
     }
   }
