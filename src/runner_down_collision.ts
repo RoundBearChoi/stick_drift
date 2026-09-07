@@ -30,6 +30,17 @@ export function resolveDownCollision(
 
   // candidate columns the collider covers. a cell only counts when at least 2px
   // sit inside it — same test as checkIsGrounded, so a 1px scrape on either side is ignored.
+
+  /**
+   * IMPORTANT:
+   * left  = first pixel the collider occupies
+   * right = first pixel it does NOT occupy
+   *
+   * left      = first pixel inside
+   * right     = first pixel outside
+   * right - 1 = last pixel inside
+   */
+
   const colStart = Math.floor(left / CELL_SIZE);
   const colEnd = Math.floor((right - 1) / CELL_SIZE);
 
