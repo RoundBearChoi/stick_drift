@@ -81,6 +81,12 @@ export class RunnerContext {
   get wall_jump_away_ticks() { return 3; }
   wall_jump_away_ticks_remaining = 0;
 
+  // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
+  get wall_jump_coyote_ticks() { return 3; }
+  wall_jump_coyote_ticks_remaining = 0;
+  // facing toward the wall at the moment slide ended. air-run may flip facing before jump.
+  wall_jump_coyote_from_right = true;
+
   // same kill is used for both physical ceiling and jump relase
   cancelUpwardMomentum(): void {
     this.current_air_up_vector = 0;
@@ -102,6 +108,8 @@ export class RunnerContext {
     this.release_hang_ticks_remaining = 0;
     this.min_jump_ticks_remaining = 0;
     this.wall_jump_away_ticks_remaining = 0;
+    this.wall_jump_coyote_ticks_remaining = 0;
+    this.wall_jump_coyote_from_right = true;
     this.current_fall_accel = 0;
     this.fall_update_count = 0;
     this.current_run_accel = 0;

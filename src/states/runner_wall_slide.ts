@@ -5,7 +5,12 @@ import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerFall } from './runner_fall';
 import { RunnerJump } from './runner_jump';
-import { applyAirRun, seedWallJumpFromSlide } from '../runner_air_run';
+import {
+  applyAirRun,
+  armWallJumpCoyote,
+  clearWallJumpCoyote,
+  seedWallJumpFromSlide,
+} from '../runner_air_run';
 import { transferUpVectorAcrossWallSlide } from '../up_vector_wall_slide_transfer';
 
 export class RunnerWallSlide implements RunnerState {
@@ -30,6 +35,7 @@ export class RunnerWallSlide implements RunnerState {
     runnerCtx.air_run_update_count = 0;
     runnerCtx.horizontal_move_buffer = 0;
     runnerCtx.wall_jump_away_ticks_remaining = 0;
+    clearWallJumpCoyote(runnerCtx);
 
     // drop leftover free-fall energy. down-slide starts only after wall-slide-up is gone.
     runnerCtx.current_fall_accel = 0;
@@ -58,6 +64,7 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.wall_slide_up_vector_decay_counter = 0;
       runnerCtx.current_fall_accel = 0;
       runnerCtx.fall_update_count = 0;
+      clearWallJumpCoyote(runnerCtx);
       runner.queueNewState(new RunnerIdle());
       return;
     }
@@ -102,6 +109,8 @@ export class RunnerWallSlide implements RunnerState {
         runnerCtx.current_fall_accel = 0;
       }
 
+      // snapshot wall facing before air-run can flip it
+      armWallJumpCoyote(runnerCtx);
       applyAirRun(input, runnerCtx);
       runner.queueNewState(new RunnerFall());
       return;

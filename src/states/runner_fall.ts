@@ -6,7 +6,13 @@ import { RunnerIdle } from './runner_idle';
 import { RunnerJump } from './runner_jump';
 import { RunnerRunAccel } from './runner_run_accel';
 import { RunnerWallSlide } from './runner_wall_slide';
-import { applyAirRun, seedJumpRunMomentumFromStandstill } from '../runner_air_run';
+import {
+  applyAirRun,
+  clearWallJumpCoyote,
+  seedJumpRunMomentumFromStandstill,
+  seedWallJumpFromSlide,
+  tickWallJumpCoyote,
+} from '../runner_air_run';
 import { canEnterWallSlide } from '../runner_wall_slide_check';
 
 export class RunnerFall implements RunnerState {
@@ -29,6 +35,7 @@ export class RunnerFall implements RunnerState {
     if (runnerCtx.is_grounded) {
       runnerCtx.current_fall_accel = 0;
       runnerCtx.fall_update_count = 0;
+      clearWallJumpCoyote(runnerCtx);
 
       // IMPORTANT: if jump is pressed right as runner is hitting ground, switch straight back to jump state instead of idle
       if (input.wasPressed(InputAction.JUMP)) {
@@ -53,6 +60,23 @@ export class RunnerFall implements RunnerState {
       return;
     }
 
+    // press-away then jump: still a wall jump for a few ticks after leaving slide
+    if (
+      input.wasPressed(InputAction.JUMP) &&
+      runnerCtx.wall_jump_coyote_ticks_remaining > 0
+    ) {
+      seedWallJumpFromSlide(runnerCtx);
+      runnerCtx.current_wall_slide_down_accel = 0;
+      runnerCtx.wall_slide_update_count = 0;
+      runnerCtx.current_wall_slide_up_vector = 0;
+      runnerCtx.wall_slide_up_vector_decay_counter = 0;
+      runnerCtx.current_fall_accel = 0;
+      runnerCtx.fall_update_count = 0;
+      runnerCtx.move_down_buffer = 0;
+      runner.queueNewState(new RunnerJump('wall'));
+      return;
+    }
+
     const awayLock = runnerCtx.wall_jump_away_ticks_remaining > 0;
     if (!awayLock && canEnterWallSlide(input, runnerCtx)) {
       runner.queueNewState(new RunnerWallSlide());
@@ -71,5 +95,6 @@ export class RunnerFall implements RunnerState {
 
     // IMPORTANT: same air run (horizontal movement) logic is applied to jump & fall
     applyAirRun(input, runnerCtx);
+    tickWallJumpCoyote(runnerCtx);
   }
 }

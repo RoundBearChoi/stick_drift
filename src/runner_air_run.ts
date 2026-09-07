@@ -18,11 +18,35 @@ export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): voi
 }
 
 /**
- * call from wall slide on jump press, before queueing RunnerJump('wall').
+ * remember the wall we just left so a later fall jump still kicks away from it.
+ * call before applyAirRun on the leave-slide tick — air-run may flip facing.
+ */
+export function armWallJumpCoyote(runnerCtx: RunnerContext): void {
+  runnerCtx.wall_jump_coyote_from_right = runnerCtx.is_facing_right_side;
+  runnerCtx.wall_jump_coyote_ticks_remaining = runnerCtx.wall_jump_coyote_ticks;
+}
+
+export function clearWallJumpCoyote(runnerCtx: RunnerContext): void {
+  runnerCtx.wall_jump_coyote_ticks_remaining = 0;
+}
+
+export function tickWallJumpCoyote(runnerCtx: RunnerContext): void {
+  if (runnerCtx.wall_jump_coyote_ticks_remaining > 0) {
+    runnerCtx.wall_jump_coyote_ticks_remaining--;
+  }
+}
+
+/**
+ * call from wall slide on jump press, or from fall during coyote,
+ * before queueing RunnerJump('wall').
  * jump into the other dir and write the buffer.
  */
 export function seedWallJumpFromSlide(runnerCtx: RunnerContext): void {
-  const awayDir = runnerCtx.is_facing_right_side ? -1 : 1;
+  const facingWallRight =
+    runnerCtx.wall_jump_coyote_ticks_remaining > 0
+      ? runnerCtx.wall_jump_coyote_from_right
+      : runnerCtx.is_facing_right_side;
+  const awayDir = facingWallRight ? -1 : 1;
   runnerCtx.is_facing_right_side = awayDir > 0;
 
   const speed = Math.min(
@@ -32,6 +56,7 @@ export function seedWallJumpFromSlide(runnerCtx: RunnerContext): void {
   runnerCtx.current_air_run_accel = awayDir * speed;
   runnerCtx.horizontal_move_buffer = runnerCtx.current_air_run_accel;
   runnerCtx.air_run_update_count = 0;
+  runnerCtx.wall_jump_coyote_ticks_remaining = 0;
 }
 
 function shouldApplyAirRunStep(runnerCtx: RunnerContext): boolean {
