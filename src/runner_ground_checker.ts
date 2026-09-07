@@ -2,17 +2,11 @@ import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerContext } from './runner_context';
-import {
-  SolidGrid,
-  CELL_SIZE,
-  MIN_VERTICAL_CONTACT_OVERLAP_PX,
-  horizontalOverlapWithCell,
-} from './solid_grid';
+import { SolidGrid, CELL_SIZE } from './solid_grid';
 
 /**
  * this script's sole responsibility is to check if runner is grounded.
- * returns true when at least 2 px of the runner's bottom edge sits 1 px above a solid cell.
- * (matches down / up collision so 1 px edge contact is ignored on both sides)
+ * returns true when any pixel of the runner's bottom edge sits 1 px above a solid cell.
  */
 export function checkIsGrounded(
   runnerX: number,
@@ -30,10 +24,7 @@ export function checkIsGrounded(
   const endCol = Math.floor((right - 1) / CELL_SIZE);
 
   for (let col = startCol; col <= endCol; col++) {
-    if (!solidGrid.isSolid(col, cellY)) continue;
-    if (horizontalOverlapWithCell(left, right, col) >= MIN_VERTICAL_CONTACT_OVERLAP_PX) {
-      return true;
-    }
+    if (solidGrid.isSolid(col, cellY)) return true;
   }
 
   return false;

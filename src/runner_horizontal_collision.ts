@@ -1,9 +1,4 @@
-import {
-  CELL_SIZE,
-  MIN_CONTACT_OVERLAP_PX,
-  SolidGrid,
-  verticalOverlapWithCell,
-} from './solid_grid';
+import { CELL_SIZE, SolidGrid } from './solid_grid';
 import { RunnerContext } from './runner_context';
 
 /**
@@ -26,8 +21,6 @@ export function resolveHorizontalCollision(
   const top = runnerY - runnerCtx.collider_height;
   const bottom = runnerY;
 
-  // candidate rows the collider covers. a row only blocks when at least 2px sit inside it —
-  // same test as landing / grounded, so a 1px scrape at the head or the feet is ignored.
   const rowStart = Math.floor(top / CELL_SIZE);
   const rowEnd = Math.floor((bottom - 1) / CELL_SIZE);
 
@@ -41,7 +34,6 @@ export function resolveHorizontalCollision(
     for (let col = startCol; col <= endCol; col++) {
       for (let row = rowStart; row <= rowEnd; row++) {
         if (!solidGrid.isSolid(col, row)) continue;
-        if (verticalOverlapWithCell(top, bottom, row) < MIN_CONTACT_OVERLAP_PX) continue;
 
         const solidLeft = col * CELL_SIZE;
         const maxRight = solidLeft - 1; // 1px before the first solid pixel
@@ -63,7 +55,6 @@ export function resolveHorizontalCollision(
   for (let col = startCol; col >= endCol; col--) {
     for (let row = rowStart; row <= rowEnd; row++) {
       if (!solidGrid.isSolid(col, row)) continue;
-      if (verticalOverlapWithCell(top, bottom, row) < MIN_CONTACT_OVERLAP_PX) continue;
 
       const solidRight = (col + 1) * CELL_SIZE; // exclusive end; last solid pixel is solidRight - 1
       const minLeft = solidRight; // 1px after the last solid pixel (mirrors maxRight = solidLeft - 1)

@@ -5,7 +5,6 @@ import { RunnerContext } from './runner_context';
 import {
   SolidGrid,
   CELL_SIZE,
-  MIN_CONTACT_OVERLAP_PX,
   verticalOverlapWithCell,
 } from './solid_grid';
 import { InputAction, InputInterpreter } from './input_interpreter';
@@ -25,11 +24,7 @@ function solidOverlapInColumn(
   let overlap = 0;
   for (let row = rowStart; row <= rowEnd; row++) {
     if (!solidGrid.isSolid(col, row)) continue;
-
-    const amount = verticalOverlapWithCell(top, bottom, row);
-    // same 2px floor as wall / landing rows — a 1px head or foot scrape does not count.
-    if (amount < MIN_CONTACT_OVERLAP_PX) continue;
-    overlap += amount;
+    overlap += verticalOverlapWithCell(top, bottom, row);
   }
   return overlap;
 }

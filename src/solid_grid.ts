@@ -5,22 +5,6 @@
  */
 export const CELL_SIZE = 8;
 
-/** minimum overlap (px) for a cell to count as contact. */
-export const MIN_CONTACT_OVERLAP_PX = 2;
-
-/** @deprecated use MIN_CONTACT_OVERLAP_PX. kept so landing / grounded imports stay stable. */
-export const MIN_VERTICAL_CONTACT_OVERLAP_PX = MIN_CONTACT_OVERLAP_PX;
-
-/**
- * pixels of [left, right] that sit inside column `col`.
- * cell range is [col * CELL_SIZE, (col + 1) * CELL_SIZE).
- */
-export function horizontalOverlapWithCell(left: number, right: number, col: number): number {
-  const cellLeft = col * CELL_SIZE;
-  const cellRight = cellLeft + CELL_SIZE;
-  return Math.min(right, cellRight) - Math.max(left, cellLeft);
-}
-
 /**
  * pixels of [top, bottom] that sit inside row `row`.
  * cell range is [row * CELL_SIZE, (row + 1) * CELL_SIZE).
