@@ -67,10 +67,7 @@ export class RunnerContext {
   get wall_slide_up_vector_decay_amount() { return 1; }
   get wall_slide_up_vector_decay_interval() { return 2; }
 
-  /**
-   * guaranteed full-force jump ticks before release hang is allowed.
-   * check remaining before decrement so seed 1 matches the old `ticks > 1` gate.
-   */
+  // guaranteed full-force jump ticks until cut is allowed.
   get min_jump_ticks_from_ground() { return 1; }
   get min_jump_ticks_from_wall_slide() { return 3; }
   min_jump_ticks_remaining = 0;
@@ -78,13 +75,13 @@ export class RunnerContext {
   get release_hang_time() { return 4; }
   release_hang_ticks_remaining = 0;
 
-  /** horizontal kick away from the wall. clamped to max_run_speed on seed. */
+  // horizontal kick away from the wall. clamped to max_run_speed on seed.
   get wall_jump_start_accel() { return 5; }
-  /** ticks where air-run treats input as holding away and wall-slide re-grab is skipped. */
-  get wall_jump_away_ticks() { return 4; }
+  // ticks where air-run treats input as holding away and wall-slide re-grab is skipped.
+  get wall_jump_away_ticks() { return 3; }
   wall_jump_away_ticks_remaining = 0;
 
-  /** same kill used by a real ceiling and by jump-release */
+  // same kill is used for both physical ceiling and jump relase
   cancelUpwardMomentum(): void {
     this.current_air_up_vector = 0;
     this.move_up_buffer = 0;

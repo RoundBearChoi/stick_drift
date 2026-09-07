@@ -19,8 +19,7 @@ export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): voi
 
 /**
  * call from wall slide on jump press, before queueing RunnerJump('wall').
- * facing is still toward the wall. kick the other way and write the buffer
- * so this tick's resolve does not keep hugging the wall.
+ * jump into the other dir and write the buffer.
  */
 export function seedWallJumpFromSlide(runnerCtx: RunnerContext): void {
   const awayDir = runnerCtx.is_facing_right_side ? -1 : 1;
@@ -87,9 +86,6 @@ function isOpposingCurrentMomentum(
 /**
  * call once per airborne fixed update after vertical / hang logic.
  * facing flips on input immediately unless wall-jump away-lock is live.
- * left/right steers toward ±max_run_speed.
- * opposite input brakes toward 0 at 2x, then accel the new way on a later interval.
- * no left/right input decays toward 0 at 1x.
  * always writes horizontal_move_buffer from current_air_run_accel.
  */
 export function applyAirRun(
