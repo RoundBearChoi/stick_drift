@@ -36,7 +36,8 @@ export function resolveHorizontalCollision(
         if (!solidGrid.isSolid(col, row)) continue;
 
         const solidLeft = col * CELL_SIZE;
-        const maxRight = solidLeft - 1; // 1px before the first solid pixel
+        // exclusive right sits on the first solid pixel — last occupied pixel is solidLeft - 1
+        const maxRight = solidLeft;
         const allowedDx = maxRight - right;
         if (allowedDx < clampedDx) {
           clampedDx = Math.max(0, allowedDx);
@@ -57,7 +58,7 @@ export function resolveHorizontalCollision(
       if (!solidGrid.isSolid(col, row)) continue;
 
       const solidRight = (col + 1) * CELL_SIZE; // exclusive end; last solid pixel is solidRight - 1
-      const minLeft = solidRight; // 1px after the last solid pixel (mirrors maxRight = solidLeft - 1)
+      const minLeft = solidRight; // first occupied pixel is the first pixel after the solid
       const allowedDx = minLeft - left;
       if (allowedDx > clampedDx) {
         // allowedDx is less negative (or zero) → more restrictive

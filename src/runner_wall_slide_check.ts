@@ -41,9 +41,9 @@ export function checkWallSlideContact(
   const top = runnerY - runnerCtx.collider_height;
   const bottom = runnerY;
 
-  // resolve now leaves a 1px gap on both sides, so left-1 / right+1 are solid pixels.
+  // flush contact: last solid pixel on the left is left-1, first solid pixel on the right is right.
   const leftOverlap = solidOverlapInColumn(left - 1, top, bottom, solidGrid);
-  const rightOverlap = solidOverlapInColumn(right + 1, top, bottom, solidGrid);
+  const rightOverlap = solidOverlapInColumn(right, top, bottom, solidGrid);
 
   return {
     left: leftOverlap >= WALL_SLIDE_MIN_OVERLAP,

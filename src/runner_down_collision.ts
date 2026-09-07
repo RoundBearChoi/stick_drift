@@ -2,7 +2,7 @@ import { CELL_SIZE, SolidGrid } from './solid_grid';
 import { RunnerContext } from './runner_context';
 
 /**
- * stops the runner 1 integer pixel above the solid's top, matching horizontal "1 before solid" rule.
+ * stops the runner with exclusive bottom on the solid's top (flush, no gap).
  * when bottom collision clamps movement, clear residual vertical energy.
  */
 export function resolveDownCollision(
@@ -47,8 +47,8 @@ export function resolveDownCollision(
       if (!solidGrid.isSolid(col, row)) continue;
 
       const solidTop = row * CELL_SIZE;
-      // IMPORTANT: 1 integer before the solid (same rule as horizontal)
-      const maxBottom = solidTop - 1;
+      // exclusive bottom sits on the first solid pixel — last occupied pixel is solidTop - 1
+      const maxBottom = solidTop;
       const allowedDy = maxBottom - bottom;
 
       if (allowedDy < clampedDy) {

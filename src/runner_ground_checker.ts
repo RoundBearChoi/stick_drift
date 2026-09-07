@@ -6,7 +6,7 @@ import { SolidGrid, CELL_SIZE } from './solid_grid';
 
 /**
  * this script's sole responsibility is to check if runner is grounded.
- * returns true when any pixel of the runner's bottom edge sits 1 px above a solid cell.
+ * returns true when the exclusive bottom edge sits on a solid pixel.
  */
 export function checkIsGrounded(
   runnerX: number,
@@ -17,7 +17,7 @@ export function checkIsGrounded(
   const halfW = runnerCtx.collider_width / 2;
   const left = runnerX - halfW;
   const right = runnerX + halfW;
-  const checkY = runnerY + 1; // 1 px below the bottom of the collider
+  const checkY = runnerY; // exclusive bottom: first pixel not inside the collider
 
   const cellY = Math.floor(checkY / CELL_SIZE);
   const startCol = Math.floor(left / CELL_SIZE);
