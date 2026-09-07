@@ -18,6 +18,7 @@ export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): voi
 }
 
 /**
+ * IMPORTANT: allow runner to wall jump even after a few ticks coming off a wall.
  * remember the wall we just left so a later fall jump still kicks away from it.
  * call before applyAirRun on the leave-slide tick — air-run may flip facing.
  */
