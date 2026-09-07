@@ -35,7 +35,7 @@ export class RunnerIdle implements RunnerState {
 
     if (input.wasPressed(InputAction.JUMP)) {
       seedJumpRunMomentumFromStandstill(runnerCtx);
-      runner.queueNewState(new RunnerJump());
+      runner.queueNewState(new RunnerJump('ground'));
       return;
     }
 

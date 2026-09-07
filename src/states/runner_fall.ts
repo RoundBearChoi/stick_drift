@@ -33,7 +33,7 @@ export class RunnerFall implements RunnerState {
       // IMPORTANT: if jump is pressed right as runner is hitting ground, switch straight back to jump state instead of idle
       if (input.wasPressed(InputAction.JUMP)) {
         seedJumpRunMomentumFromStandstill(runnerCtx);
-        runner.queueNewState(new RunnerJump());
+        runner.queueNewState(new RunnerJump('ground'));
         return;
       }
 
@@ -53,7 +53,8 @@ export class RunnerFall implements RunnerState {
       return;
     }
 
-    if (canEnterWallSlide(input, runnerCtx)) {
+    const awayLock = runnerCtx.wall_jump_away_ticks_remaining > 0;
+    if (!awayLock && canEnterWallSlide(input, runnerCtx)) {
       runner.queueNewState(new RunnerWallSlide());
       return;
     }

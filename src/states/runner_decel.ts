@@ -50,7 +50,7 @@ export class RunnerDecel implements RunnerState {
 
     if (input.wasPressed(InputAction.JUMP)) {
       seedJumpRunMomentumFromRunAccel(runnerCtx);
-      runner.queueNewState(new RunnerJump());
+      runner.queueNewState(new RunnerJump('ground'));
       return;
     }
 

@@ -4,7 +4,8 @@ import { RunnerContext } from '../runner_context';
 import { RunnerState, RunnerStateName } from './runner_state';
 import { RunnerIdle } from './runner_idle';
 import { RunnerFall } from './runner_fall';
-import { applyAirRun } from '../runner_air_run';
+import { RunnerJump } from './runner_jump';
+import { applyAirRun, seedWallJumpFromSlide } from '../runner_air_run';
 import { transferUpVectorAcrossWallSlide } from '../up_vector_wall_slide_transfer';
 
 export class RunnerWallSlide implements RunnerState {
@@ -28,6 +29,7 @@ export class RunnerWallSlide implements RunnerState {
     runnerCtx.current_air_run_accel = 0;
     runnerCtx.air_run_update_count = 0;
     runnerCtx.horizontal_move_buffer = 0;
+    runnerCtx.wall_jump_away_ticks_remaining = 0;
 
     // drop leftover free-fall energy. down-slide starts only after wall-slide-up is gone.
     runnerCtx.current_fall_accel = 0;
@@ -57,6 +59,19 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.current_fall_accel = 0;
       runnerCtx.fall_update_count = 0;
       runner.queueNewState(new RunnerIdle());
+      return;
+    }
+
+    if (input.wasPressed(InputAction.JUMP)) {
+      seedWallJumpFromSlide(runnerCtx);
+      runnerCtx.current_wall_slide_down_accel = 0;
+      runnerCtx.wall_slide_update_count = 0;
+      runnerCtx.current_wall_slide_up_vector = 0;
+      runnerCtx.wall_slide_up_vector_decay_counter = 0;
+      runnerCtx.current_fall_accel = 0;
+      runnerCtx.fall_update_count = 0;
+      runnerCtx.move_down_buffer = 0;
+      runner.queueNewState(new RunnerJump('wall'));
       return;
     }
 

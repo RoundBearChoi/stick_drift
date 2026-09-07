@@ -8,11 +8,14 @@ import { RunnerWallSlide } from './runner_wall_slide';
 import { applyAirRun } from '../runner_air_run';
 import { canEnterWallSlide } from '../runner_wall_slide_check';
 
+export type JumpOrigin = 'ground' | 'wall';
+
 export class RunnerJump implements RunnerState {
   readonly state_name = RunnerStateName.JUMP;
 
-  private _ticks_in_jump = 0; // dedicated fixed update count for jump state. onEnter does not count as an update.
   private _release_hang_started = false; // once this becomes true, jump cannot regain momentum
+
+  constructor(private readonly _origin: JumpOrigin = 'ground') {}
 
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
     //console.log("entering jump state");
@@ -31,11 +34,27 @@ export class RunnerJump implements RunnerState {
     runnerCtx.fall_update_count = 0;
     runnerCtx.move_down_buffer = 0;
     runnerCtx.release_hang_ticks_remaining = 0;
-    // new jump starts a fresh air-run cadence. jump → fall must not reset this.
+    // leftover wall-slide energy must not fight the new jump
+    runnerCtx.current_wall_slide_down_accel = 0;
+    runnerCtx.wall_slide_update_count = 0;
+    runnerCtx.current_wall_slide_up_vector = 0;
+    runnerCtx.wall_slide_up_vector_decay_counter = 0;
+    // new jump starts a fresh air-run cadence. do not reset current_air_run_accel —
+    // the previous state already seeded standstill / run / wall-kick.
     runnerCtx.air_run_update_count = 0;
 
-    this._ticks_in_jump = 0;
     this._release_hang_started = false;
+
+    if (this._origin === 'wall') {
+      runnerCtx.min_jump_ticks_remaining =
+        runnerCtx.min_jump_ticks_from_wall_slide;
+      runnerCtx.wall_jump_away_ticks_remaining =
+        runnerCtx.wall_jump_away_ticks;
+    } else {
+      runnerCtx.min_jump_ticks_remaining =
+        runnerCtx.min_jump_ticks_from_ground;
+      runnerCtx.wall_jump_away_ticks_remaining = 0;
+    }
   }
 
   onFixedUpdate(
@@ -43,15 +62,18 @@ export class RunnerJump implements RunnerState {
     input: InputInterpreter,
     runnerCtx: RunnerContext
   ): void {
-    this._ticks_in_jump++;
+    const awayLock = runnerCtx.wall_jump_away_ticks_remaining > 0;
 
-    if (canEnterWallSlide(input, runnerCtx)) {
+    if (!awayLock && canEnterWallSlide(input, runnerCtx)) {
       runner.queueNewState(new RunnerWallSlide());
       return;
     }
 
-    const pastMinJump =
-      this._ticks_in_jump > runnerCtx.min_jump_updates_before_cut;
+    const pastMinJump = runnerCtx.min_jump_ticks_remaining <= 0;
+    if (runnerCtx.min_jump_ticks_remaining > 0) {
+      runnerCtx.min_jump_ticks_remaining--;
+    }
+
     const jumpHeld = input.isHeld(InputAction.JUMP);
 
     if (!this._release_hang_started && pastMinJump && !jumpHeld) {
