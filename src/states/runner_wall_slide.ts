@@ -12,6 +12,7 @@ import {
   seedWallJumpFromSlide,
 } from '../runner_air_run';
 import { transferUpVectorAcrossWallSlide } from '../up_vector_wall_slide_transfer';
+import { transferDownVectorAcrossWallSlide } from '../down_vector_wall_slide_transfer';
 
 export class RunnerWallSlide implements RunnerState {
   readonly state_name = RunnerStateName.WALL_SLIDE;
@@ -26,6 +27,7 @@ export class RunnerWallSlide implements RunnerState {
 
     // remaining air-up becomes wall-slide-up
     const remainingAirUp = runnerCtx.current_air_up_vector;
+    const remainingFall = runnerCtx.current_fall_accel;
     runnerCtx.cancelUpwardMomentum();
     runnerCtx.current_wall_slide_up_vector =
       transferUpVectorAcrossWallSlide(remainingAirUp);
@@ -37,12 +39,18 @@ export class RunnerWallSlide implements RunnerState {
     runnerCtx.wall_jump_away_ticks_remaining = 0;
     clearWallJumpCoyote(runnerCtx);
 
-    // drop leftover free-fall energy. down-slide starts only after wall-slide-up is gone.
+    // leftover free-fall becomes wall-slide-down.
+    // climb still wins — no down energy while wall-slide-up remains.
     runnerCtx.current_fall_accel = 0;
     runnerCtx.fall_update_count = 0;
     runnerCtx.move_down_buffer = 0;
-    runnerCtx.current_wall_slide_down_accel = 0;
     runnerCtx.wall_slide_update_count = 0;
+    if (runnerCtx.current_wall_slide_up_vector > 0) {
+      runnerCtx.current_wall_slide_down_accel = 0;
+    } else {
+      runnerCtx.current_wall_slide_down_accel =
+        transferDownVectorAcrossWallSlide(remainingFall);
+    }
 
     // face the wall we grabbed
     if (runnerCtx.wall_contact_right && !runnerCtx.wall_contact_left) {
