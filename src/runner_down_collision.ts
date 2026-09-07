@@ -1,4 +1,9 @@
-import { CELL_SIZE, SolidGrid } from './solid_grid';
+import {
+  CELL_SIZE,
+  MIN_VERTICAL_CONTACT_OVERLAP_PX,
+  SolidGrid,
+  horizontalOverlapWithCell,
+} from './solid_grid';
 import { RunnerContext } from './runner_context';
 
 /**
@@ -23,9 +28,9 @@ export function resolveDownCollision(
   const right = runnerX + halfW;
   const bottom = runnerY;
 
-  // shrink by 1px on each side so tiny edge contact does not count as landing on a platform.
-  // (mirrors the horizontal collision's bottom-shrink of 2px philosophy)
-  const colStart = Math.floor((left + 1) / CELL_SIZE);
+  // candidate columns the collider covers. a cell only counts when at least 2px
+  // sit inside it — same test as checkIsGrounded, so a 1px scrape on either side is ignored.
+  const colStart = Math.floor(left / CELL_SIZE);
   const colEnd = Math.floor((right - 1) / CELL_SIZE);
 
   // rows the bottom edge will cross while falling
@@ -37,6 +42,7 @@ export function resolveDownCollision(
   for (let row = startRow; row <= endRow; row++) {
     for (let col = colStart; col <= colEnd; col++) {
       if (!solidGrid.isSolid(col, row)) continue;
+      if (horizontalOverlapWithCell(left, right, col) < MIN_VERTICAL_CONTACT_OVERLAP_PX) continue;
 
       const solidTop = row * CELL_SIZE;
       // IMPORTANT: 1 integer before the solid (same rule as horizontal)
