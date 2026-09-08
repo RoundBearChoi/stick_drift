@@ -73,7 +73,7 @@ export class RunnerContext {
 
   get release_hang_time() { return 4; } // for normal jump
   release_hang_ticks_remaining = 0;
-  get release_hang_time_wallslide() { return 2; }
+  get release_hang_time_wallslide() { return 1; }
   release_hang_ticks_wallslide_remaining = 0;
 
   // horizontal kick away from the wall. clamped to max_run_speed on seed.
