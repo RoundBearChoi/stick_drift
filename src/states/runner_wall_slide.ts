@@ -17,6 +17,8 @@ import { transferDownVectorAcrossWallSlide } from '../down_vector_wall_slide_tra
 export class RunnerWallSlide implements RunnerState {
   readonly state_name = RunnerStateName.WALL_SLIDE;
 
+  private _release_hang_started = false; // once true, wall-slide climb cannot regain momentum
+
   onEnter(runner: StickRunner, runnerCtx: RunnerContext): void {
     //console.log("entering wall slide state");
 
@@ -32,6 +34,8 @@ export class RunnerWallSlide implements RunnerState {
     runnerCtx.current_wall_slide_up_vector =
       transferUpVectorAcrossWallSlide(remainingAirUp);
     runnerCtx.wall_slide_up_vector_decay_counter = 0;
+    this._release_hang_started = false;
+    runnerCtx.release_hang_ticks_wallslide_remaining = 0;
 
     runnerCtx.current_air_run_accel = 0;
     runnerCtx.air_run_update_count = 0;
@@ -70,6 +74,7 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.wall_slide_update_count = 0;
       runnerCtx.current_wall_slide_up_vector = 0;
       runnerCtx.wall_slide_up_vector_decay_counter = 0;
+      runnerCtx.release_hang_ticks_wallslide_remaining = 0;
       runnerCtx.current_fall_accel = 0;
       runnerCtx.fall_update_count = 0;
       clearWallJumpCoyote(runnerCtx);
@@ -83,12 +88,16 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.wall_slide_update_count = 0;
       runnerCtx.current_wall_slide_up_vector = 0;
       runnerCtx.wall_slide_up_vector_decay_counter = 0;
+      runnerCtx.release_hang_ticks_wallslide_remaining = 0;
       runnerCtx.current_fall_accel = 0;
       runnerCtx.fall_update_count = 0;
       runnerCtx.move_down_buffer = 0;
       runner.queueNewState(new RunnerJump('wall'));
       return;
     }
+
+    // cut climb before peel-off so leftover air-up is the hung amount, not the full climb
+    this.applyWallSlideReleaseCut(input, runnerCtx);
 
     const left = input.isHeld(InputAction.MOVE_LEFT);
     const right = input.isHeld(InputAction.MOVE_RIGHT);
@@ -105,6 +114,7 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.current_fall_accel = runnerCtx.current_wall_slide_down_accel;
       runnerCtx.current_wall_slide_down_accel = 0;
       runnerCtx.wall_slide_update_count = 0;
+      runnerCtx.release_hang_ticks_wallslide_remaining = 0;
 
       // leftover climb goes back to air-up
       if (runnerCtx.current_wall_slide_up_vector > 0) {
@@ -145,5 +155,36 @@ export class RunnerWallSlide implements RunnerState {
 
     // stay on the wall
     runnerCtx.horizontal_move_buffer = runnerCtx.is_facing_right_side ? 1 : -1;
+  }
+
+  private applyWallSlideReleaseCut(
+    input: InputInterpreter,
+    runnerCtx: RunnerContext
+  ): void {
+    const climbing =
+      runnerCtx.current_wall_slide_up_vector > 0 || this._release_hang_started;
+    if (!climbing) return;
+
+    const jumpHeld = input.isHeld(InputAction.JUMP);
+
+    if (!this._release_hang_started && !jumpHeld) {
+      this._release_hang_started = true;
+      runnerCtx.release_hang_ticks_wallslide_remaining =
+        runnerCtx.release_hang_time_wallslide;
+    }
+
+    if (!this._release_hang_started) return;
+
+    if (runnerCtx.release_hang_ticks_wallslide_remaining > 0) {
+      // hang: keep 1 climb. freeze decay so the resolver cannot eat it.
+      runnerCtx.current_wall_slide_up_vector = 1;
+      runnerCtx.wall_slide_up_vector_decay_counter = 0;
+      runnerCtx.release_hang_ticks_wallslide_remaining--;
+      return;
+    }
+
+    runnerCtx.current_wall_slide_up_vector = 0;
+    runnerCtx.wall_slide_up_vector_decay_counter = 0;
+    runnerCtx.release_hang_ticks_wallslide_remaining = 0;
   }
 }

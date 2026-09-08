@@ -94,6 +94,7 @@ export class RunnerContext {
     this.move_up_buffer = 0;
     this.air_up_vector_decay_counter = 0;
     this.release_hang_ticks_remaining = 0;
+    this.release_hang_ticks_wallslide_remaining = 0;
     this.min_jump_ticks_remaining = 0;
     this.current_wall_slide_up_vector = 0;
     this.wall_slide_up_vector_decay_counter = 0;
@@ -107,6 +108,7 @@ export class RunnerContext {
     this.move_up_buffer = 0;
     this.air_up_vector_decay_counter = 0;
     this.release_hang_ticks_remaining = 0;
+    this.release_hang_ticks_wallslide_remaining = 0;
     this.min_jump_ticks_remaining = 0;
     this.wall_jump_away_ticks_remaining = 0;
     this.wall_jump_coyote_ticks_remaining = 0;
