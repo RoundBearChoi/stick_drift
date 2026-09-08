@@ -71,8 +71,10 @@ export class RunnerContext {
   get min_jump_ticks_from_wall_slide() { return 3; } // guaranteed full-force jump ticks (wallslide -> jump)
   min_jump_ticks_remaining = 0;
 
-  get release_hang_time() { return 4; }
+  get release_hang_time() { return 4; } // for normal jump
   release_hang_ticks_remaining = 0;
+  get release_hang_time_wallslide() { return 2; }
+  release_hang_ticks_wallslide_remaining = 0;
 
   // horizontal kick away from the wall. clamped to max_run_speed on seed.
   get wall_jump_start_accel() { return 5; }
