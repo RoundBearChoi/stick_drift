@@ -67,9 +67,8 @@ export class RunnerContext {
   get wall_slide_up_vector_decay_amount() { return 1; }
   get wall_slide_up_vector_decay_interval() { return 2; }
 
-  // guaranteed full-force jump ticks until cut is allowed.
-  get min_jump_ticks_from_ground() { return 1; }
-  get min_jump_ticks_from_wall_slide() { return 3; }
+  get min_jump_ticks_from_ground() { return 1; } // guaranteed full-force jump ticks (ground -> jump)
+  get min_jump_ticks_from_wall_slide() { return 3; } // guaranteed full-force jump ticks (wallslide -> jump)
   min_jump_ticks_remaining = 0;
 
   get release_hang_time() { return 4; }
