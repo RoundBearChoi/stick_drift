@@ -79,7 +79,7 @@ export class RunnerContext {
   // horizontal kick away from the wall. clamped to max_run_speed on seed.
   get wall_jump_start_accel() { return 5; }
   // ticks where air-run treats input as holding away and wall-slide re-grab is skipped.
-  get wall_jump_away_ticks() { return 3; }
+  get wall_jump_away_ticks() { return 4; }
   wall_jump_away_ticks_remaining = 0;
 
   // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
