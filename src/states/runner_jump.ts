@@ -47,12 +47,12 @@ export class RunnerJump implements RunnerState {
 
     if (this._origin === 'wall') {
       runnerCtx.min_jump_ticks_remaining =
-        runnerCtx.min_jump_ticks_from_wall_slide;
+        runnerCtx.min_jump_up_ticks_from_wall_slide;
       runnerCtx.wall_jump_away_ticks_remaining =
-        runnerCtx.wall_jump_away_ticks;
+        runnerCtx.min_wall_jump_away_ticks_from_wall_slide;
     } else {
       runnerCtx.min_jump_ticks_remaining =
-        runnerCtx.min_jump_ticks_from_ground;
+        runnerCtx.min_jump_up_ticks_from_ground;
       runnerCtx.wall_jump_away_ticks_remaining = 0;
     }
   }
