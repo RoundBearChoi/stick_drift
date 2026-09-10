@@ -50,6 +50,7 @@ export function seedWallJumpFromSlide(runnerCtx: RunnerContext): void {
   const awayDir = facingWallRight ? -1 : 1;
   runnerCtx.is_facing_right_side = awayDir > 0;
 
+  // IMPORTANT: wall jump start kick is NOT allowed to exceed max run speed
   const speed = Math.min(
     runnerCtx.wall_jump_start_accel,
     runnerCtx.max_run_speed

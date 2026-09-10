@@ -67,26 +67,22 @@ export class RunnerContext {
   get wall_slide_up_vector_decay_amount() { return 1; }
   get wall_slide_up_vector_decay_interval() { return 2; }
 
-  get min_jump_up_ticks_from_ground() { return 1; } // guaranteed full-force jump ticks (ground -> jump)
-  get min_jump_up_ticks_from_wall_slide() { return 3; } // guaranteed full-force jump ticks (wallslide -> jump)
+  get min_jump_up_ticks_from_ground() { return 1; } // guaranteed full-force jump ticks (ground -> jump vertical)
+  get min_jump_up_ticks_from_wall_slide() { return 3; } // guaranteed full-force jump ticks (wallslide -> jump vertical)
   min_jump_ticks_remaining = 0;
+
+  get wall_jump_start_accel() { return 5; }
+  get min_wall_jump_away_ticks_from_wall_slide() { return 4; } // guaranteed full-force jump ticks (wallslide -> jump horizontal)
+  wall_jump_away_ticks_remaining = 0;
 
   get release_hang_time() { return 4; } // for normal jump
   release_hang_ticks_remaining = 0;
   get release_hang_time_wallslide() { return 1; }
   release_hang_ticks_wallslide_remaining = 0;
 
-  // horizontal kick away from the wall. clamped to max_run_speed on seed.
-  get wall_jump_start_accel() { return 5; }
-  // ticks where air-run treats input as holding away and wall-slide re-grab is skipped.
-  get min_wall_jump_away_ticks_from_wall_slide() { return 4; }
-  wall_jump_away_ticks_remaining = 0;
-
-  // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
-  get wall_jump_coyote_ticks() { return 6; }
+  get wall_jump_coyote_ticks() { return 6; } // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
   wall_jump_coyote_ticks_remaining = 0;
-  // facing toward the wall at the moment slide ended. air-run may flip facing before jump.
-  wall_jump_coyote_from_right = true;
+  wall_jump_coyote_from_right = true; // facing toward the wall at the moment slide ended. air-run may flip facing before jump.
 
   // same kill is used for both physical ceiling and jump relase
   cancelUpwardMomentum(): void {
