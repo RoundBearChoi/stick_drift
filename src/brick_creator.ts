@@ -9,9 +9,7 @@ export interface BrickCreateOptions {
 }
 
 /**
- * scene still owns the actor and is responsible for add / remove.
- * type picks the sprite; default is 16x16.
- * 8x8 has no aseprite yet — actor is still created (top-left pivot) without a graphic.
+ * scene owns the actor and is responsible for add / remove.
  */
 export function createBrick(
   engine: Engine,

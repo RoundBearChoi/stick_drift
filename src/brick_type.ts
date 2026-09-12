@@ -1,7 +1,3 @@
-/**
- * placed-brick identity. size (and later sprite / flags) come from BRICK_DEFS.
- * occupancy is still 8px cells in SolidGrid — types must be multiples of CELL_SIZE.
- */
 export enum BrickType {
   Brick8x8 = '8x8',
   Brick16x16 = '16x16',
