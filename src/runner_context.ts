@@ -72,7 +72,7 @@ export class RunnerContext {
   min_jump_ticks_remaining = 0;
 
   get wall_jump_start_accel() { return 5; }
-  get min_wall_jump_away_ticks_from_wall_slide() { return 4; } // guaranteed full-force jump ticks (wallslide -> jump horizontal)
+  get min_wall_jump_away_ticks_from_wall_slide() { return 6; } // guaranteed full-force jump ticks (wallslide -> jump horizontal)
   wall_jump_away_ticks_remaining = 0;
 
   get release_hang_time() { return 4; } // for normal jump
@@ -80,7 +80,7 @@ export class RunnerContext {
   get release_hang_time_wallslide() { return 1; }
   release_hang_ticks_wallslide_remaining = 0;
 
-  get wall_jump_coyote_ticks() { return 6; } // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
+  get wall_jump_coyote_ticks() { return 8; } // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
   wall_jump_coyote_ticks_remaining = 0;
   wall_jump_coyote_from_right = true; // facing toward the wall at the moment slide ended. air-run may flip facing before jump.
 

@@ -173,17 +173,17 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._bricks_16x16.push(brick1, brick2, brick3, brick4);
     }
 
-    // sample 8x8 wall on the bottom floor, a bit in from the left edge
+    // sample 8x8 wall on the bottom floor
     if (!this._bricks_8x8) {
       this._bricks_8x8 = [];
 
       const type8 = BrickType.Brick8x8;
       const { height: h8 } = brickDef(type8);
       // 8 bricks × 8px = 64px — same height as the 16x16 side walls (25px overlap rule)
-      const sampleWallCount = 8;
-      const sampleWallX = 32;
+      const sampleWallCount = 24;
+      const sampleWallX = 100;
       // same y as the existing bottom 16x16 floor brick (baseY + 96)
-      const sampleWallBaseY = 376;
+      const sampleWallBaseY = 600;
 
       for (let i = 0; i < sampleWallCount; i++) {
         const brick = createBrick(this.engine, {
