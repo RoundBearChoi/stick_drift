@@ -12,13 +12,12 @@ import {
 import { GameContext } from './game_context';
 import { GridSystem } from './grid_system';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
-import { CELL_SIZE } from './solid_grid';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 import { LevelEditorCamMover } from './level_editor_cam_mover';
 import { createBrick } from './brick_creator';
-import { BRICK_SIZE } from './level_context';
+import { BrickType } from './brick_type';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -29,6 +28,9 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _camMover?: LevelEditorCamMover;
   /** visual brick actors kept in sync with level_ctx.bricks */
   private _brickActors: Actor[] = [];
+
+  /** editor plants 16x16 until an 8x8 palette exists */
+  private readonly _placingType = BrickType.Brick16x16;
 
   onInitialize(_engine: Engine): void {}
 
@@ -115,7 +117,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   /**
    * place a brick at the current green-dot position if:
    * 1. green dot is inside the level
-   * 2. the full 16×16 brick fits inside the level
+   * 2. the full brick (current placing type) fits inside the level
    * 3. it does not overlap any existing brick
    */
   private tryPlaceBrickAtCursor(): void {
@@ -127,21 +129,22 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     const placeX = this._nearestMouse.pos.x;
     const placeY = this._nearestMouse.pos.y;
     const level = this._game_ctx.level_ctx;
+    const type = this._placingType;
 
-    if (!level.canPlaceBrick(placeX, placeY, BRICK_SIZE)) {
+    if (!level.canPlaceBrick(placeX, placeY, type)) {
       return;
     }
 
     // commit data
-    level.addBrick(placeX, placeY);
+    level.addBrick(placeX, placeY, type);
 
     // spawn visual
-    const actor = createBrick(this.engine, { pos: vec(placeX, placeY) });
+    const actor = createBrick(this.engine, { pos: vec(placeX, placeY), type });
     this.add(actor);
     this._brickActors.push(actor);
 
     console.log(
-      `🧱 placed brick at (${placeX}, ${placeY}) — total ${level.bricks.length}`
+      `🧱 placed ${type} at (${placeX}, ${placeY}) — total ${level.bricks.length}`
     );
   }
 
@@ -154,7 +157,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
     const level = this._game_ctx.level_ctx;
     for (const b of level.bricks) {
-      const actor = createBrick(this.engine, { pos: vec(b.x, b.y) });
+      const actor = createBrick(this.engine, { pos: vec(b.x, b.y), type: b.type });
       this.add(actor);
       this._brickActors.push(actor);
     }

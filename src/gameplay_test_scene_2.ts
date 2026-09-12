@@ -21,7 +21,7 @@ import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
 import { SolidGrid } from './solid_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
-import { BRICK_SIZE } from './level_context';
+import { brickDef } from './brick_type';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 
@@ -193,10 +193,11 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._solid_grid.clearSolidData();
 
     for (const b of level.bricks) {
-      const actor = createBrick(this.engine, { pos: vec(b.x, b.y) });
+      const def = brickDef(b.type);
+      const actor = createBrick(this.engine, { pos: vec(b.x, b.y), type: b.type });
       this.add(actor);
       this._bricks.push(actor);
-      this._solid_grid.registerRect(b.x, b.y, BRICK_SIZE, BRICK_SIZE);
+      this._solid_grid.registerRect(b.x, b.y, def.width, def.height);
     }
 
     console.log(

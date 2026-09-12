@@ -1,7 +1,9 @@
 import { CELL_SIZE } from './solid_grid';
-
-/** world-space size of one brick (matches 16x16_brick.aseprite + SolidGrid registration) */
-export const BRICK_SIZE = 16;
+import {
+  BrickType,
+  DEFAULT_BRICK_TYPE,
+  brickDef,
+} from './brick_type';
 
 /**
  * pure data for the current level.
@@ -11,6 +13,7 @@ export interface arrBrickPlacement {
   /** world-space top-left (matches brick pivot + SolidGrid.registerRect) */
   x: number;
   y: number;
+  type: BrickType;
 }
 
 export class LevelContext {
@@ -42,8 +45,12 @@ export class LevelContext {
     this.bricks.length = 0;
   }
 
-  addBrick(x: number, y: number): void {
-    this.bricks.push({ x, y });
+  addBrick(
+    x: number,
+    y: number,
+    type: BrickType = DEFAULT_BRICK_TYPE
+  ): void {
+    this.bricks.push({ x, y, type });
   }
 
   /**
@@ -55,37 +62,53 @@ export class LevelContext {
   }
 
   /**
-   * true if a BRICK_SIZE×BRICK_SIZE brick with top-left at (x, y)
+   * true if a brick of `type` with top-left at (x, y)
    * lies fully inside the level bounds.
    */
-  isBrickFullyInside(x: number, y: number, size = BRICK_SIZE): boolean {
+  isBrickFullyInside(
+    x: number,
+    y: number,
+    type: BrickType = DEFAULT_BRICK_TYPE
+  ): boolean {
+    const { width, height } = brickDef(type);
     return (
       x >= 0 &&
       y >= 0 &&
-      x + size <= this.width_px &&
-      y + size <= this.height_px
+      x + width <= this.width_px &&
+      y + height <= this.height_px
     );
   }
 
   /**
    * true if a brick at (x, y) would overlap any existing brick
-   * (axis-aligned, top-left origin).
+   * (axis-aligned, top-left origin, each brick uses its own w/h).
    */
-  wouldOverlap(x: number, y: number, size = BRICK_SIZE): boolean {
-    return this.bricks.some(
-      (b) =>
-        x < b.x + size &&
-        x + size > b.x &&
-        y < b.y + size &&
-        y + size > b.y
-    );
+  wouldOverlap(
+    x: number,
+    y: number,
+    type: BrickType = DEFAULT_BRICK_TYPE
+  ): boolean {
+    const a = brickDef(type);
+    return this.bricks.some((b) => {
+      const o = brickDef(b.type);
+      return (
+        x < b.x + o.width &&
+        x + a.width > b.x &&
+        y < b.y + o.height &&
+        y + a.height > b.y
+      );
+    });
   }
 
   /**
    * full placement gate: point-level checks are caller's job for the cursor;
    * this is the commit-time validation for a brick.
    */
-  canPlaceBrick(x: number, y: number, size = BRICK_SIZE): boolean {
-    return this.isBrickFullyInside(x, y, size) && !this.wouldOverlap(x, y, size);
+  canPlaceBrick(
+    x: number,
+    y: number,
+    type: BrickType = DEFAULT_BRICK_TYPE
+  ): boolean {
+    return this.isBrickFullyInside(x, y, type) && !this.wouldOverlap(x, y, type);
   }
 }

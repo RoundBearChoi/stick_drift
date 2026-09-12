@@ -23,6 +23,7 @@ import { SolidGrid, CELL_SIZE } from './solid_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { BrickType, brickDef } from './brick_type';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -121,6 +122,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (!this._bricks_16x16) {
       this._bricks_16x16 = [];
 
+      const type = BrickType.Brick16x16;
+      const { width, height } = brickDef(type);
       const baseY = 280;
 
       // tall side walls — a single 16px brick cannot satisfy the 25px overlap rule
@@ -131,10 +134,12 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
       for (let i = 0; i < wallBrickCount; i++) {
         const leftBrick = createBrick(this.engine, {
-          pos: vec(leftWallX, wallBaseY - i * 16),
+          pos: vec(leftWallX, wallBaseY - i * height),
+          type,
         });
         const rightBrick = createBrick(this.engine, {
-          pos: vec(rightWallX, wallBaseY - i * 16),
+          pos: vec(rightWallX, wallBaseY - i * height),
+          type,
         });
         this.add(leftBrick);
         this.add(rightBrick);
@@ -144,15 +149,19 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       // bottom
       const brick1 = createBrick(this.engine, {
         pos: vec(320, baseY + 96),
+        type,
       });
       const brick2 = createBrick(this.engine, {
         pos: vec(144 + 160 + 160, baseY),
+        type,
       });
       const brick3 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160 + 16, baseY),
+        pos: vec(144 + 160 + 160 + width, baseY),
+        type,
       });
       const brick4 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160 + 16 + 16, baseY),
+        pos: vec(144 + 160 + 160 + width + width, baseY),
+        type,
       });
 
       this.add(brick1);
@@ -165,7 +174,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       // register to solid grid for collision check
       this._solid_grid.clearSolidData();
       for (const brick of this._bricks_16x16) {
-        this._solid_grid.registerRect(brick.pos.x, brick.pos.y, 16, 16);
+        this._solid_grid.registerRect(brick.pos.x, brick.pos.y, width, height);
       }
     }
 
