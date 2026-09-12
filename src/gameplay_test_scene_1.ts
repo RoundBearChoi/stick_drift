@@ -38,6 +38,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _grid?: GridSystem;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks_16x16?: Actor[]; // keep reference to the actors
+  private _bricks_8x8?: Actor[];
   private _solid_grid?: SolidGrid;
   private _titleLabel?: Label;
 
@@ -170,12 +171,48 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(brick4);
 
       this._bricks_16x16.push(brick1, brick2, brick3, brick4);
+    }
 
-      // register to solid grid for collision check
-      this._solid_grid.clearSolidData();
-      for (const brick of this._bricks_16x16) {
-        this._solid_grid.registerRect(brick.pos.x, brick.pos.y, width, height);
+    // sample 8x8 wall near bottom-left of the play area
+    if (!this._bricks_8x8) {
+      this._bricks_8x8 = [];
+
+      const type8 = BrickType.Brick8x8;
+      const { width: w8, height: h8 } = brickDef(type8);
+      // 8 bricks × 8px = 64px — same height as the 16x16 side walls (25px overlap rule)
+      const sampleWallCount = 8;
+      const sampleWallX = 16;
+      const sampleWallBaseY = 280;
+
+      for (let i = 0; i < sampleWallCount; i++) {
+        const brick = createBrick(this.engine, {
+          pos: vec(sampleWallX, sampleWallBaseY - i * h8),
+          type: type8,
+        });
+        this.add(brick);
+        this._bricks_8x8.push(brick);
       }
+    }
+
+    // register to solid grid for collision check
+    this._solid_grid.clearSolidData();
+    const size16 = brickDef(BrickType.Brick16x16);
+    for (const brick of this._bricks_16x16) {
+      this._solid_grid.registerRect(
+        brick.pos.x,
+        brick.pos.y,
+        size16.width,
+        size16.height
+      );
+    }
+    const size8 = brickDef(BrickType.Brick8x8);
+    for (const brick of this._bricks_8x8 ?? []) {
+      this._solid_grid.registerRect(
+        brick.pos.x,
+        brick.pos.y,
+        size8.width,
+        size8.height
+      );
     }
 
     // grid is added to scene after the runner so it draws on top

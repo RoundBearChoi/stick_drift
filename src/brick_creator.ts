@@ -23,16 +23,14 @@ export function createBrick(
   });
 
   const sheet =
-    type === BrickType.Brick16x16
-      ? Resources.brick_16x16.getSpriteSheet()
-      : null;
+    type === BrickType.Brick8x8
+      ? Resources.brick_8x8.getSpriteSheet()
+      : type === BrickType.Brick16x16
+        ? Resources.brick_16x16.getSpriteSheet()
+        : null;
 
-  if (type === BrickType.Brick16x16 && !sheet) {
-    console.warn('Brick spritesheet not loaded yet');
-  }
-
-  if (type === BrickType.Brick8x8) {
-    console.warn('8x8 brick sprite not added yet — placing empty actor');
+  if (!sheet) {
+    console.warn(`${type} brick spritesheet not loaded yet`);
   }
 
   const spr = sheet?.getSprite(0, 0);

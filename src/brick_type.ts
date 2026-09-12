@@ -3,7 +3,7 @@ export enum BrickType {
   Brick16x16 = '16x16',
 }
 
-/** editor + gameplay_test_scene_2 keep planting this until 8x8 art exists */
+/** editor + gameplay_test_scene_2 keep planting this until an 8x8 palette exists */
 export const DEFAULT_BRICK_TYPE = BrickType.Brick16x16;
 
 export interface BrickDef {
