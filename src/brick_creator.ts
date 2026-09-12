@@ -13,7 +13,7 @@ export function createBrick(
   engine: Engine,
   options: BrickCreateOptions = {}
 ): Actor {
-  const sheet = Resources.brick.getSpriteSheet();
+  const sheet = Resources.brick_16x16.getSpriteSheet();
   if (!sheet) {
     console.warn('Brick spritesheet not loaded yet');
   }

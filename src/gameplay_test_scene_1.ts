@@ -36,7 +36,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _camera_debug?: CameraDebug;
   private _grid?: GridSystem;
   private _levelBoundaries?: LevelBoundariesDebug;
-  private _bricks?: Actor[]; // keep reference to the actors
+  private _bricks_16x16?: Actor[]; // keep reference to the actors
   private _solid_grid?: SolidGrid;
   private _titleLabel?: Label;
 
@@ -118,8 +118,8 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
 
     // bricks
-    if (!this._bricks) {
-      this._bricks = [];
+    if (!this._bricks_16x16) {
+      this._bricks_16x16 = [];
 
       const baseY = 280;
 
@@ -138,7 +138,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
         });
         this.add(leftBrick);
         this.add(rightBrick);
-        this._bricks.push(leftBrick, rightBrick);
+        this._bricks_16x16.push(leftBrick, rightBrick);
       }
 
       // bottom
@@ -160,11 +160,11 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(brick3);
       this.add(brick4);
 
-      this._bricks.push(brick1, brick2, brick3, brick4);
+      this._bricks_16x16.push(brick1, brick2, brick3, brick4);
 
       // register to solid grid for collision check
       this._solid_grid.clearSolidData();
-      for (const brick of this._bricks) {
+      for (const brick of this._bricks_16x16) {
         this._solid_grid.registerRect(brick.pos.x, brick.pos.y, 16, 16);
       }
     }

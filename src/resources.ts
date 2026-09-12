@@ -14,7 +14,7 @@ export const Resources = {
 
   work_in_progress: new AsepriteResource('./res/sprites/work_in_progress.aseprite'),
 
-  brick: new AsepriteResource('./res/sprites/16x16_brick.aseprite'),
+  brick_16x16: new AsepriteResource('./res/sprites/16x16_brick.aseprite'),
 } as const;
 
 const loader = new TerminalLoader();
@@ -29,6 +29,6 @@ loader.addResource(Resources.stick_runner_run_accel);
 loader.addResource(Resources.stick_runner_decel);
 loader.addResource(Resources.stick_runner_wall_slide);
 loader.addResource(Resources.work_in_progress);
-loader.addResource(Resources.brick);
+loader.addResource(Resources.brick_16x16);
 
 export { loader };
