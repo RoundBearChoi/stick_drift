@@ -5,6 +5,7 @@ import {
 } from 'excalibur';
 import { CELL_SIZE } from './solid_grid';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { getEditorWorldPos } from './editor_world_pos';
 
 /**
  * visual helper for level_editor_test_scene.
@@ -96,19 +97,8 @@ export class NearestMouseToGrid extends Actor {
       this._followMouse = true;
     }
 
-    const canvas = engine.canvas;
-    const rect = canvas.getBoundingClientRect();
-
-    // internal resolution vs displayed CSS size
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    // page coordinates → internal screen coordinates
-    const screenX = (pagePos.x - rect.left) * scaleX;
-    const screenY = (pagePos.y - rect.top) * scaleY;
-
-    const screenPos = vec(screenX, screenY);
-    const worldPos = engine.screen.screenToWorldCoordinates(screenPos);
+    const worldPos = getEditorWorldPos(engine);
+    if (!worldPos) return;
 
     // snap to nearest grid point (matches brick placement)
     this.pos.x = Math.round(worldPos.x / CELL_SIZE) * CELL_SIZE;
