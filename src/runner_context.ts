@@ -50,7 +50,7 @@ export class RunnerContext {
   air_up_vector_decay_counter = 0;
   current_air_up_vector = 0;
 
-  get max_fall_acceleration() { return 15; }
+  get max_fall_acceleration() { return 13; }
   get fall_accel_amount() { return 1; }
   get fall_accel_interval() { return 1; }
   fall_update_count = 0;
@@ -58,7 +58,7 @@ export class RunnerContext {
 
   get wall_slide_down_accel_amount() { return 1; }
   get wall_slide_down_accel_interval() { return 2; }
-  get max_wall_slide_down_acceleration() { return 12; }
+  get max_wall_slide_down_acceleration() { return 11; }
   current_wall_slide_down_accel = 0;
   wall_slide_update_count = 0;
 

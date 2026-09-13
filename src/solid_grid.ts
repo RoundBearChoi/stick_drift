@@ -62,8 +62,7 @@ export class SolidGrid {
     return this._arr_level_width_height[cellY * this.widthCells + cellX] === 1;
   }
 
-  /** check world-space point for solid */
-  isSolidAtWorld(worldX: number, worldY: number): boolean {
+  isSolidAtWorldSpace(worldX: number, worldY: number): boolean {
     const cellX = Math.floor(worldX / CELL_SIZE);
     const cellY = Math.floor(worldY / CELL_SIZE);
     return this.isSolid(cellX, cellY);
