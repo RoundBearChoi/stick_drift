@@ -8,9 +8,6 @@ export enum EditorMode {
   SelectObjects = 'select objects',
 }
 
-/**
- * screen-space mode hint. no editor behavior yet — just the label + 0 toggle.
- */
 export class EditorModeOverlay {
   private label?: Label;
   private mode: EditorMode = EditorMode.PlaceObjects;
@@ -31,8 +28,7 @@ export class EditorModeOverlay {
   }
 
   handleInput(engine: Engine): void {
-    if (engine.input.keyboard.wasPressed(Keys.Digit0) ||
-        engine.input.keyboard.wasPressed(Keys.Num0)) {
+    if (engine.input.keyboard.wasPressed(Keys.Digit0)) {
       this.toggle();
     }
   }
