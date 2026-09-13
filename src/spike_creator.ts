@@ -8,9 +8,6 @@ export interface SpikeCreateOptions {
   type?: SpikeType;
 }
 
-/**
- * scene owns the actor and is responsible for add / remove.
- */
 export function createSpike(
   engine: Engine,
   options: SpikeCreateOptions = {}

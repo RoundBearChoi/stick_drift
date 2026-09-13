@@ -51,7 +51,6 @@ export class LevelContext {
 
   /**
    * authoritative list of spikes for the current level.
-   * treated as another solid for now (no spike-specific gameplay).
    */
   spikes: arrSpikePlacement[] = [];
 
