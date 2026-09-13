@@ -2,25 +2,48 @@ import { Scene, Label, vec, CoordPlane, TransformComponent, Engine, Keys } from 
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { NATIVE_RESOLUTION } from './game_context';
+import { BrickType, DEFAULT_BRICK_TYPE } from './brick_type';
 
 export enum EditorMode {
   PlaceObjects = 'place objects',
   SelectObjects = 'select objects',
 }
 
+/** later: Spikes, etc. one category at a time */
+export enum ObjectCategory {
+  Bricks = 'bricks',
+}
+
+const LINE_SIZE = 5;
+const LINE_GAP = 3;
+const LINE_COUNT = 3;
+const PAD = 8;
+
 export class EditorModeOverlay {
   private label?: Label;
   private _mode: EditorMode = EditorMode.PlaceObjects;
+  private _category: ObjectCategory = ObjectCategory.Bricks;
+  private _type: BrickType = DEFAULT_BRICK_TYPE;
 
   get mode(): EditorMode {
     return this._mode;
   }
 
+  get category(): ObjectCategory {
+    return this._category;
+  }
+
+  get type(): BrickType {
+    return this._type;
+  }
+
   attach(scene: Scene): void {
     if (!this.label) {
+      // 3 lines of 5px + 2 gaps of 3px, then 8px bottom pad
+      const blockHeight = LINE_COUNT * LINE_SIZE + (LINE_COUNT - 1) * LINE_GAP;
       this.label = new Label({
         text: this.formatText(),
-        pos: vec(8, NATIVE_RESOLUTION.height - 8 - 5),
+        pos: vec(PAD, NATIVE_RESOLUTION.height - PAD - blockHeight),
         font: createTopLeftFont(),
       });
       this.label.color = DraculaColorScheme.white;
@@ -52,6 +75,10 @@ export class EditorModeOverlay {
   }
 
   private formatText(): string {
-    return `[0] mode : ${this._mode}`;
+    return [
+      `[0] MODE : ${this._mode.toUpperCase()}`,
+      `[1] OBJECT CATEGORY : ${this._category.toUpperCase()}`,
+      `[2] TYPE : ${this._type}`,
+    ].join('\n');
   }
 }
