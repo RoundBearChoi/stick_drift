@@ -33,6 +33,11 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _selectTool?: EditorSelectTool;
   private _brickActors = new Map<number, Actor>(); // visual brick actors are keyed by placement id
 
+  /*
+  data brick — level_ctx.bricks[]. nothing more than { id, x, y, type }. no sprite no actor.
+  visual brick — the Actor created by createBrick() and stored in _brickActors. excaliburjs render actors.
+  */
+
   onInitialize(_engine: Engine): void {}
 
   onActivate(context: SceneActivationContext<GameContext>): void {
