@@ -1,6 +1,8 @@
 import {
   Actor,
+  Color,
   Engine,
+  ExcaliburGraphicsContext,
   PointerButton,
   Scene,
   vec,
@@ -179,12 +181,12 @@ export class EditorSelectTool {
 }
 
 function drawRectOutline(
-  ctx: { drawLine: typeof import('excalibur').ExcaliburGraphicsContext.prototype.drawLine },
+  ctx: ExcaliburGraphicsContext,
   x: number,
   y: number,
   w: number,
   h: number,
-  color: import('excalibur').Color
+  color: Color
 ): void {
   ctx.drawLine(vec(x, y), vec(x + w, y), color, 1);
   ctx.drawLine(vec(x + w, y), vec(x + w, y + h), color, 1);
