@@ -26,10 +26,6 @@ export class SolidGrid {
    */
   private readonly _arr_level_width_height: Uint8Array;
 
-  /**
-   * @param widthCells  level width in cells (from GameContext.level_width_cells)
-   * @param heightCells level height in cells (from GameContext.level_height_cells)
-   */
   constructor(widthCells: number, heightCells: number) {
     this.widthCells = widthCells;
     this.heightCells = heightCells;
