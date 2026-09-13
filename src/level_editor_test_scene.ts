@@ -18,6 +18,7 @@ import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 import { LevelEditorCamMover } from './level_editor_cam_mover';
 import { createBrick } from './brick_creator';
 import { BrickType } from './brick_type';
+import { EditorModeOverlay } from './editor_mode_overlay';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -26,6 +27,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _titleLabel?: Label;
   private _nearestMouse?: NearestMouseToGrid;
   private _camMover?: LevelEditorCamMover;
+  private _modeOverlay?: EditorModeOverlay;
   /** visual brick actors kept in sync with level_ctx.bricks */
   private _brickActors: Actor[] = [];
 
@@ -36,7 +38,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
   onActivate(context: SceneActivationContext<GameContext>): void {
     this._game_ctx = context.data!;
-    console.log('🌊 onActivate level_editor_test_scene');
+    console.log('onActivate level_editor_test_scene');
 
     // shared debug overlays (same pattern as test_scene_1 / test_scene_2)
     this._game_ctx.fps_overlay.attach(this);
@@ -53,6 +55,12 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
       this.add(this._titleLabel);
     }
+
+    // editor mode hint (bottom-left). no mode behavior yet -- label + 0 toggle only.
+    if (!this._modeOverlay) {
+      this._modeOverlay = new EditorModeOverlay();
+    }
+    this._modeOverlay.attach(this);
 
     // grid (8 px cells, same as gameplay)
     if (!this._grid) {
@@ -96,6 +104,8 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
   /** temp hard coded left click */
   onPreUpdate(engine: Engine): void {
+    this._modeOverlay?.handleInput(engine);
+
     for (const evt of engine.input.pointers.currentFrameDown) {
       if (evt.button === PointerButton.Left) {
         this.tryPlaceBrickAtCursor();
@@ -144,7 +154,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._brickActors.push(actor);
 
     console.log(
-      `🧱 placed ${type} at (${placeX}, ${placeY}) — total ${level.bricks.length}`
+      `placed ${type} at (${placeX}, ${placeY}) -- total ${level.bricks.length}`
     );
   }
 
