@@ -181,9 +181,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       const { height: h8 } = brickDef(type8);
       // 8 bricks × 8px = 64px — same height as the 16x16 side walls (25px overlap rule)
       const sampleWallCount = 24;
-      const sampleWallX = 100;
+      const sampleWallX = 160;
       // same y as the existing bottom 16x16 floor brick (baseY + 96)
-      const sampleWallBaseY = 600;
+      const sampleWallBaseY = 640;
 
       for (let i = 0; i < sampleWallCount; i++) {
         const brick = createBrick(this.engine, {
