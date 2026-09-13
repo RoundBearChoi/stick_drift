@@ -1,8 +1,7 @@
 import { Engine, Vector, vec } from 'excalibur';
 
 /**
- * page position → internal screen → world.
- * accounts for the CSS integer canvas scale used by ResolutionScale.
+ * ie. can be used to get world pos from mouse cursor which is browser page pos
  */
 export function getEditorWorldPos(engine: Engine): Vector | null {
   const pagePos = engine.input.pointers.primary.lastPagePos;

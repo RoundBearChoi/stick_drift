@@ -4,10 +4,6 @@ import { BrickType } from './brick_type';
 import { arrBrickPlacement } from './level_context';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 
-/**
- * place-mode pointer behavior.
- * click the snapped cursor to plant the current brick type.
- */
 export class EditorPlaceTool {
   activeType: BrickType = BrickType.Brick16x16;
 

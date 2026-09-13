@@ -15,11 +15,6 @@ import { getEditorWorldPos } from './editor_world_pos';
 
 const DRAG_THRESHOLD = 4;
 
-/**
- * select-mode pointer behavior.
- * click a brick to select it, click empty to clear, drag a box to multi-select.
- * no move / delete yet.
- */
 export class EditorSelectTool {
   private readonly selected = new Set<number>();
   private overlay?: Actor;

@@ -31,8 +31,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _modeOverlay?: EditorModeOverlay;
   private _placeTool?: EditorPlaceTool;
   private _selectTool?: EditorSelectTool;
-  /** visual brick actors keyed by placement id */
-  private _brickActors = new Map<number, Actor>();
+  private _brickActors = new Map<number, Actor>(); // visual brick actors are keyed by placement id
 
   onInitialize(_engine: Engine): void {}
 
