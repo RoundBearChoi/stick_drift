@@ -10,7 +10,11 @@ export enum EditorMode {
 
 export class EditorModeOverlay {
   private label?: Label;
-  private mode: EditorMode = EditorMode.PlaceObjects;
+  private _mode: EditorMode = EditorMode.PlaceObjects;
+
+  get mode(): EditorMode {
+    return this._mode;
+  }
 
   attach(scene: Scene): void {
     if (!this.label) {
@@ -34,8 +38,8 @@ export class EditorModeOverlay {
   }
 
   private toggle(): void {
-    this.mode =
-      this.mode === EditorMode.PlaceObjects
+    this._mode =
+      this._mode === EditorMode.PlaceObjects
         ? EditorMode.SelectObjects
         : EditorMode.PlaceObjects;
     this.refresh();
@@ -48,6 +52,6 @@ export class EditorModeOverlay {
   }
 
   private formatText(): string {
-    return `[0] mode : ${this.mode}`;
+    return `[0] mode : ${this._mode}`;
   }
 }

@@ -10,6 +10,8 @@ import {
  * owned by GameContext — scenes read / write this, but never store Actors here.
  */
 export interface arrBrickPlacement {
+  /** stable editor / scene handle. not a world position. */
+  id: number;
   /** world-space top-left (matches brick pivot + SolidGrid.registerRect) */
   x: number;
   y: number;
@@ -33,6 +35,8 @@ export class LevelContext {
    */
   bricks: arrBrickPlacement[] = [];
 
+  private _nextId = 1;
+
   get width_px(): number {
     return this.width_cells * CELL_SIZE;
   }
@@ -49,8 +53,15 @@ export class LevelContext {
     x: number,
     y: number,
     type: BrickType = DEFAULT_BRICK_TYPE
-  ): void {
-    this.bricks.push({ x, y, type });
+  ): arrBrickPlacement {
+    const placed: arrBrickPlacement = {
+      id: this._nextId++,
+      x,
+      y,
+      type,
+    };
+    this.bricks.push(placed);
+    return placed;
   }
 
   /**
