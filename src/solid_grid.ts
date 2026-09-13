@@ -36,7 +36,10 @@ export class SolidGrid {
     this._arr_level_width_height = new Uint8Array(widthCells * heightCells);
   }
 
-  /** register world-space axis-aligned rectangle as a solid object. this function expects top-left origin. */
+  /**
+   * whether a brick (or a solid) is 16x16 or 8x8 or whatever, we simply fill up corresponding 8x8 CELLS.
+   * right now cellSize = 8
+   */
   registerRect(worldX: number, worldY: number, width: number, height: number): void {
     const x0 = Math.floor(worldX / CELL_SIZE);
     const y0 = Math.floor(worldY / CELL_SIZE);
