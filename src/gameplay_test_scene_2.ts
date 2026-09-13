@@ -16,12 +16,14 @@ import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { RunnerGroundChecker } from './runner_ground_checker';
 import { RunnerWallSlideCheck } from './runner_wall_slide_check';
 import { createBrick } from './brick_creator';
+import { createSpike } from './spike_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
 import { SolidGrid } from './solid_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { brickDef } from './brick_type';
+import { spikeDef } from './spike_type';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 
@@ -38,6 +40,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _grid?: GridSystem;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks: Actor[] = [];
+  private _spikes: Actor[] = [];
   private _solid_grid?: SolidGrid;
   private _titleLabel?: Label;
 
@@ -61,7 +64,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
     const level = this._game_ctx.level_ctx;
 
-    // solid grid — always rebuild from current level dimensions + bricks
+    // solid grid — always rebuild from current level dimensions + bricks + spikes
     this._solid_grid = new SolidGrid(level.width_cells, level.height_cells);
 
     // stick runner
@@ -108,8 +111,8 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     // reset every time we enter the scene
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
 
-    // bricks from level_ctx
-    this.buildBricksFromLevelCtx();
+    // bricks + spikes from level_ctx
+    this.buildSolidsFromLevelCtx();
 
     // grid is added to scene after the runner so it draws on top
     if (!this._grid) {
@@ -179,13 +182,17 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     }
   }
 
-  /** load visual bricks + register solids from level_ctx */
-  private buildBricksFromLevelCtx(): void {
+  /** load visual solids + register occupancy from level_ctx */
+  private buildSolidsFromLevelCtx(): void {
     // clear previous visual actors (fresh scene instance normally starts empty)
     for (const actor of this._bricks) {
       actor.kill();
     }
+    for (const actor of this._spikes) {
+      actor.kill();
+    }
     this._bricks = [];
+    this._spikes = [];
 
     const level = this._game_ctx.level_ctx;
     if (!this._solid_grid) return;
@@ -200,8 +207,16 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._solid_grid.registerRect(b.x, b.y, def.width, def.height);
     }
 
+    for (const s of level.spikes) {
+      const def = spikeDef(s.type);
+      const actor = createSpike(this.engine, { pos: vec(s.x, s.y), type: s.type });
+      this.add(actor);
+      this._spikes.push(actor);
+      this._solid_grid.registerRect(s.x, s.y, def.width, def.height);
+    }
+
     console.log(
-      `🧱 gameplay_test_scene_2 loaded ${level.bricks.length} brick(s) from level_ctx`
+      `🧱 gameplay_test_scene_2 loaded ${level.bricks.length} brick(s) + ${level.spikes.length} spike(s) from level_ctx`
     );
   }
 

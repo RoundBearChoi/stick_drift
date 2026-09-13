@@ -9,11 +9,16 @@ import {
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { brickDef } from './brick_type';
-import { arrBrickPlacement } from './level_context';
+import { spikeDef } from './spike_type';
+import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { getEditorWorldPos } from './editor_world_pos';
 
 const DRAG_THRESHOLD = 4;
+
+type SelectableSolid =
+  | { kind: 'brick'; item: arrBrickPlacement; width: number; height: number }
+  | { kind: 'spike'; item: arrSpikePlacement; width: number; height: number };
 
 export class EditorSelectTool {
   private readonly selected = new Set<number>();
@@ -47,9 +52,8 @@ export class EditorSelectTool {
 
       const color = DraculaColorScheme.cyan;
 
-      for (const b of this.selectedBricks()) {
-        const { width, height } = brickDef(b.type);
-        drawRectOutline(ctx, b.x, b.y, width, height, color);
+      for (const s of this.selectedSolids()) {
+        drawRectOutline(ctx, s.item.x, s.item.y, s.width, s.height, color);
       }
 
       if (this.boxing) {
@@ -131,39 +135,53 @@ export class EditorSelectTool {
     this.boxing = false;
   }
 
+  private allSolids(): SelectableSolid[] {
+    const bricks = this.gameCtx.level_ctx.bricks.map((item) => {
+      const { width, height } = brickDef(item.type);
+      return { kind: 'brick' as const, item, width, height };
+    });
+    const spikes = this.gameCtx.level_ctx.spikes.map((item) => {
+      const { width, height } = spikeDef(item.type);
+      return { kind: 'spike' as const, item, width, height };
+    });
+    return bricks.concat(spikes);
+  }
+
   private selectAtPoint(wx: number, wy: number): void {
     this.selected.clear();
-    const hit = this.hitBrick(wx, wy);
+    const hit = this.hitSolid(wx, wy);
     if (hit) {
-      this.selected.add(hit.id);
+      this.selected.add(hit.item.id);
     }
   }
 
   private selectInBox(): void {
     this.selected.clear();
     const box = this.currentBox();
-    for (const b of this.gameCtx.level_ctx.bricks) {
-      const { width, height } = brickDef(b.type);
-      if (rectsOverlap(box.x, box.y, box.w, box.h, b.x, b.y, width, height)) {
-        this.selected.add(b.id);
+    for (const s of this.allSolids()) {
+      if (rectsOverlap(box.x, box.y, box.w, box.h, s.item.x, s.item.y, s.width, s.height)) {
+        this.selected.add(s.item.id);
       }
     }
   }
 
-  private hitBrick(wx: number, wy: number): arrBrickPlacement | null {
-    const bricks = this.gameCtx.level_ctx.bricks;
-    for (let i = bricks.length - 1; i >= 0; i--) {
-      const b = bricks[i];
-      const { width, height } = brickDef(b.type);
-      if (wx >= b.x && wy >= b.y && wx < b.x + width && wy < b.y + height) {
-        return b;
+  private hitSolid(wx: number, wy: number): SelectableSolid | null {
+    const solids = this.allSolids().sort((a, b) => b.item.id - a.item.id);
+    for (const s of solids) {
+      if (
+        wx >= s.item.x &&
+        wy >= s.item.y &&
+        wx < s.item.x + s.width &&
+        wy < s.item.y + s.height
+      ) {
+        return s;
       }
     }
     return null;
   }
 
-  private selectedBricks(): arrBrickPlacement[] {
-    return this.gameCtx.level_ctx.bricks.filter((b) => this.selected.has(b.id));
+  private selectedSolids(): SelectableSolid[] {
+    return this.allSolids().filter((s) => this.selected.has(s.item.id));
   }
 
   private currentBox(): { x: number; y: number; w: number; h: number } {

@@ -3,6 +3,7 @@ import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { NATIVE_RESOLUTION } from './game_context';
 import { BrickType, DEFAULT_BRICK_TYPE, nextBrickType } from './brick_type';
+import { SpikeType, DEFAULT_SPIKE_TYPE } from './spike_type';
 
 export enum EditorMode {
   PlaceObjects = 'place objects',
@@ -11,7 +12,10 @@ export enum EditorMode {
 
 export enum ObjectCategory {
   Bricks = 'bricks',
+  Spikes = 'spikes',
 }
+
+export const OBJECT_CATEGORIES = Object.values(ObjectCategory) as ObjectCategory[];
 
 const LINE_SIZE = 5;
 const LINE_GAP = 3;
@@ -22,7 +26,8 @@ export class EditorModeOverlay {
   private label?: Label;
   private _mode: EditorMode = EditorMode.PlaceObjects;
   private _category: ObjectCategory = ObjectCategory.Bricks;
-  private _type: BrickType = DEFAULT_BRICK_TYPE;
+  private _brickType: BrickType = DEFAULT_BRICK_TYPE;
+  private _spikeType: SpikeType = DEFAULT_SPIKE_TYPE;
 
   get mode(): EditorMode {
     return this._mode;
@@ -32,8 +37,12 @@ export class EditorModeOverlay {
     return this._category;
   }
 
-  get type(): BrickType {
-    return this._type;
+  get brickType(): BrickType {
+    return this._brickType;
+  }
+
+  get spikeType(): SpikeType {
+    return this._spikeType;
   }
 
   attach(scene: Scene): void {
@@ -57,6 +66,9 @@ export class EditorModeOverlay {
     if (engine.input.keyboard.wasPressed(Keys.Digit0)) {
       this.toggleMode();
     }
+    if (engine.input.keyboard.wasPressed(Keys.Digit1)) {
+      this.cycleCategory();
+    }
     if (engine.input.keyboard.wasPressed(Keys.Digit2)) {
       this.cycleType();
     }
@@ -70,9 +82,15 @@ export class EditorModeOverlay {
     this.refresh();
   }
 
+  private cycleCategory(): void {
+    const i = OBJECT_CATEGORIES.indexOf(this._category);
+    this._category = OBJECT_CATEGORIES[(i + 1) % OBJECT_CATEGORIES.length];
+    this.refresh();
+  }
+
   private cycleType(): void {
     if (this._category !== ObjectCategory.Bricks) return;
-    this._type = nextBrickType(this._type);
+    this._brickType = nextBrickType(this._brickType);
     this.refresh();
   }
 
@@ -83,10 +101,15 @@ export class EditorModeOverlay {
   }
 
   private formatText(): string {
+    const typeLabel =
+      this._category === ObjectCategory.Bricks
+        ? this._brickType
+        : this._spikeType;
+
     return [
       `[0] MODE : ${this._mode.toUpperCase()}`,
       `[1] OBJECT CATEGORY : ${this._category.toUpperCase()}`,
-      `[2] TYPE : ${this._type}`,
+      `[2] TYPE : ${typeLabel}`,
     ].join('\n');
   }
 }

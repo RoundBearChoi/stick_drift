@@ -4,6 +4,11 @@ import {
   DEFAULT_BRICK_TYPE,
   brickDef,
 } from './brick_type';
+import {
+  SpikeType,
+  DEFAULT_SPIKE_TYPE,
+  spikeDef,
+} from './spike_type';
 
 /**
  * pure data for the current level.
@@ -16,6 +21,15 @@ export interface arrBrickPlacement {
   x: number;
   y: number;
   type: BrickType;
+}
+
+export interface arrSpikePlacement {
+  /** stable editor / scene handle. not a world position. */
+  id: number;
+  /** world-space top-left (matches spike pivot + SolidGrid.registerRect) */
+  x: number;
+  y: number;
+  type: SpikeType;
 }
 
 export class LevelContext {
@@ -35,6 +49,12 @@ export class LevelContext {
    */
   bricks: arrBrickPlacement[] = [];
 
+  /**
+   * authoritative list of spikes for the current level.
+   * treated as another solid for now (no spike-specific gameplay).
+   */
+  spikes: arrSpikePlacement[] = [];
+
   private _nextId = 1;
 
   get width_px(): number {
@@ -47,6 +67,7 @@ export class LevelContext {
 
   clear(): void {
     this.bricks.length = 0;
+    this.spikes.length = 0;
   }
 
   addBrick(
@@ -64,12 +85,36 @@ export class LevelContext {
     return placed;
   }
 
+  addSpike(
+    x: number,
+    y: number,
+    type: SpikeType = DEFAULT_SPIKE_TYPE
+  ): arrSpikePlacement {
+    const placed: arrSpikePlacement = {
+      id: this._nextId++,
+      x,
+      y,
+      type,
+    };
+    this.spikes.push(placed);
+    return placed;
+  }
+
   /**
    * true if the snapped grid point itself is inside the level
    * (used by the green placement cursor).
    */
   isPointInside(x: number, y: number): boolean {
     return x >= 0 && y >= 0 && x < this.width_px && y < this.height_px;
+  }
+
+  isRectFullyInside(x: number, y: number, width: number, height: number): boolean {
+    return (
+      x >= 0 &&
+      y >= 0 &&
+      x + width <= this.width_px &&
+      y + height <= this.height_px
+    );
   }
 
   /**
@@ -82,17 +127,34 @@ export class LevelContext {
     type: BrickType = DEFAULT_BRICK_TYPE
   ): boolean {
     const { width, height } = brickDef(type);
-    return (
-      x >= 0 &&
-      y >= 0 &&
-      x + width <= this.width_px &&
-      y + height <= this.height_px
-    );
+    return this.isRectFullyInside(x, y, width, height);
+  }
+
+  isSpikeFullyInside(
+    x: number,
+    y: number,
+    type: SpikeType = DEFAULT_SPIKE_TYPE
+  ): boolean {
+    const { width, height } = spikeDef(type);
+    return this.isRectFullyInside(x, y, width, height);
+  }
+
+  wouldOverlapRect(x: number, y: number, width: number, height: number): boolean {
+    const hitsBrick = this.bricks.some((b) => {
+      const o = brickDef(b.type);
+      return rectsOverlap(x, y, width, height, b.x, b.y, o.width, o.height);
+    });
+    if (hitsBrick) return true;
+
+    return this.spikes.some((s) => {
+      const o = spikeDef(s.type);
+      return rectsOverlap(x, y, width, height, s.x, s.y, o.width, o.height);
+    });
   }
 
   /**
-   * true if a brick at (x, y) would overlap any existing brick
-   * (axis-aligned, top-left origin, each brick uses its own w/h).
+   * true if a brick at (x, y) would overlap any existing solid
+   * (axis-aligned, top-left origin, each object uses its own w/h).
    */
   wouldOverlap(
     x: number,
@@ -100,15 +162,16 @@ export class LevelContext {
     type: BrickType = DEFAULT_BRICK_TYPE
   ): boolean {
     const a = brickDef(type);
-    return this.bricks.some((b) => {
-      const o = brickDef(b.type);
-      return (
-        x < b.x + o.width &&
-        x + a.width > b.x &&
-        y < b.y + o.height &&
-        y + a.height > b.y
-      );
-    });
+    return this.wouldOverlapRect(x, y, a.width, a.height);
+  }
+
+  wouldOverlapSpike(
+    x: number,
+    y: number,
+    type: SpikeType = DEFAULT_SPIKE_TYPE
+  ): boolean {
+    const a = spikeDef(type);
+    return this.wouldOverlapRect(x, y, a.width, a.height);
   }
 
   /**
@@ -122,4 +185,25 @@ export class LevelContext {
   ): boolean {
     return this.isBrickFullyInside(x, y, type) && !this.wouldOverlap(x, y, type);
   }
+
+  canPlaceSpike(
+    x: number,
+    y: number,
+    type: SpikeType = DEFAULT_SPIKE_TYPE
+  ): boolean {
+    return this.isSpikeFullyInside(x, y, type) && !this.wouldOverlapSpike(x, y, type);
+  }
+}
+
+function rectsOverlap(
+  ax: number,
+  ay: number,
+  aw: number,
+  ah: number,
+  bx: number,
+  by: number,
+  bw: number,
+  bh: number
+): boolean {
+  return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
 }

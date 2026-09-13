@@ -16,10 +16,11 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 import { LevelEditorCamMover } from './level_editor_cam_mover';
 import { createBrick } from './brick_creator';
-import { EditorMode, EditorModeOverlay } from './editor_mode_overlay';
-import { EditorPlaceTool } from './editor_place_tool';
+import { createSpike } from './spike_creator';
+import { EditorMode, EditorModeOverlay, ObjectCategory } from './editor_mode_overlay';
+import { EditorPlaceTool, EditorPlacedObject } from './editor_place_tool';
 import { EditorSelectTool } from './editor_select_tool';
-import { arrBrickPlacement } from './level_context';
+import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -32,10 +33,11 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _placeTool?: EditorPlaceTool;
   private _selectTool?: EditorSelectTool;
   private _brickActors = new Map<number, Actor>(); // visual brick actors are keyed by placement id
+  private _spikeActors = new Map<number, Actor>(); // visual spike actors are keyed by placement id
 
   /*
-  data brick — level_ctx.bricks[]. nothing more than { id, x, y, type }. no sprite no actor.
-  visual brick — the Actor created by createBrick() and stored in _brickActors. excaliburjs render actors.
+  data brick / spike — level_ctx.bricks[] / level_ctx.spikes[]. nothing more than { id, x, y, type }. no sprite no actor.
+  visual brick / spike — the Actor created by createBrick() / createSpike() and stored in the maps. excaliburjs render actors.
   */
 
   onInitialize(_engine: Engine): void {}
@@ -79,8 +81,8 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this.add(this._levelBoundaries);
     }
 
-    // rebuild visual bricks from shared level data (scene instances are fresh each cycle)
-    this.rebuildBrickActors();
+    // rebuild visual solids from shared level data (scene instances are fresh each cycle)
+    this.rebuildSolidActors();
 
     // green circle that snaps to nearest grid point under the mouse
     if (!this._nearestMouse) {
@@ -98,10 +100,10 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._placeTool = new EditorPlaceTool(
         this._game_ctx,
         () => this._nearestMouse,
-        (placed) => this.spawnBrickActor(placed)
+        (placed) => this.spawnPlacedObject(placed)
       );
     }
-    this.syncPlaceType();
+    this.syncPlacePalette();
 
     if (!this._selectTool) {
       this._selectTool = new EditorSelectTool(this, this._game_ctx);
@@ -130,7 +132,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     if (overlay.mode !== prevMode) {
       this.applyModeVisuals();
     }
-    this.syncPlaceType();
+    this.syncPlacePalette();
 
     if (overlay.mode === EditorMode.PlaceObjects) {
       this._placeTool?.handle(engine);
@@ -150,10 +152,11 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._selectTool?.cancelDrag();
   }
 
-  private syncPlaceType(): void {
-    if (this._placeTool && this._modeOverlay) {
-      this._placeTool.activeType = this._modeOverlay.type;
-    }
+  private syncPlacePalette(): void {
+    if (!this._placeTool || !this._modeOverlay) return;
+    this._placeTool.activeCategory = this._modeOverlay.category;
+    this._placeTool.activeBrickType = this._modeOverlay.brickType;
+    this._placeTool.activeSpikeType = this._modeOverlay.spikeType;
   }
 
   private applyModeVisuals(): void {
@@ -166,6 +169,14 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._selectTool?.setActive(!isPlace);
   }
 
+  private spawnPlacedObject(obj: EditorPlacedObject): void {
+    if (obj.category === ObjectCategory.Spikes) {
+      this.spawnSpikeActor(obj.placed);
+      return;
+    }
+    this.spawnBrickActor(obj.placed);
+  }
+
   private spawnBrickActor(placed: arrBrickPlacement): void {
     const actor = createBrick(this.engine, {
       pos: vec(placed.x, placed.y),
@@ -175,15 +186,31 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._brickActors.set(placed.id, actor);
   }
 
-  /** clear scene brick actors and recreate them from level_ctx */
-  private rebuildBrickActors(): void {
+  private spawnSpikeActor(placed: arrSpikePlacement): void {
+    const actor = createSpike(this.engine, {
+      pos: vec(placed.x, placed.y),
+      type: placed.type,
+    });
+    this.add(actor);
+    this._spikeActors.set(placed.id, actor);
+  }
+
+  /** clear scene solid actors and recreate them from level_ctx */
+  private rebuildSolidActors(): void {
     for (const actor of this._brickActors.values()) {
       actor.kill();
     }
+    for (const actor of this._spikeActors.values()) {
+      actor.kill();
+    }
     this._brickActors.clear();
+    this._spikeActors.clear();
 
     for (const b of this._game_ctx.level_ctx.bricks) {
       this.spawnBrickActor(b);
+    }
+    for (const s of this._game_ctx.level_ctx.spikes) {
+      this.spawnSpikeActor(s);
     }
   }
 }
