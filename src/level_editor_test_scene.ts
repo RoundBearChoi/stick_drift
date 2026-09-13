@@ -7,7 +7,6 @@ import {
   vec,
   CoordPlane,
   TransformComponent,
-  PointerButton,
 } from 'excalibur';
 import { GameContext } from './game_context';
 import { GridSystem } from './grid_system';
@@ -17,8 +16,10 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 import { LevelEditorCamMover } from './level_editor_cam_mover';
 import { createBrick } from './brick_creator';
-import { BrickType } from './brick_type';
-import { EditorModeOverlay } from './editor_mode_overlay';
+import { EditorMode, EditorModeOverlay } from './editor_mode_overlay';
+import { EditorPlaceTool } from './editor_place_tool';
+import { EditorSelectTool } from './editor_select_tool';
+import { arrBrickPlacement } from './level_context';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -28,11 +29,10 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _nearestMouse?: NearestMouseToGrid;
   private _camMover?: LevelEditorCamMover;
   private _modeOverlay?: EditorModeOverlay;
-  /** visual brick actors kept in sync with level_ctx.bricks */
-  private _brickActors: Actor[] = [];
-
-  /** editor plants 16x16 until an 8x8 palette exists */
-  private readonly _placingType = BrickType.Brick16x16;
+  private _placeTool?: EditorPlaceTool;
+  private _selectTool?: EditorSelectTool;
+  /** visual brick actors keyed by placement id */
+  private _brickActors = new Map<number, Actor>();
 
   onInitialize(_engine: Engine): void {}
 
@@ -56,7 +56,6 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this.add(this._titleLabel);
     }
 
-    // editor mode hint (bottom-left). no mode behavior yet -- label + 0 toggle only.
     if (!this._modeOverlay) {
       this._modeOverlay = new EditorModeOverlay();
     }
@@ -91,6 +90,21 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     // every enter: back to (0, 0) and wait for mouse movement again
     this._nearestMouse.resetToOrigin();
 
+    if (!this._placeTool) {
+      this._placeTool = new EditorPlaceTool(
+        this._game_ctx,
+        () => this._nearestMouse,
+        (placed) => this.spawnBrickActor(placed)
+      );
+    }
+
+    if (!this._selectTool) {
+      this._selectTool = new EditorSelectTool(this, this._game_ctx);
+    }
+    this._selectTool.attach();
+
+    this.applyModeVisuals();
+
     // free camera mover (arrow keys)
     if (!this._camMover) {
       this._camMover = new LevelEditorCamMover(this, this._game_ctx);
@@ -102,15 +116,20 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this.camera.pos.y = 360 / 2;
   }
 
-  /** temp hard coded left click */
   onPreUpdate(engine: Engine): void {
-    this._modeOverlay?.handleInput(engine);
+    const overlay = this._modeOverlay;
+    if (!overlay) return;
 
-    for (const evt of engine.input.pointers.currentFrameDown) {
-      if (evt.button === PointerButton.Left) {
-        this.tryPlaceBrickAtCursor();
-        break;
-      }
+    const prevMode = overlay.mode;
+    overlay.handleInput(engine);
+    if (overlay.mode !== prevMode) {
+      this.applyModeVisuals();
+    }
+
+    if (overlay.mode === EditorMode.PlaceObjects) {
+      this._placeTool?.handle(engine);
+    } else {
+      this._selectTool?.handle(engine);
     }
   }
 
@@ -122,54 +141,37 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     if (this._camMover) {
       this._camMover.unregister();
     }
+    this._selectTool?.cancelDrag();
   }
 
-  /**
-   * place a brick at the current green-dot position if:
-   * 1. green dot is inside the level
-   * 2. the full brick (current placing type) fits inside the level
-   * 3. it does not overlap any existing brick
-   */
-  private tryPlaceBrickAtCursor(): void {
-    if (!this._nearestMouse) return;
+  private applyModeVisuals(): void {
+    const mode = this._modeOverlay?.mode ?? EditorMode.PlaceObjects;
+    const isPlace = mode === EditorMode.PlaceObjects;
 
-    // reject when the green dot itself is outside the level
-    if (!this._nearestMouse.isInsideLevel) return;
-
-    const placeX = this._nearestMouse.pos.x;
-    const placeY = this._nearestMouse.pos.y;
-    const level = this._game_ctx.level_ctx;
-    const type = this._placingType;
-
-    if (!level.canPlaceBrick(placeX, placeY, type)) {
-      return;
+    if (this._nearestMouse) {
+      this._nearestMouse.graphics.visible = isPlace;
     }
+    this._selectTool?.setActive(!isPlace);
+  }
 
-    // commit data
-    level.addBrick(placeX, placeY, type);
-
-    // spawn visual
-    const actor = createBrick(this.engine, { pos: vec(placeX, placeY), type });
+  private spawnBrickActor(placed: arrBrickPlacement): void {
+    const actor = createBrick(this.engine, {
+      pos: vec(placed.x, placed.y),
+      type: placed.type,
+    });
     this.add(actor);
-    this._brickActors.push(actor);
-
-    console.log(
-      `placed ${type} at (${placeX}, ${placeY}) -- total ${level.bricks.length}`
-    );
+    this._brickActors.set(placed.id, actor);
   }
 
   /** clear scene brick actors and recreate them from level_ctx */
   private rebuildBrickActors(): void {
-    for (const actor of this._brickActors) {
+    for (const actor of this._brickActors.values()) {
       actor.kill();
     }
-    this._brickActors = [];
+    this._brickActors.clear();
 
-    const level = this._game_ctx.level_ctx;
-    for (const b of level.bricks) {
-      const actor = createBrick(this.engine, { pos: vec(b.x, b.y), type: b.type });
-      this.add(actor);
-      this._brickActors.push(actor);
+    for (const b of this._game_ctx.level_ctx.bricks) {
+      this.spawnBrickActor(b);
     }
   }
 }
