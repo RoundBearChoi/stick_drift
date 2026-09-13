@@ -21,6 +21,7 @@ const DRAG_THRESHOLD = 4;
 export class EditorSelectTool {
   private readonly selected = new Set<number>();
   private overlay?: Actor;
+  private active = false;
   private pressing = false;
   private boxing = false;
   private startX = 0;
@@ -45,30 +46,34 @@ export class EditorSelectTool {
     });
     this.overlay.graphics.forceOnScreen = true;
     this.overlay.graphics.onPostDraw = (ctx) => {
+      if (!this.active) return;
+
       const color = DraculaColorScheme.cyan;
 
       for (const b of this.selectedBricks()) {
         const { width, height } = brickDef(b.type);
-        ctx.drawRectangle(vec(b.x, b.y), width, height, color, color, 1);
+        drawRectOutline(ctx, b.x, b.y, width, height, color);
       }
 
       if (this.boxing) {
         const box = this.currentBox();
-        ctx.drawRectangle(
-          vec(box.x, box.y),
-          box.w,
-          box.h,
-          color,
-          color,
-          1
-        );
+        drawRectOutline(ctx, box.x, box.y, box.w, box.h, color);
       }
     };
 
     this.scene.add(this.overlay);
   }
 
+  setActive(active: boolean): void {
+    this.active = active;
+    if (!active) {
+      this.cancelDrag();
+    }
+  }
+
   handle(engine: Engine): void {
+    if (!this.active) return;
+
     const world = getEditorWorldPos(engine);
     if (world) {
       this.currentX = world.x;
@@ -171,6 +176,20 @@ export class EditorSelectTool {
     const h = Math.abs(this.currentY - this.startY);
     return { x, y, w, h };
   }
+}
+
+function drawRectOutline(
+  ctx: { drawLine: typeof import('excalibur').ExcaliburGraphicsContext.prototype.drawLine },
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  color: import('excalibur').Color
+): void {
+  ctx.drawLine(vec(x, y), vec(x + w, y), color, 1);
+  ctx.drawLine(vec(x + w, y), vec(x + w, y + h), color, 1);
+  ctx.drawLine(vec(x + w, y + h), vec(x, y + h), color, 1);
+  ctx.drawLine(vec(x, y + h), vec(x, y), color, 1);
 }
 
 function rectsOverlap(
