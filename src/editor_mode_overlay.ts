@@ -9,7 +9,6 @@ export enum EditorMode {
   SelectObjects = 'select objects',
 }
 
-/** later: Spikes, etc. one category at a time */
 export enum ObjectCategory {
   Bricks = 'bricks',
 }
