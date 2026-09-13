@@ -19,7 +19,7 @@ export class EditorSelectTool {
   private readonly selected = new Set<number>();
   private overlay?: Actor;
   private active = false;
-  private pressing = false;
+  private isHoldingLeftClick = false;
   private boxing = false;
   private startX = 0;
   private startY = 0;
@@ -84,7 +84,7 @@ export class EditorSelectTool {
       }
     }
 
-    if (this.pressing && world) {
+    if (this.isHoldingLeftClick && world) {
       const dx = world.x - this.startX;
       const dy = world.y - this.startY;
       if (!this.boxing && (dx * dx + dy * dy) >= DRAG_THRESHOLD * DRAG_THRESHOLD) {
@@ -102,7 +102,7 @@ export class EditorSelectTool {
 
   /** drop an in-progress drag without changing the committed selection. */
   cancelDrag(): void {
-    this.pressing = false;
+    this.isHoldingLeftClick = false;
     this.boxing = false;
   }
 
@@ -112,14 +112,14 @@ export class EditorSelectTool {
   }
 
   private beginPress(): void {
-    this.pressing = true;
+    this.isHoldingLeftClick = true;
     this.boxing = false;
     this.startX = this.currentX;
     this.startY = this.currentY;
   }
 
   private endPress(): void {
-    if (!this.pressing) return;
+    if (!this.isHoldingLeftClick) return;
 
     if (this.boxing) {
       this.selectInBox();
@@ -127,7 +127,7 @@ export class EditorSelectTool {
       this.selectAtPoint(this.currentX, this.currentY);
     }
 
-    this.pressing = false;
+    this.isHoldingLeftClick = false;
     this.boxing = false;
   }
 
