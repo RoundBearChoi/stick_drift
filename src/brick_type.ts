@@ -3,6 +3,8 @@ export enum BrickType {
   Brick16x16 = '16x16',
 }
 
+export const BRICK_TYPES = Object.values(BrickType) as BrickType[];
+
 /** editor + gameplay_test_scene_2 keep planting this until an 8x8 palette exists */
 export const DEFAULT_BRICK_TYPE = BrickType.Brick16x16;
 
@@ -18,4 +20,9 @@ export const BRICK_DEFS: Record<BrickType, BrickDef> = {
 
 export function brickDef(type: BrickType): BrickDef {
   return BRICK_DEFS[type];
+}
+
+export function nextBrickType(current: BrickType): BrickType {
+  const i = BRICK_TYPES.indexOf(current);
+  return BRICK_TYPES[(i + 1) % BRICK_TYPES.length];
 }

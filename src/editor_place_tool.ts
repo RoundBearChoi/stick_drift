@@ -1,11 +1,11 @@
 import { Engine, PointerButton } from 'excalibur';
 import { GameContext } from './game_context';
-import { BrickType } from './brick_type';
+import { BrickType, DEFAULT_BRICK_TYPE } from './brick_type';
 import { arrBrickPlacement } from './level_context';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 
 export class EditorPlaceTool {
-  activeType: BrickType = BrickType.Brick16x16;
+  activeType: BrickType = DEFAULT_BRICK_TYPE;
 
   constructor(
     private readonly gameCtx: GameContext,

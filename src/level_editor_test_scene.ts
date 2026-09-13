@@ -101,6 +101,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
         (placed) => this.spawnBrickActor(placed)
       );
     }
+    this.syncPlaceType();
 
     if (!this._selectTool) {
       this._selectTool = new EditorSelectTool(this, this._game_ctx);
@@ -129,6 +130,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     if (overlay.mode !== prevMode) {
       this.applyModeVisuals();
     }
+    this.syncPlaceType();
 
     if (overlay.mode === EditorMode.PlaceObjects) {
       this._placeTool?.handle(engine);
@@ -146,6 +148,12 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._camMover.unregister();
     }
     this._selectTool?.cancelDrag();
+  }
+
+  private syncPlaceType(): void {
+    if (this._placeTool && this._modeOverlay) {
+      this._placeTool.activeType = this._modeOverlay.type;
+    }
   }
 
   private applyModeVisuals(): void {

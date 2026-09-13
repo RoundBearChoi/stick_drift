@@ -2,7 +2,7 @@ import { Scene, Label, vec, CoordPlane, TransformComponent, Engine, Keys } from 
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { NATIVE_RESOLUTION } from './game_context';
-import { BrickType, DEFAULT_BRICK_TYPE } from './brick_type';
+import { BrickType, DEFAULT_BRICK_TYPE, nextBrickType } from './brick_type';
 
 export enum EditorMode {
   PlaceObjects = 'place objects',
@@ -56,15 +56,24 @@ export class EditorModeOverlay {
 
   handleInput(engine: Engine): void {
     if (engine.input.keyboard.wasPressed(Keys.Digit0)) {
-      this.toggle();
+      this.toggleMode();
+    }
+    if (engine.input.keyboard.wasPressed(Keys.Digit2)) {
+      this.cycleType();
     }
   }
 
-  private toggle(): void {
+  private toggleMode(): void {
     this._mode =
       this._mode === EditorMode.PlaceObjects
         ? EditorMode.SelectObjects
         : EditorMode.PlaceObjects;
+    this.refresh();
+  }
+
+  private cycleType(): void {
+    if (this._category !== ObjectCategory.Bricks) return;
+    this._type = nextBrickType(this._type);
     this.refresh();
   }
 
