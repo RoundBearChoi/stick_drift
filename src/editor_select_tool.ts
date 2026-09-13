@@ -136,15 +136,15 @@ export class EditorSelectTool {
   }
 
   private allSolids(): SelectableSolid[] {
-    const bricks = this.gameCtx.level_ctx.bricks.map((item) => {
+    const bricks: SelectableSolid[] = this.gameCtx.level_ctx.bricks.map((item) => {
       const { width, height } = brickDef(item.type);
-      return { kind: 'brick' as const, item, width, height };
+      return { kind: 'brick', item, width, height };
     });
-    const spikes = this.gameCtx.level_ctx.spikes.map((item) => {
+    const spikes: SelectableSolid[] = this.gameCtx.level_ctx.spikes.map((item) => {
       const { width, height } = spikeDef(item.type);
-      return { kind: 'spike' as const, item, width, height };
+      return { kind: 'spike', item, width, height };
     });
-    return bricks.concat(spikes);
+    return [...bricks, ...spikes];
   }
 
   private selectAtPoint(wx: number, wy: number): void {
