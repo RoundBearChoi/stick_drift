@@ -1,4 +1,4 @@
-/** pixels past the deadzone → integer chase step on X */
+/** pixels past the deadzone */
 export function chaseSpeedFromOverflowX(overflow: number): number {
   if (overflow <= 0) return 0;
   if (overflow >= 225) return 10;
@@ -13,7 +13,7 @@ export function chaseSpeedFromOverflowX(overflow: number): number {
   return 10;
 }
 
-/** pixels past the deadzone → integer chase step on Y */
+/** pixels past the deadzone */
 export function chaseSpeedFromOverflowY(overflow: number): number {
   if (overflow <= 0) return 0;
   if (overflow >= 177) return 16;

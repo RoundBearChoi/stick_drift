@@ -12,8 +12,6 @@ import {
 } from './camera_chase_speed';
 
 /**
- * fixed-timestep camera that follows a target with deadzones and integer axis-aligned steps.
- * chase speed is looked up from overflow past the deadzone (further = faster).
  * future-friendly stuff:
  * - setFollowTarget() so the follow source can change later
  * - snapToTarget() for scene transitions and/or resets
@@ -26,12 +24,7 @@ export class CameraController implements Tickable {
   /** vertical deadzone radius (only move when |dy| exceeds this) */
   deadzoneY = 28;
 
-  /**
-   * vertical offset from the follow target's pos to the desired camera focus.
-   * this is negative because y increases downward in excalibur.
-   * runner sprites are 32 by 32 with bottom-center anchor, so roughly 32 + 16 = 48
-   */
-  targetOffsetY = -32;
+  targetOffsetY = -32; // this is negative because y increases downward in excalibur.
 
   private _followTarget: Actor | null = null;
 
@@ -40,16 +33,10 @@ export class CameraController implements Tickable {
     private readonly gameCtx: GameContext
   ) {}
 
-  /**
-   * set (or clear) the actor (target) the camera should follow. passing null stops following.
-   */
   setFollowTarget(target: Actor | null): void {
     this._followTarget = target;
   }
 
-  /**
-   * immediately place the camera on the current desired target position. call on scene enter etc.
-   */
   snapToTarget(): void {
     const desired = this.getDesiredTargetPos();
     if (!desired) return;
