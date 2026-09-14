@@ -6,13 +6,18 @@ import {
 } from 'excalibur';
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
+import {
+  chaseSpeedFromOverflowX,
+  chaseSpeedFromOverflowY,
+} from './camera_chase_speed';
 
 /**
  * fixed-timestep camera that follows a target with deadzones and integer axis-aligned steps.
+ * chase speed is looked up from overflow past the deadzone (further = faster).
  * future-friendly stuff:
  * - setFollowTarget() so the follow source can change later
  * - snapToTarget() for scene transitions and/or resets
- * - movement logic is isolated so look-ahead / variable speed / airborne bias / level bounds can be added later
+ * - movement logic is isolated so look-ahead / airborne bias / level bounds can be added later
  */
 export class CameraController implements Tickable {
   /** horizontal deadzone radius (only move when |dx| exceeds this) */
@@ -20,9 +25,6 @@ export class CameraController implements Tickable {
 
   /** vertical deadzone radius (only move when |dy| exceeds this) */
   deadzoneY = 28;
-
-  /** max pixels the camera may move on one axis per fixed update */
-  maxStep = 2;
 
   /**
    * vertical offset from the follow target's pos to the desired camera focus.
@@ -63,22 +65,21 @@ export class CameraController implements Tickable {
 
     const cam = this.scene.camera;
 
-    let dx = desired.x - cam.pos.x;
-    let dy = desired.y - cam.pos.y;
+    const rawDx = desired.x - cam.pos.x;
+    const rawDy = desired.y - cam.pos.y;
 
-    // deadzone
-    if (Math.abs(dx) <= this.deadzoneX) dx = 0;
-    if (Math.abs(dy) <= this.deadzoneY) dy = 0;
+    const overflowX = Math.max(0, Math.abs(rawDx) - this.deadzoneX);
+    const overflowY = Math.max(0, Math.abs(rawDy) - this.deadzoneY);
 
     // resolve horizontal first, then vertical. pure axis-aligned integer moves.
-    if (dx !== 0) {
-      const step = Math.sign(dx) * Math.min(Math.abs(dx), this.maxStep);
-      cam.pos.x += step;
+    if (overflowX > 0) {
+      const step = chaseSpeedFromOverflowX(overflowX);
+      cam.pos.x += Math.sign(rawDx) * Math.min(Math.abs(rawDx), step);
     }
 
-    if (dy !== 0) {
-      const step = Math.sign(dy) * Math.min(Math.abs(dy), this.maxStep);
-      cam.pos.y += step;
+    if (overflowY > 0) {
+      const step = chaseSpeedFromOverflowY(overflowY);
+      cam.pos.y += Math.sign(rawDy) * Math.min(Math.abs(rawDy), step);
     }
 
     // keep whole numbers (this is defensive. when you put in integers nothing happens in Math.round)
