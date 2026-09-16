@@ -100,6 +100,24 @@ export class LevelContext {
   }
 
   /**
+   * drop bricks / spikes by editor id.
+   * returns how many placements were actually removed.
+   * ids are not reused — _nextId keeps climbing.
+   */
+  removeSolidsByIds(ids: readonly number[]): number {
+    if (ids.length === 0) return 0;
+
+    const drop = new Set(ids);
+    const brickCount = this.bricks.length;
+    const spikeCount = this.spikes.length;
+
+    this.bricks = this.bricks.filter((b) => !drop.has(b.id));
+    this.spikes = this.spikes.filter((s) => !drop.has(s.id));
+
+    return brickCount + spikeCount - this.bricks.length - this.spikes.length;
+  }
+
+  /**
    * true if the snapped grid point itself is inside the level
    * (used by the green placement cursor).
    */

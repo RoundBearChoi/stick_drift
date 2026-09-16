@@ -21,6 +21,7 @@ import { EditorMode, EditorModeOverlay, ObjectCategory } from './editor_mode_ove
 import { EditorPlaceTool, EditorPlacedObject } from './editor_place_tool';
 import { EditorSelectTool } from './editor_select_tool';
 import { EditorMoveTool } from './editor_move_tool';
+import { EditorDeleteTool } from './editor_delete_tool';
 import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
@@ -34,6 +35,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _placeTool?: EditorPlaceTool;
   private _selectTool?: EditorSelectTool;
   private _moveTool?: EditorMoveTool;
+  private _deleteTool?: EditorDeleteTool;
   private _brickActors = new Map<number, Actor>(); // visual brick actors are keyed by placement id
   private _spikeActors = new Map<number, Actor>(); // visual spike actors are keyed by placement id
 
@@ -120,6 +122,14 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       );
     }
 
+    if (!this._deleteTool) {
+      this._deleteTool = new EditorDeleteTool(
+        this._game_ctx,
+        () => this._selectTool!.selectedSolids(),
+        (ids) => this.removeSolidActors(ids)
+      );
+    }
+
     this.applyModeVisuals();
 
     // free camera mover (arrow keys)
@@ -149,6 +159,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     } else {
       this._selectTool?.handle(engine);
       this._moveTool?.handle(engine);
+      this._deleteTool?.handle(engine);
     }
   }
 
@@ -211,6 +222,24 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     if (!actor) return;
     actor.pos.x = x;
     actor.pos.y = y;
+  }
+
+  private removeSolidActors(ids: number[]): void {
+    for (const id of ids) {
+      const brick = this._brickActors.get(id);
+      if (brick) {
+        brick.kill();
+        this._brickActors.delete(id);
+      }
+
+      const spike = this._spikeActors.get(id);
+      if (spike) {
+        spike.kill();
+        this._spikeActors.delete(id);
+      }
+    }
+
+    this._selectTool?.clear();
   }
 
   /** clear scene solid actors and recreate them from level_ctx */
