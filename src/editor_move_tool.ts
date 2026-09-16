@@ -3,11 +3,6 @@ import { CELL_SIZE } from './solid_grid';
 import { GameContext } from './game_context';
 import { SelectableSolid } from './editor_select_tool';
 
-/**
- * select-mode only. one WASD press = one 8px step for the whole selection,
- * or no movement if any selected solid would leave the level or overlap
- * an unselected solid.
- */
 export class EditorMoveTool {
   constructor(
     private readonly gameCtx: GameContext,
@@ -29,6 +24,9 @@ export class EditorMoveTool {
     this.tryMove(dx, dy);
   }
 
+  /**
+   * if any of the selected objects don't have room to move or path is blocked, we don't move
+   */
   private tryMove(dx: number, dy: number): void {
     const selected = this.getSelected();
     if (selected.length === 0) return;
