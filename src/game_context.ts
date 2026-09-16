@@ -32,6 +32,14 @@ export class GameContext {
   readonly level_ctx = new LevelContext();
 
   /**
+   * editor-only view center.
+   * survives F2/F4 because LevelEditorTestScene is recreated every switch.
+   * gameplay scenes must not read or write these.
+   */
+  editor_cam_x = NATIVE_RESOLUTION.width / 2;
+  editor_cam_y = NATIVE_RESOLUTION.height / 2;
+
+  /**
    * convenience accessors so existing call sites keep working.
    * preferred path for new code: game_ctx.level_ctx.width_cells / height_cells.
    * IMPORTANT: change only at scene/level start — not mid-frame.
