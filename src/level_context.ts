@@ -48,11 +48,7 @@ export class LevelContext {
    * objects such as Uint8Array, Float32Array, etc do have a fixed length that cannot be changed after creation. plain array is dynamic.
    */
   bricks: arrBrickPlacement[] = [];
-
-  /**
-   * authoritative list of spikes for the current level.
-   */
-  spikes: arrSpikePlacement[] = [];
+  spikes: arrSpikePlacement[] = []; // authoritative list of spikes for the current level.
 
   private _nextId = 1;
 
@@ -100,9 +96,8 @@ export class LevelContext {
   }
 
   /**
-   * drop bricks / spikes by editor id.
-   * returns how many placements were actually removed.
-   * ids are not reused — _nextId keeps climbing.
+   * returns how many placements were actually removed
+   * since _nextId keeps climbing, pretty much all solids have unique IDs
    */
   removeSolidsByIds(ids: readonly number[]): number {
     if (ids.length === 0) return 0;
@@ -200,8 +195,7 @@ export class LevelContext {
   }
 
   /**
-   * full placement gate: point-level checks are caller's job for the cursor;
-   * this is the commit-time validation for a brick.
+   * full placement gate: point-level checks are caller's job for the cursor
    */
   canPlaceBrick(
     x: number,
