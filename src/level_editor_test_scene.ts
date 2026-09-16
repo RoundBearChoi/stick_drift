@@ -20,6 +20,7 @@ import { createSpike } from './spike_creator';
 import { EditorMode, EditorModeOverlay, ObjectCategory } from './editor_mode_overlay';
 import { EditorPlaceTool, EditorPlacedObject } from './editor_place_tool';
 import { EditorSelectTool } from './editor_select_tool';
+import { EditorMoveTool } from './editor_move_tool';
 import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
@@ -32,6 +33,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _modeOverlay?: EditorModeOverlay;
   private _placeTool?: EditorPlaceTool;
   private _selectTool?: EditorSelectTool;
+  private _moveTool?: EditorMoveTool;
   private _brickActors = new Map<number, Actor>(); // visual brick actors are keyed by placement id
   private _spikeActors = new Map<number, Actor>(); // visual spike actors are keyed by placement id
 
@@ -110,6 +112,14 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     }
     this._selectTool.attach();
 
+    if (!this._moveTool) {
+      this._moveTool = new EditorMoveTool(
+        this._game_ctx,
+        () => this._selectTool!.selectedSolids(),
+        (id, x, y) => this.syncSolidActorPos(id, x, y)
+      );
+    }
+
     this.applyModeVisuals();
 
     // free camera mover (arrow keys)
@@ -138,6 +148,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._placeTool?.handle(engine);
     } else {
       this._selectTool?.handle(engine);
+      this._moveTool?.handle(engine);
     }
   }
 
@@ -193,6 +204,13 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     });
     this.add(actor);
     this._spikeActors.set(placed.id, actor);
+  }
+
+  private syncSolidActorPos(id: number, x: number, y: number): void {
+    const actor = this._brickActors.get(id) ?? this._spikeActors.get(id);
+    if (!actor) return;
+    actor.pos.x = x;
+    actor.pos.y = y;
   }
 
   /** clear scene solid actors and recreate them from level_ctx */

@@ -138,14 +138,22 @@ export class LevelContext {
     return this.isRectFullyInside(x, y, width, height);
   }
 
-  wouldOverlapRect(x: number, y: number, width: number, height: number): boolean {
+  wouldOverlapRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    ignoreIds?: ReadonlySet<number>
+  ): boolean {
     const hitsBrick = this.bricks.some((b) => {
+      if (ignoreIds?.has(b.id)) return false;
       const o = brickDef(b.type);
       return rectsOverlap(x, y, width, height, b.x, b.y, o.width, o.height);
     });
     if (hitsBrick) return true;
 
     return this.spikes.some((s) => {
+      if (ignoreIds?.has(s.id)) return false;
       const o = spikeDef(s.type);
       return rectsOverlap(x, y, width, height, s.x, s.y, o.width, o.height);
     });

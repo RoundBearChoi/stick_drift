@@ -16,7 +16,7 @@ import { getEditorWorldPos } from './editor_world_pos';
 
 const DRAG_THRESHOLD = 4;
 
-type SelectableSolid =
+export type SelectableSolid =
   | { kind: 'brick'; item: arrBrickPlacement; width: number; height: number }
   | { kind: 'spike'; item: arrSpikePlacement; width: number; height: number };
 
@@ -115,6 +115,10 @@ export class EditorSelectTool {
     this.cancelDrag();
   }
 
+  selectedSolids(): SelectableSolid[] {
+    return this.allSolids().filter((s) => this.selected.has(s.item.id));
+  }
+
   private beginPress(): void {
     this.isHoldingLeftClick = true;
     this.boxing = false;
@@ -178,10 +182,6 @@ export class EditorSelectTool {
       }
     }
     return null;
-  }
-
-  private selectedSolids(): SelectableSolid[] {
-    return this.allSolids().filter((s) => this.selected.has(s.item.id));
   }
 
   private currentBox(): { x: number; y: number; w: number; h: number } {
