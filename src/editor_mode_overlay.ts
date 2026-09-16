@@ -4,6 +4,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 import { NATIVE_RESOLUTION } from './game_context';
 import { BrickType, DEFAULT_BRICK_TYPE, nextBrickType } from './brick_type';
 import { SpikeType, DEFAULT_SPIKE_TYPE } from './spike_type';
+import { assignZ } from './z_order';
 
 export enum EditorMode {
   PlaceObjects = 'place objects',
@@ -56,6 +57,7 @@ export class EditorModeOverlay {
       });
       this.label.color = DraculaColorScheme.white;
       this.label.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
+      assignZ(this.label, 'hud');
     }
 
     scene.add(this.label);

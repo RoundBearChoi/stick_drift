@@ -23,6 +23,7 @@ import { EditorSelectTool } from './editor_select_tool';
 import { EditorMoveTool } from './editor_move_tool';
 import { EditorDeleteTool } from './editor_delete_tool';
 import { arrBrickPlacement, arrSpikePlacement } from './level_context';
+import { assignZ } from './z_order';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -63,6 +64,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       });
       this._titleLabel.color = DraculaColorScheme.cyan;
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
+      assignZ(this._titleLabel, 'hud');
       this.add(this._titleLabel);
     }
 
