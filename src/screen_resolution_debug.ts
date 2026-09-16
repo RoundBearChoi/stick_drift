@@ -2,6 +2,7 @@ import { Scene, Label, vec, CoordPlane, TransformComponent } from 'excalibur';
 import { createTopLeftFont } from './debug_font';
 import { ResolutionScale } from './resolution_scale';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { assignZ } from './z_order';
 
 /**
  * shared on-screen resolution / scale debug label.
@@ -33,6 +34,7 @@ export class ScreenResolutionDebug {
       });
       this.label.color = DraculaColorScheme.white;
       this.label.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
+      assignZ(this.label, 'hud');
     }
 
     scene.add(this.label);

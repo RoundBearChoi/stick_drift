@@ -2,6 +2,7 @@ import { Scene, Label, vec, CoordPlane, TransformComponent } from 'excalibur';
 import { FpsDebug } from './fps_debug';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { assignZ } from './z_order';
 
 export class FpsOverlay {
   readonly counter = new FpsDebug();
@@ -20,6 +21,7 @@ export class FpsOverlay {
       });
       this.label.color = DraculaColorScheme.white;
       this.label.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
+      assignZ(this.label, 'hud');
     }
 
     scene.add(this.label);
