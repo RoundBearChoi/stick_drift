@@ -1,4 +1,4 @@
-import { Entity } from 'excalibur';
+import { Actor } from 'excalibur';
 
 /**
  * draw order. higher paints later (on top).
@@ -11,6 +11,6 @@ export const Z_ORDER = {
 
 export type ZOrderLayer = keyof typeof Z_ORDER;
 
-export function assignZ(entity: Entity, layer: ZOrderLayer): void {
-  entity.z = Z_ORDER[layer];
+export function assignZ(actor: Actor, layer: ZOrderLayer): void {
+  actor.z = Z_ORDER[layer];
 }
