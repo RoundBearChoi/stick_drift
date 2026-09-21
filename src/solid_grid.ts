@@ -42,6 +42,22 @@ export class SolidGrid {
     const x1 = Math.ceil((worldX + width) / CELL_SIZE);
     const y1 = Math.ceil((worldY + height) / CELL_SIZE);
 
+/*
+x0 x1 y0 y1 are grid indexes (based on 8x8)
+
+column x →  0        1        2              widthCells-1
+row y
+↓
+0           [0,0]    [1,0]    [2,0]   ...    [width-1, 0]
+1           [0,1]    [1,1]    [2,1]   ...    [width-1, 1]
+2           [0,2]    [1,2]    [2,2]   ...    ...
+...         ...      ...      ...     ...    ...
+height-1                                     [width-1, height-1]
+
+cell (0, 0) is the top-left of the level. Indexes increase right and down, ending at the bottom-right.
+
+*/
+
     for (let y = y0; y < y1; y++) {
       for (let x = x0; x < x1; x++) {
         this.setCell(x, y, 1);
