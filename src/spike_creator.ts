@@ -51,9 +51,7 @@ export function createSpike(
 }
 
 /**
- * rotate the graphic around its own center.
- * do not add a half-size graphics.offset — actor.pos is already the tile top-left,
- * and that extra (8, 8) is what parked the sprite down-right of the placement.
+ * rotate graphic around its center.
  */
 export function applySpikeGraphicFacing(
   actor: Actor,

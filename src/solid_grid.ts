@@ -88,9 +88,8 @@ cell (0, 0) is the top-left of the level. Indexes increase right and down, endin
   }
 
   /**
-   * mark only the pointed edge of a spike.
-   * the full rect should already be registered as solid.
-   * ie. 16x16 up-spike marks the two top 8x8 cells with CELL_SPIKE_UP.
+   * mark only the pointed edge of a spike. full rect is already be registered as solid.
+   * ie. 16x16 CELL_SPIKE_UP marks top two 8x8 cells.
    */
   registerSpikeFace(
     worldX: number,

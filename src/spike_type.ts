@@ -8,7 +8,7 @@ export const DEFAULT_SPIKE_TYPE = SpikeType.Spike16x16;
 
 /**
  * clockwise from default (up).
- * 16x16 is square, so facing does not change the top-left AABB.
+ * IMPORTANT: for now everything is a square, so facing does not change the top-left AABB.
  */
 export enum SpikeFacing {
   Up = 0,
@@ -36,7 +36,10 @@ export function spikeFacingLabel(facing: SpikeFacing): string {
   }
 }
 
-/** 90° clockwise per facing step. graphic-only — actor pos stays top-left. */
+/**
+ * 90 degree clockwise per facing step.
+ * IMPORTANT: this is render only. actor pos stays top-left.
+ */
 export function spikeFacingToRadians(facing: SpikeFacing): number {
   return (facing * Math.PI) / 2;
 }
