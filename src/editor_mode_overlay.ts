@@ -86,7 +86,7 @@ export class EditorModeOverlay {
     if (engine.input.keyboard.wasPressed(Keys.Digit2)) {
       this.cycleType();
     }
-    if (isCtrlHeld(engine) && engine.input.keyboard.wasPressed(Keys.R)) {
+    if (isShiftHeld(engine) && engine.input.keyboard.wasPressed(Keys.R)) {
       this.cycleSpikeFacing();
     }
   }
@@ -132,12 +132,12 @@ export class EditorModeOverlay {
       `[0] MODE : ${this._mode.toUpperCase()}`,
       `[1] OBJECT CATEGORY : ${this._category.toUpperCase()}`,
       `[2] TYPE : ${typeLabel}`,
-      `[CTRL+R] SPIKE FACING : ${spikeFacingLabel(this._spikeFacing)}`,
+      `[SHIFT+R] SPIKE FACING : ${spikeFacingLabel(this._spikeFacing)}`,
     ].join('\n');
   }
 }
 
-export function isCtrlHeld(engine: Engine): boolean {
+export function isShiftHeld(engine: Engine): boolean {
   const kb = engine.input.keyboard;
-  return kb.isHeld(Keys.ControlLeft) || kb.isHeld(Keys.ControlRight);
+  return kb.isHeld(Keys.ShiftLeft) || kb.isHeld(Keys.ShiftRight);
 }

@@ -1,7 +1,7 @@
 import { Engine, Keys } from 'excalibur';
 import { nextSpikeFacingClockwise, SpikeFacing } from './spike_type';
 import { SelectableSolid } from './editor_select_tool';
-import { isCtrlHeld } from './editor_mode_overlay';
+import { isShiftHeld } from './editor_mode_overlay';
 
 /**
  * select-mode rotate. place-mode stamp facing is handled by EditorModeOverlay.
@@ -14,7 +14,7 @@ export class EditorRotateTool {
   ) {}
 
   handle(engine: Engine): void {
-    if (!isCtrlHeld(engine)) return;
+    if (!isShiftHeld(engine)) return;
     if (!engine.input.keyboard.wasPressed(Keys.R)) return;
 
     const selected = this.getSelected();
