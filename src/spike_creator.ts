@@ -1,6 +1,6 @@
 import { Actor, Engine, Vector, vec } from 'excalibur';
 import { Resources } from './resources';
-import { applySpriteRenderOffset, SPRITE_RENDER_OFFSET } from './sprite_render';
+import { applySpriteRenderOffset } from './sprite_render';
 import {
   SpikeType,
   SpikeFacing,
@@ -28,7 +28,6 @@ export function createSpike(
     pos: options.pos ?? vec(0, 0),
     anchor: vec(0, 0), // top left pivot for easy registration on uint8array grid
   });
-  actor.graphics.anchor = vec(0, 0);
 
   const sheet =
     type === SpikeType.Spike16x16
@@ -52,8 +51,9 @@ export function createSpike(
 }
 
 /**
- * rotate the graphic around the tile center.
- * actor.pos / actor.anchor stay top-left so SolidGrid registration does not move.
+ * rotate the graphic around its own center.
+ * do not add a half-size graphics.offset — actor.pos is already the tile top-left,
+ * and that extra (8, 8) is what parked the sprite down-right of the placement.
  */
 export function applySpikeGraphicFacing(
   actor: Actor,
@@ -64,11 +64,6 @@ export function applySpikeGraphicFacing(
   const graphic = actor.graphics.current;
   if (!graphic) return;
 
-  actor.graphics.anchor = vec(0, 0);
   graphic.origin = vec(width / 2, height / 2);
   graphic.rotation = spikeFacingToRadians(facing);
-  actor.graphics.offset = vec(
-    SPRITE_RENDER_OFFSET.x + width / 2,
-    SPRITE_RENDER_OFFSET.y + height / 2
-  );
 }
