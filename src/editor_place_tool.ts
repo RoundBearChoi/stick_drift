@@ -1,7 +1,12 @@
 import { Engine, PointerButton } from 'excalibur';
 import { GameContext } from './game_context';
 import { BrickType, DEFAULT_BRICK_TYPE } from './brick_type';
-import { SpikeType, DEFAULT_SPIKE_TYPE } from './spike_type';
+import {
+  SpikeType,
+  SpikeFacing,
+  DEFAULT_SPIKE_TYPE,
+  DEFAULT_SPIKE_FACING,
+} from './spike_type';
 import { ObjectCategory } from './editor_mode_overlay';
 import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
@@ -14,6 +19,7 @@ export class EditorPlaceTool {
   activeCategory: ObjectCategory = ObjectCategory.Bricks;
   activeBrickType: BrickType = DEFAULT_BRICK_TYPE;
   activeSpikeType: SpikeType = DEFAULT_SPIKE_TYPE;
+  activeSpikeFacing: SpikeFacing = DEFAULT_SPIKE_FACING;
 
   constructor(
     private readonly gameCtx: GameContext,
@@ -43,11 +49,11 @@ export class EditorPlaceTool {
       const type = this.activeSpikeType;
       if (!level.canPlaceSpike(x, y, type)) return;
 
-      const placed = level.addSpike(x, y, type);
+      const placed = level.addSpike(x, y, type, this.activeSpikeFacing);
       this.onPlaced({ category: ObjectCategory.Spikes, placed });
 
       console.log(
-        `placed spike ${type} id=${placed.id} at (${x}, ${y}) -- total ${level.spikes.length}`
+        `placed spike ${type} facing=${placed.facing} id=${placed.id} at (${x}, ${y}) -- total ${level.spikes.length}`
       );
       return;
     }
