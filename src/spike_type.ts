@@ -8,7 +8,7 @@ export const DEFAULT_SPIKE_TYPE = SpikeType.Spike16x16;
 
 /**
  * clockwise from default (up).
- * IMPORTANT: for now everything is a square, so facing does not change the top-left AABB.
+ * IMPORTANT: for now only existing spike is 16x16, so facing does not change the top-left AABB.
  */
 export enum SpikeFacing {
   Up = 0,

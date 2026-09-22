@@ -4,8 +4,7 @@ import { SelectableSolid } from './editor_select_tool';
 import { isShiftHeld } from './editor_mode_overlay';
 
 /**
- * select-mode rotate. place-mode stamp facing is handled by EditorModeOverlay.
- * 16x16 spikes are square — only facing changes, top-left stays put.
+ * IMPORTANT: for now 16x16 spikes are square — only facing changes, top-left stays put.
  */
 export class EditorRotateTool {
   constructor(

@@ -11,13 +11,6 @@ import {
   CELL_SPIKE_LEFT,
 } from './solid_grid';
 
-/**
- * sample the exclusive contact edges the resolvers already use.
- * if any contacted cell has the matching spike face flag, the runner dies.
- *
- * bottom / right use the first pixel the collider does NOT occupy.
- * top / left sample one pixel outside (the last pixel of the solid they are flush against).
- */
 export function checkSpikeContact(
   runnerX: number,
   runnerY: number,
@@ -80,10 +73,6 @@ function anyFlagOnVerticalEdge(
   return false;
 }
 
-/**
- * run AFTER movement resolve so the body is already clamped to the face.
- * resolvers stay solid-only.
- */
 export class RunnerSpikeContactCheck implements Tickable {
   constructor(
     private readonly runner: StickRunner,

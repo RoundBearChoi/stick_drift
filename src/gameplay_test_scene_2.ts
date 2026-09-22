@@ -152,8 +152,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     // snap camera first so we don't start with a long catch-up
     this._camera_controller.snapToTarget();
 
-    // IMPORTANT: order matters.
-    // spike contact runs after movement so the body is already clamped to the face.
+    // order matters. spike contact runs after movement.
     this._runner_controller.register();
     this._runner_ground_checker.register();
     this._wall_slide_check.register();
