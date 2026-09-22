@@ -19,6 +19,7 @@ export class RunnerMovementBufferResolve implements Tickable {
 
   fixedUpdate(_dt: number): void {
     const ctx = this.gameCtx.runner_ctx;
+    if (ctx.is_dead) return;
 
     // horizontal first
     const safeDx = resolveHorizontalCollision(

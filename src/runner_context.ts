@@ -13,6 +13,7 @@ export class RunnerContext {
   get anchor(): Vector { return vec(0.5, 1); }
 
   is_grounded = true;
+  is_dead = false;
   is_facing_right_side = true;
   wall_contact_left = false;
   wall_contact_right = false;
@@ -123,6 +124,7 @@ export class RunnerContext {
     this.wall_contact_left = false;
     this.wall_contact_right = false;
     this.is_grounded = true;
+    this.is_dead = false;
     this.is_facing_right_side = true;
   }
 }
