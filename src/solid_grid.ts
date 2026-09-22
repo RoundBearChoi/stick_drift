@@ -1,8 +1,6 @@
 import { SpikeFacing } from './spike_type';
 
 /**
- * fixed-size occupancy grid for collision detection.
- * cell size is 8px. smallest brick must be 8x8.
  * IMPORTANT: top-left origin for both world and cell coordinates. brick pivot must be top-left.
  *
  * each cell is one uint8. several flags can be on at once:
@@ -14,16 +12,12 @@ import { SpikeFacing } from './spike_type';
  */
 export const CELL_SIZE = 8;
 
-export const CELL_SOLID = 1; // 00000001
-export const CELL_SPIKE_UP = 2; // 00000010
-export const CELL_SPIKE_RIGHT = 4; // 00000100
-export const CELL_SPIKE_DOWN = 8; // 00001000
-export const CELL_SPIKE_LEFT = 16; // 00010000
+export const CELL_SOLID = 1;        // 00000001
+export const CELL_SPIKE_UP = 2;     // 00000010
+export const CELL_SPIKE_RIGHT = 4;  // 00000100
+export const CELL_SPIKE_DOWN = 8;   // 00001000
+export const CELL_SPIKE_LEFT = 16;  // 00010000
 
-/**
- * pixels of [top, bottom] that sit inside row `row`.
- * cell range is [row * CELL_SIZE, (row + 1) * CELL_SIZE).
- */
 export function verticalOverlapWithCell(top: number, bottom: number, row: number): number {
   const cellTop = row * CELL_SIZE;
   const cellBottom = cellTop + CELL_SIZE;
@@ -96,7 +90,7 @@ cell (0, 0) is the top-left of the level. Indexes increase right and down, endin
   /**
    * mark only the pointed edge of a spike.
    * the full rect should already be registered as solid.
-   * a 16x16 up-spike marks the two top 8x8 cells with CELL_SPIKE_UP.
+   * ie. 16x16 up-spike marks the two top 8x8 cells with CELL_SPIKE_UP.
    */
   registerSpikeFace(
     worldX: number,
