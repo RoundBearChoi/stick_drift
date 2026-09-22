@@ -1,11 +1,19 @@
 import { Actor, Engine, Vector, vec } from 'excalibur';
 import { Resources } from './resources';
-import { applySpriteRenderOffset } from './sprite_render';
-import { SpikeType, DEFAULT_SPIKE_TYPE } from './spike_type';
+import { applySpriteRenderOffset, SPRITE_RENDER_OFFSET } from './sprite_render';
+import {
+  SpikeType,
+  SpikeFacing,
+  DEFAULT_SPIKE_TYPE,
+  DEFAULT_SPIKE_FACING,
+  spikeDef,
+  spikeFacingToRadians,
+} from './spike_type';
 
 export interface SpikeCreateOptions {
   pos?: Vector;
   type?: SpikeType;
+  facing?: SpikeFacing;
 }
 
 export function createSpike(
@@ -13,11 +21,14 @@ export function createSpike(
   options: SpikeCreateOptions = {}
 ): Actor {
   const type = options.type ?? DEFAULT_SPIKE_TYPE;
+  const facing = options.facing ?? DEFAULT_SPIKE_FACING;
+  const { width, height } = spikeDef(type);
 
   const actor = new Actor({
     pos: options.pos ?? vec(0, 0),
     anchor: vec(0, 0), // top left pivot for easy registration on uint8array grid
   });
+  actor.graphics.anchor = vec(0, 0);
 
   const sheet =
     type === SpikeType.Spike16x16
@@ -28,11 +39,36 @@ export function createSpike(
     console.warn(`${type} spike spritesheet not loaded yet`);
   }
 
-  const spr = sheet?.getSprite(0, 0);
+  // clone so each placement can rotate without sharing graphic state
+  const spr = sheet?.getSprite(0, 0)?.clone();
   if (spr) {
     actor.graphics.use(spr);
     applySpriteRenderOffset(actor);
   }
 
+  applySpikeGraphicFacing(actor, facing, width, height);
+
   return actor;
+}
+
+/**
+ * rotate the graphic around the tile center.
+ * actor.pos / actor.anchor stay top-left so SolidGrid registration does not move.
+ */
+export function applySpikeGraphicFacing(
+  actor: Actor,
+  facing: SpikeFacing,
+  width: number,
+  height: number
+): void {
+  const graphic = actor.graphics.current;
+  if (!graphic) return;
+
+  actor.graphics.anchor = vec(0, 0);
+  graphic.origin = vec(width / 2, height / 2);
+  graphic.rotation = spikeFacingToRadians(facing);
+  actor.graphics.offset = vec(
+    SPRITE_RENDER_OFFSET.x + width / 2,
+    SPRITE_RENDER_OFFSET.y + height / 2
+  );
 }

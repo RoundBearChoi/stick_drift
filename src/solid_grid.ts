@@ -1,9 +1,24 @@
+import { SpikeFacing } from './spike_type';
+
 /**
  * fixed-size occupancy grid for collision detection.
  * cell size is 8px. smallest brick must be 8x8.
  * IMPORTANT: top-left origin for both world and cell coordinates. brick pivot must be top-left.
+ *
+ * each cell is one uint8. several flags can be on at once:
+ *   00000001 solid
+ *   00000010 spike up    (lethal if the runner hits this cell from above)
+ *   00000100 spike right (lethal if the runner hits this cell from the right)
+ *   00001000 spike down
+ *   00010000 spike left
  */
 export const CELL_SIZE = 8;
+
+export const CELL_SOLID = 1; // 00000001
+export const CELL_SPIKE_UP = 2; // 00000010
+export const CELL_SPIKE_RIGHT = 4; // 00000100
+export const CELL_SPIKE_DOWN = 8; // 00001000
+export const CELL_SPIKE_LEFT = 16; // 00010000
 
 /**
  * pixels of [top, bottom] that sit inside row `row`.
@@ -13,6 +28,19 @@ export function verticalOverlapWithCell(top: number, bottom: number, row: number
   const cellTop = row * CELL_SIZE;
   const cellBottom = cellTop + CELL_SIZE;
   return Math.min(bottom, cellBottom) - Math.max(top, cellTop);
+}
+
+export function spikeFacingFlag(facing: SpikeFacing): number {
+  switch (facing) {
+    case SpikeFacing.Up:
+      return CELL_SPIKE_UP;
+    case SpikeFacing.Right:
+      return CELL_SPIKE_RIGHT;
+    case SpikeFacing.Down:
+      return CELL_SPIKE_DOWN;
+    case SpikeFacing.Left:
+      return CELL_SPIKE_LEFT;
+  }
 }
 
 export class SolidGrid {
@@ -60,8 +88,54 @@ cell (0, 0) is the top-left of the level. Indexes increase right and down, endin
 
     for (let y = y0; y < y1; y++) {
       for (let x = x0; x < x1; x++) {
-        this.setCell(x, y, 1);
+        this.orCell(x, y, CELL_SOLID);
       }
+    }
+  }
+
+  /**
+   * mark only the pointed edge of a spike.
+   * the full rect should already be registered as solid.
+   * a 16x16 up-spike marks the two top 8x8 cells with CELL_SPIKE_UP.
+   */
+  registerSpikeFace(
+    worldX: number,
+    worldY: number,
+    width: number,
+    height: number,
+    facing: SpikeFacing
+  ): void {
+    const x0 = Math.floor(worldX / CELL_SIZE);
+    const y0 = Math.floor(worldY / CELL_SIZE);
+    const x1 = Math.ceil((worldX + width) / CELL_SIZE);
+    const y1 = Math.ceil((worldY + height) / CELL_SIZE);
+    const flag = spikeFacingFlag(facing);
+
+    if (x1 <= x0 || y1 <= y0) return;
+
+    if (facing === SpikeFacing.Up) {
+      for (let x = x0; x < x1; x++) {
+        this.orCell(x, y0, flag);
+      }
+      return;
+    }
+
+    if (facing === SpikeFacing.Down) {
+      for (let x = x0; x < x1; x++) {
+        this.orCell(x, y1 - 1, flag);
+      }
+      return;
+    }
+
+    if (facing === SpikeFacing.Left) {
+      for (let y = y0; y < y1; y++) {
+        this.orCell(x0, y, flag);
+      }
+      return;
+    }
+
+    for (let y = y0; y < y1; y++) {
+      this.orCell(x1 - 1, y, flag);
     }
   }
 
@@ -75,7 +149,7 @@ cell (0, 0) is the top-left of the level. Indexes increase right and down, endin
     ) {
       return true;
     }
-    return this._arr_level_width_height[cellY * this.widthCells + cellX] === 1;
+    return (this._arr_level_width_height[cellY * this.widthCells + cellX] & CELL_SOLID) !== 0;
   }
 
   isSolidAtWorldSpace(worldX: number, worldY: number): boolean {
@@ -84,11 +158,32 @@ cell (0, 0) is the top-left of the level. Indexes increase right and down, endin
     return this.isSolid(cellX, cellY);
   }
 
+  /**
+   * out-of-bounds is solid, but never a spike.
+   */
+  hasFlag(cellX: number, cellY: number, flag: number): boolean {
+    if (
+      cellX < 0 ||
+      cellX >= this.widthCells ||
+      cellY < 0 ||
+      cellY >= this.heightCells
+    ) {
+      return false;
+    }
+    return (this._arr_level_width_height[cellY * this.widthCells + cellX] & flag) !== 0;
+  }
+
+  hasFlagAtWorldSpace(worldX: number, worldY: number, flag: number): boolean {
+    const cellX = Math.floor(worldX / CELL_SIZE);
+    const cellY = Math.floor(worldY / CELL_SIZE);
+    return this.hasFlag(cellX, cellY, flag);
+  }
+
   clearSolidData(): void {
     this._arr_level_width_height.fill(0);
   }
 
-  private setCell(cellX: number, cellY: number, value: number): void {
+  private orCell(cellX: number, cellY: number, flag: number): void {
     if (
       cellX < 0 ||
       cellX >= this.widthCells ||
@@ -97,6 +192,7 @@ cell (0, 0) is the top-left of the level. Indexes increase right and down, endin
     ) {
       return;
     }
-    this._arr_level_width_height[cellY * this.widthCells + cellX] = value;
+    const i = cellY * this.widthCells + cellX;
+    this._arr_level_width_height[i] = this._arr_level_width_height[i] | flag;
   }
 }

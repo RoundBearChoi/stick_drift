@@ -6,7 +6,9 @@ import {
 } from './brick_type';
 import {
   SpikeType,
+  SpikeFacing,
   DEFAULT_SPIKE_TYPE,
+  DEFAULT_SPIKE_FACING,
   spikeDef,
 } from './spike_type';
 
@@ -30,6 +32,7 @@ export interface arrSpikePlacement {
   x: number;
   y: number;
   type: SpikeType;
+  facing: SpikeFacing;
 }
 
 export class LevelContext {
@@ -83,13 +86,15 @@ export class LevelContext {
   addSpike(
     x: number,
     y: number,
-    type: SpikeType = DEFAULT_SPIKE_TYPE
+    type: SpikeType = DEFAULT_SPIKE_TYPE,
+    facing: SpikeFacing = DEFAULT_SPIKE_FACING
   ): arrSpikePlacement {
     const placed: arrSpikePlacement = {
       id: this._nextId++,
       x,
       y,
       type,
+      facing,
     };
     this.spikes.push(placed);
     return placed;

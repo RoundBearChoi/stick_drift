@@ -6,6 +6,41 @@ export const SPIKE_TYPES = Object.values(SpikeType) as SpikeType[];
 
 export const DEFAULT_SPIKE_TYPE = SpikeType.Spike16x16;
 
+/**
+ * clockwise from default (up).
+ * 16x16 is square, so facing does not change the top-left AABB.
+ */
+export enum SpikeFacing {
+  Up = 0,
+  Right = 1,
+  Down = 2,
+  Left = 3,
+}
+
+export const DEFAULT_SPIKE_FACING = SpikeFacing.Up;
+
+export function nextSpikeFacingClockwise(facing: SpikeFacing): SpikeFacing {
+  return ((facing + 1) % 4) as SpikeFacing;
+}
+
+export function spikeFacingLabel(facing: SpikeFacing): string {
+  switch (facing) {
+    case SpikeFacing.Up:
+      return 'UP';
+    case SpikeFacing.Right:
+      return 'RIGHT';
+    case SpikeFacing.Down:
+      return 'DOWN';
+    case SpikeFacing.Left:
+      return 'LEFT';
+  }
+}
+
+/** 90° clockwise per facing step. graphic-only — actor pos stays top-left. */
+export function spikeFacingToRadians(facing: SpikeFacing): number {
+  return (facing * Math.PI) / 2;
+}
+
 export interface SpikeDef {
   width: number;
   height: number;
