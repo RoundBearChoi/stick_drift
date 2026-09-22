@@ -106,14 +106,14 @@ export class RunnerSpikeContactCheck implements Tickable {
       return;
     }
 
-    ctx.is_dead = true;
+    //ctx.is_dead = true;
     ctx.horizontal_move_buffer = 0;
     ctx.move_down_buffer = 0;
     ctx.current_fall_accel = 0;
     ctx.current_wall_slide_down_accel = 0;
     ctx.cancelUpwardMomentum();
 
-    console.log('runner hit a spiked face');
+    //console.log('💀 runner hit a spiked face');
   }
 
   register(): void {
