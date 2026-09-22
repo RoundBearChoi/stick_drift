@@ -16,13 +16,15 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 import { LevelEditorCamMover } from './level_editor_cam_mover';
 import { createBrick } from './brick_creator';
-import { createSpike } from './spike_creator';
+import { applySpikeGraphicFacing, createSpike } from './spike_creator';
 import { EditorMode, EditorModeOverlay, ObjectCategory } from './editor_mode_overlay';
 import { EditorPlaceTool, EditorPlacedObject } from './editor_place_tool';
 import { EditorSelectTool } from './editor_select_tool';
 import { EditorMoveTool } from './editor_move_tool';
 import { EditorDeleteTool } from './editor_delete_tool';
+import { EditorRotateTool } from './editor_rotate_tool';
 import { arrBrickPlacement, arrSpikePlacement } from './level_context';
+import { SpikeFacing, SpikeType, spikeDef } from './spike_type';
 import { assignZ } from './z_order';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
@@ -37,11 +39,12 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _selectTool?: EditorSelectTool;
   private _moveTool?: EditorMoveTool;
   private _deleteTool?: EditorDeleteTool;
+  private _rotateTool?: EditorRotateTool;
   private _brickActors = new Map<number, Actor>(); // visual brick actors are keyed by placement id
   private _spikeActors = new Map<number, Actor>(); // visual spike actors are keyed by placement id
 
   /*
-  data brick / spike — level_ctx.bricks[] / level_ctx.spikes[]. nothing more than { id, x, y, type }. no sprite no actor.
+  data brick / spike — level_ctx.bricks[] / level_ctx.spikes[]. nothing more than { id, x, y, type, facing? }. no sprite no actor.
   visual brick / spike — the Actor created by createBrick() / createSpike() and stored in the maps. excaliburjs render actors.
   */
 
@@ -132,6 +135,13 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       );
     }
 
+    if (!this._rotateTool) {
+      this._rotateTool = new EditorRotateTool(
+        () => this._selectTool!.selectedSolids(),
+        (id, facing) => this.syncSpikeActorFacing(id, facing)
+      );
+    }
+
     this.applyModeVisuals();
 
     // free camera mover (arrow keys)
@@ -162,6 +172,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._selectTool?.handle(engine);
       this._moveTool?.handle(engine);
       this._deleteTool?.handle(engine);
+      this._rotateTool?.handle(engine);
     }
   }
 
@@ -184,6 +195,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._placeTool.activeCategory = this._modeOverlay.category;
     this._placeTool.activeBrickType = this._modeOverlay.brickType;
     this._placeTool.activeSpikeType = this._modeOverlay.spikeType;
+    this._placeTool.activeSpikeFacing = this._modeOverlay.spikeFacing;
   }
 
   private applyModeVisuals(): void {
@@ -217,6 +229,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     const actor = createSpike(this.engine, {
       pos: vec(placed.x, placed.y),
       type: placed.type,
+      facing: placed.facing,
     });
     this.add(actor);
     this._spikeActors.set(placed.id, actor);
@@ -227,6 +240,15 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     if (!actor) return;
     actor.pos.x = x;
     actor.pos.y = y;
+  }
+
+  private syncSpikeActorFacing(id: number, facing: SpikeFacing): void {
+    const actor = this._spikeActors.get(id);
+    if (!actor) return;
+
+    const placed = this._game_ctx.level_ctx.spikes.find((s) => s.id === id);
+    const def = spikeDef(placed?.type ?? SpikeType.Spike16x16);
+    applySpikeGraphicFacing(actor, facing, def.width, def.height);
   }
 
   private removeSolidActors(ids: number[]): void {

@@ -15,6 +15,7 @@ import { RunnerStateSwitcher } from './runner_state_switcher';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { RunnerGroundChecker } from './runner_ground_checker';
 import { RunnerWallSlideCheck } from './runner_wall_slide_check';
+import { RunnerSpikeContactCheck } from './runner_spike_contact';
 import { createBrick } from './brick_creator';
 import { createSpike } from './spike_creator';
 import { GridSystem } from './grid_system';
@@ -35,6 +36,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _runner_move_buffer_resolve?: RunnerMovementBufferResolve;
   private _runner_ground_checker?: RunnerGroundChecker;
   private _wall_slide_check?: RunnerWallSlideCheck;
+  private _spike_contact_check?: RunnerSpikeContactCheck;
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
   private _grid?: GridSystem;
@@ -108,6 +110,12 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._solid_grid
     );
 
+    this._spike_contact_check = new RunnerSpikeContactCheck(
+      this._stick_runner,
+      this._game_ctx,
+      this._solid_grid
+    );
+
     // reset every time we enter the scene
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
 
@@ -145,11 +153,13 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._camera_controller.snapToTarget();
 
     // IMPORTANT: order matters.
+    // spike contact runs after movement so the body is already clamped to the face.
     this._runner_controller.register();
     this._runner_ground_checker.register();
     this._wall_slide_check.register();
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
+    this._spike_contact_check.register();
     this._runner_state_switcher.register();
     this._camera_controller.register();
   }
@@ -176,6 +186,9 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     }
     if (this._wall_slide_check) {
       this._wall_slide_check.unregister();
+    }
+    if (this._spike_contact_check) {
+      this._spike_contact_check.unregister();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();
@@ -209,10 +222,15 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
     for (const s of level.spikes) {
       const def = spikeDef(s.type);
-      const actor = createSpike(this.engine, { pos: vec(s.x, s.y), type: s.type });
+      const actor = createSpike(this.engine, {
+        pos: vec(s.x, s.y),
+        type: s.type,
+        facing: s.facing,
+      });
       this.add(actor);
       this._spikes.push(actor);
       this._solid_grid.registerRect(s.x, s.y, def.width, def.height);
+      this._solid_grid.registerSpikeFace(s.x, s.y, def.width, def.height, s.facing);
     }
 
     console.log(
