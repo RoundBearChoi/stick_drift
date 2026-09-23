@@ -144,10 +144,9 @@ export class EditorModeOverlay {
   }
 
   private formatText(): string {
-    const typeLabel =
-      this._category === ObjectCategory.Bricks
-        ? this._brickType
-        : this._spikeType;
+    // right now we only have bricks and spikes
+    const typeLabel = this._category === ObjectCategory.Bricks ?
+      this._brickType : this._spikeType;
 
     return [
       `[0] MODE : ${this._mode.toUpperCase()}`,
