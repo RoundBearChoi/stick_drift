@@ -100,10 +100,9 @@ export class EditorModeOverlay {
   }
 
   private toggleMode(): void {
-    this._mode =
-      this._mode === EditorMode.PlaceObjects
-        ? EditorMode.SelectObjects
-        : EditorMode.PlaceObjects;
+    // right now we only have 2 modes
+    this._mode = this._mode === EditorMode.PlaceObjects ?
+      EditorMode.SelectObjects : EditorMode.PlaceObjects;
     this.refresh();
   }
 
