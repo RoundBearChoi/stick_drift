@@ -112,8 +112,8 @@ export class EditorModeOverlay {
     let index = OBJECT_CATEGORIES.indexOf(this._category) + 1;
 
     /*
-    indexOf returns -1 when value is not in the array.
-   indexOf + 1 means index will always be 0 or more.
+    indexOf returns -1 if value is not in the array.
+    so after we do indexOf + 1... index will always be 0 or more.
     */
 
     if (index >= OBJECT_CATEGORIES.length) {
