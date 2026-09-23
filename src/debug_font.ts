@@ -24,7 +24,7 @@ export const debugFontSource = new FontSource(
 // 5 → 10 → 15 → 20, etc.
 export function createCenterFont(): Font {
   return debugFontSource.toFont({
-    size: 5,
+    size: 10,
     filtering: ImageFiltering.Pixel,
     textAlign: TextAlign.Center,
     baseAlign: BaseAlign.Middle,
