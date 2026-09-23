@@ -13,10 +13,10 @@ export class EditorRotateTool {
     if (!isShiftHeld(engine)) return;
     if (!engine.input.keyboard.wasPressed(Keys.R)) return;
 
-    const selected = this.getSelected();
+    const arrSelected = this.getSelected();
     let rotated = 0;
 
-    for (const s of selected) {
+    for (const s of arrSelected) {
       if (s.kind !== 'spike') continue;
       s.item.facing = nextSpikeFacingClockwise(s.item.facing);
       this.onRotated(s.item.id, s.item.facing);
