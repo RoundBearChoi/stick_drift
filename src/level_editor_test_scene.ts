@@ -210,10 +210,10 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
   private spawnPlacedObject(obj: EditorPlacedObject): void {
     if (obj.category === ObjectCategory.Spikes) {
-      this.spawnSpikeActor(obj.placed);
+      this.spawnSpikeActor(obj.array);
       return;
     }
-    this.spawnBrickActor(obj.placed);
+    this.spawnBrickActor(obj.array);
   }
 
   private spawnBrickActor(placed: arrBrickPlacement): void {

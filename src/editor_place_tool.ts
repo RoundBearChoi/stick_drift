@@ -11,9 +11,13 @@ import { ObjectCategory } from './editor_mode_overlay';
 import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 
+/**
+ * TypeScript discriminated union (also called a tagged union)
+ * you can't put spike data on a brick object, or brick data on a spike object
+ */
 export type EditorPlacedObject =
-  | { category: ObjectCategory.Bricks; placed: arrBrickPlacement }
-  | { category: ObjectCategory.Spikes; placed: arrSpikePlacement };
+  | { category: ObjectCategory.Bricks; array: arrBrickPlacement }
+  | { category: ObjectCategory.Spikes; array: arrSpikePlacement };
 
 export class EditorPlaceTool {
   activeCategory: ObjectCategory = ObjectCategory.Bricks;
@@ -50,7 +54,7 @@ export class EditorPlaceTool {
       if (!level.canPlaceSpike(x, y, type)) return;
 
       const placed = level.addSpike(x, y, type, this.activeSpikeFacing);
-      this.onPlaced({ category: ObjectCategory.Spikes, placed });
+      this.onPlaced({ category: ObjectCategory.Spikes, array: placed });
 
       console.log(
         `placed spike ${type} facing=${placed.facing} id=${placed.id} at (${x}, ${y}) -- total ${level.spikes.length}`
@@ -62,7 +66,7 @@ export class EditorPlaceTool {
     if (!level.canPlaceBrick(x, y, type)) return;
 
     const placed = level.addBrick(x, y, type);
-    this.onPlaced({ category: ObjectCategory.Bricks, placed });
+    this.onPlaced({ category: ObjectCategory.Bricks, array: placed });
 
     console.log(
       `placed ${type} id=${placed.id} at (${x}, ${y}) -- total ${level.bricks.length}`
