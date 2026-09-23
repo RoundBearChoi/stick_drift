@@ -30,11 +30,19 @@ const LINE_GAP = 3;
 const LINE_COUNT = 4;
 const PAD = 8;
 
+/*
+declare class and its starting state.
+EditorModeOverlay has fields (its own variables).
+Label, EditorMode, ObjectCategory, BrickType, and so on are types. They describe what those fields are allowed to hold. They are not the variables themselves.
+ie. _mode must always be an EditorMode. it starts as PlaceObjects.
+ie. _category must always be an ObjectCategory. it starts as Bricks.
+ie. label may be a Label or undefined. both are ok.
+*/
 export class EditorModeOverlay {
-  private label?: Label;
+  private label?: Label; // ? marks label as optional. field may be a Label or undefined
   private _mode: EditorMode = EditorMode.PlaceObjects;
   private _category: ObjectCategory = ObjectCategory.Bricks;
-  private _brickType: BrickType = DEFAULT_BRICK_TYPE;
+  private _brickType: BrickType = DEFAULT_BRICK_TYPE; // same as _brickType: BrickType = BrickType.Brick16x16 but we wanna be consistent with DEFAULT_BRICK_TYPE across all code
   private _spikeType: SpikeType = DEFAULT_SPIKE_TYPE;
   private _spikeFacing: SpikeFacing = DEFAULT_SPIKE_FACING;
 
