@@ -25,9 +25,10 @@ export enum ObjectCategory {
 
 export const OBJECT_CATEGORIES = Object.values(ObjectCategory) as ObjectCategory[];
 
+// 4 lines of 5px + 3 gaps of 3px, 8px bottom pad for label
+const LINE_COUNT = 4;
 const LINE_SIZE = 5;
 const LINE_GAP = 3;
-const LINE_COUNT = 4;
 const PAD = 8;
 
 /*
@@ -68,7 +69,6 @@ export class EditorModeOverlay {
 
   attach(scene: Scene): void {
     if (!this.label) {
-      // 4 lines of 5px + 3 gaps of 3px, then 8px bottom pad
       const blockHeight = LINE_COUNT * LINE_SIZE + (LINE_COUNT - 1) * LINE_GAP;
       this.label = new Label({
         text: this.formatText(),
