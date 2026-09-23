@@ -100,8 +100,21 @@ export class EditorModeOverlay {
   }
 
   private cycleCategory(): void {
-    const i = OBJECT_CATEGORIES.indexOf(this._category);
-    this._category = OBJECT_CATEGORIES[(i + 1) % OBJECT_CATEGORIES.length];
+    if (OBJECT_CATEGORIES.length === 0) return; // failsafe incase OBJECT_CATEGORIES is empty
+
+    let index = OBJECT_CATEGORIES.indexOf(this._category) + 1;
+
+    /*
+    indexOf returns -1 when value is not in the array.
+   indexOf + 1 means index will always be 0 or more.
+    */
+
+    if (index >= OBJECT_CATEGORIES.length) {
+      index = 0;
+    }
+
+    this._category = OBJECT_CATEGORIES[index];
+
     this.refresh();
   }
 
