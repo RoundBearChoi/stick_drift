@@ -25,8 +25,18 @@ export class EditorPlaceTool {
   activeSpikeType: SpikeType = DEFAULT_SPIKE_TYPE;
   activeSpikeFacing: SpikeFacing = DEFAULT_SPIKE_FACING;
 
+  /**
+   * body is empty because private / readonly already means
+    1. declare a class field
+    2. assign the argument to that field
+   */
   constructor(
-    private readonly gameCtx: GameContext,
+    private readonly gameCtx: GameContext, // readonly locks the pointer. value can still change
+    /*
+    must pass a function that returns a NearestMouseToGrid object, or undefined (return nothing).
+      passing an object: store this instance.
+      passing a function: store this function and we can call it later. we don't care who owns that function.
+    */
     private readonly getCursor: () => NearestMouseToGrid | undefined,
     private readonly onPlaced: (placed: EditorPlacedObject) => void
   ) {}

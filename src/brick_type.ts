@@ -4,8 +4,6 @@ export enum BrickType {
 }
 
 export const BRICK_TYPES = Object.values(BrickType) as BrickType[];
-
-/** editor + gameplay_test_scene_2 keep planting this until an 8x8 palette exists */
 export const DEFAULT_BRICK_TYPE = BrickType.Brick16x16;
 
 export interface BrickDef {
