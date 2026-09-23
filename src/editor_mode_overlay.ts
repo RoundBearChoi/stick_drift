@@ -1,5 +1,5 @@
 import { Scene, Label, vec, CoordPlane, TransformComponent, Engine, Keys } from 'excalibur';
-import { createTopLeftFont } from './debug_font';
+import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { NATIVE_RESOLUTION } from './game_context';
 import { BrickType, DEFAULT_BRICK_TYPE, nextBrickType } from './brick_type';
@@ -73,7 +73,7 @@ export class EditorModeOverlay {
       this.label = new Label({
         text: this.formatText(),
         pos: vec(PAD, NATIVE_RESOLUTION.height - PAD - blockHeight),
-        font: createTopLeftFont(),
+        font: createDebugFont(),
       });
       this.label.color = DraculaColorScheme.white;
       this.label.get(TransformComponent)!.coordPlane = CoordPlane.Screen;

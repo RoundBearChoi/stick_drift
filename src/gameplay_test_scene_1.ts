@@ -21,7 +21,7 @@ import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
 import { SolidGridSystem, CELL_SIZE } from './solid_grid_system';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
-import { createTopLeftFont } from './debug_font';
+import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { BrickType, brickDef } from './brick_type';
 
@@ -53,7 +53,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._titleLabel = new Label({
         text: 'gameplay_test_scene_1',
         pos: vec(8, 8),
-        font: createTopLeftFont(),
+        font: createDebugFont(),
       });
       this._titleLabel.color = DraculaColorScheme.cyan;
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;

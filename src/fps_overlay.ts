@@ -1,6 +1,6 @@
 import { Scene, Label, vec, CoordPlane, TransformComponent } from 'excalibur';
 import { FpsDebug } from './fps_debug';
-import { createTopLeftFont } from './debug_font';
+import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { assignZ } from './z_order';
 
@@ -17,7 +17,7 @@ export class FpsOverlay {
       this.label = new Label({
         text: 'RENDER FPS: --  FIXED UPDATE FPS: --',
         pos: vec(8, 8),
-        font: createTopLeftFont(),
+        font: createDebugFont(),
       });
       this.label.color = DraculaColorScheme.white;
       this.label.get(TransformComponent)!.coordPlane = CoordPlane.Screen;

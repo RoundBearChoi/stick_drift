@@ -22,7 +22,7 @@ export const debugFontSource = new FontSource(
 
 // designed size or integer multiple of 5
 // 5 → 10 → 15 → 20, etc.
-export function createTopLeftFont(): Font {
+export function createDebugFont(): Font {
   return debugFontSource.toFont({
     size: 5,
     filtering: ImageFiltering.Pixel,

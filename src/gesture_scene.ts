@@ -8,7 +8,7 @@ import {
   TransformComponent,
 } from 'excalibur';
 import { GameContext, NATIVE_RESOLUTION } from './game_context';
-import { createTopLeftFont } from './debug_font';
+import { createDebugFont } from './debug_font';
 
 /**
  * "press any key"
@@ -40,7 +40,7 @@ export class GestureScene extends Scene<GameContext> {
       this.press_any_key_label = new Label({
         text: PRESS_ANY_KEY,
         pos: vec(TEXT_X, TEXT_Y),
-        font: createTopLeftFont(),
+        font: createDebugFont(),
       });
 
       this.press_any_key_label.color = this.ctx.dracula_colors.white;

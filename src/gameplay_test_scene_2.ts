@@ -25,7 +25,7 @@ import { SolidGridSystem } from './solid_grid_system';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { brickDef } from './brick_type';
 import { spikeDef } from './spike_type';
-import { createTopLeftFont } from './debug_font';
+import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 
 export class GameplayTestScene2 extends Scene<GameContext> {
@@ -57,7 +57,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._titleLabel = new Label({
         text: 'gameplay_test_scene_2',
         pos: vec(8, 8),
-        font: createTopLeftFont(),
+        font: createDebugFont(),
       });
       this._titleLabel.color = DraculaColorScheme.cyan;
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;

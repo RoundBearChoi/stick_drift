@@ -11,7 +11,7 @@ import {
 import { GameContext } from './game_context';
 import { GridSystem } from './grid_system';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
-import { createTopLeftFont } from './debug_font';
+import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 import { LevelEditorCamMover } from './level_editor_cam_mover';
@@ -63,7 +63,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._titleLabel = new Label({
         text: 'TEST LEVEL EDITOR',
         pos: vec(8, 8 + 16 + 4),
-        font: createTopLeftFont(),
+        font: createDebugFont(),
       });
       this._titleLabel.color = DraculaColorScheme.cyan;
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
