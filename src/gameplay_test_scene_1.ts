@@ -19,7 +19,7 @@ import { createBrick } from './brick_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
-import { SolidGrid, CELL_SIZE } from './solid_grid';
+import { SolidGridSystem, CELL_SIZE } from './solid_grid_system';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { createTopLeftFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
@@ -39,7 +39,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks_16x16?: Actor[]; // keep reference to the actors
   private _bricks_8x8?: Actor[];
-  private _solid_grid?: SolidGrid;
+  private _solid_grid?: SolidGridSystem;
   private _titleLabel?: Label;
 
   onInitialize(_engine: Engine): void {}
@@ -62,7 +62,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
     // solid grid — create once using current game_ctx dimensions
     if (!this._solid_grid) {
-      this._solid_grid = new SolidGrid(
+      this._solid_grid = new SolidGridSystem(
         this._game_ctx.level_width_cells,
         this._game_ctx.level_height_cells
       );
@@ -286,7 +286,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   }
 
   /** exposed for future collision resolve step */
-  get solidGrid(): SolidGrid {
+  get solidGrid(): SolidGridSystem {
     if (!this._solid_grid) {
       throw new Error('SolidGrid not created yet. Activate the scene first.');
     }

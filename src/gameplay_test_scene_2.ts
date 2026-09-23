@@ -21,7 +21,7 @@ import { createSpike } from './spike_creator';
 import { GridSystem } from './grid_system';
 import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
-import { SolidGrid } from './solid_grid';
+import { SolidGridSystem } from './solid_grid_system';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { brickDef } from './brick_type';
 import { spikeDef } from './spike_type';
@@ -43,7 +43,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks: Actor[] = [];
   private _spikes: Actor[] = [];
-  private _solid_grid?: SolidGrid;
+  private _solid_grid_system?: SolidGridSystem;
   private _titleLabel?: Label;
 
   onInitialize(_engine: Engine): void {}
@@ -67,7 +67,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     const level = this._game_ctx.level_ctx;
 
     // solid grid — always rebuild from current level dimensions + bricks + spikes
-    this._solid_grid = new SolidGrid(level.width_cells, level.height_cells);
+    this._solid_grid_system = new SolidGridSystem(level.width_cells, level.height_cells);
 
     // stick runner
     if (!this._stick_runner) {
@@ -95,25 +95,25 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._runner_move_buffer_resolve = new RunnerMovementBufferResolve(
       this._stick_runner,
       this._game_ctx,
-      this._solid_grid
+      this._solid_grid_system
     );
 
     this._runner_ground_checker = new RunnerGroundChecker(
       this._stick_runner,
       this._game_ctx,
-      this._solid_grid
+      this._solid_grid_system
     );
 
     this._wall_slide_check = new RunnerWallSlideCheck(
       this._stick_runner,
       this._game_ctx,
-      this._solid_grid
+      this._solid_grid_system
     );
 
     this._spike_contact_check = new RunnerSpikeContactCheck(
       this._stick_runner,
       this._game_ctx,
-      this._solid_grid
+      this._solid_grid_system
     );
 
     // reset every time we enter the scene
@@ -207,29 +207,29 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._spikes = [];
 
     const level = this._game_ctx.level_ctx;
-    if (!this._solid_grid) return;
+    if (!this._solid_grid_system) return;
 
-    this._solid_grid.clearSolidData();
+    this._solid_grid_system.clearSolidData();
 
     for (const b of level.bricks) {
       const def = brickDef(b.type);
       const actor = createBrick(this.engine, { pos: vec(b.x, b.y), type: b.type });
       this.add(actor);
       this._bricks.push(actor);
-      this._solid_grid.registerRect(b.x, b.y, def.width, def.height);
+      this._solid_grid_system.registerRect(b.x, b.y, def.width, def.height);
     }
 
     for (const s of level.spikes) {
       const def = spikeDef(s.type);
       const actor = createSpike(this.engine, {
-        pos: vec(s.x, s.y),
-        type: s.type,
-        facing: s.facing,
+        spike_pos: vec(s.x, s.y),
+        spike_type: s.type,
+        spike_facing: s.facing,
       });
       this.add(actor);
       this._spikes.push(actor);
-      this._solid_grid.registerRect(s.x, s.y, def.width, def.height);
-      this._solid_grid.registerSpikeFace(s.x, s.y, def.width, def.height, s.facing);
+      this._solid_grid_system.registerRect(s.x, s.y, def.width, def.height);
+      this._solid_grid_system.registerSpikeFace(s.x, s.y, def.width, def.height, s.facing);
     }
 
     console.log(
@@ -237,10 +237,10 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     );
   }
 
-  get solidGrid(): SolidGrid {
-    if (!this._solid_grid) {
+  get solidGrid(): SolidGridSystem {
+    if (!this._solid_grid_system) {
       throw new Error('SolidGrid not created yet. Activate the scene first.');
     }
-    return this._solid_grid;
+    return this._solid_grid_system;
   }
 }

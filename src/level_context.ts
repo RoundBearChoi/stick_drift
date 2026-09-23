@@ -1,4 +1,4 @@
-import { CELL_SIZE } from './solid_grid';
+import { CELL_SIZE } from './solid_grid_system';
 import {
   BrickType,
   DEFAULT_BRICK_TYPE,

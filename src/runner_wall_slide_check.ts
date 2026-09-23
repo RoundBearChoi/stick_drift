@@ -3,10 +3,10 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerContext } from './runner_context';
 import {
-  SolidGrid,
+  SolidGridSystem,
   CELL_SIZE,
   verticalOverlapWithCell,
-} from './solid_grid';
+} from './solid_grid_system';
 import { InputAction, InputInterpreter } from './input_interpreter';
 
 export const WALL_SLIDE_MIN_OVERLAP = 25;
@@ -15,7 +15,7 @@ function solidOverlapInColumn(
   checkX: number,
   top: number,
   bottom: number,
-  solidGrid: SolidGrid
+  solidGrid: SolidGridSystem
 ): number {
   const col = Math.floor(checkX / CELL_SIZE);
   const rowStart = Math.floor(top / CELL_SIZE);
@@ -33,7 +33,7 @@ export function checkWallSlideContact(
   runnerX: number,
   runnerY: number,
   runnerCtx: RunnerContext,
-  solidGrid: SolidGrid
+  solidGrid: SolidGridSystem
 ): { left: boolean; right: boolean } {
   const halfW = runnerCtx.collider_width / 2;
   const left = runnerX - halfW;
@@ -86,7 +86,7 @@ export class RunnerWallSlideCheck implements Tickable {
   constructor(
     private readonly runner: StickRunner,
     private readonly gameCtx: GameContext,
-    private readonly solidGrid: SolidGrid
+    private readonly solidGrid: SolidGridSystem
   ) {}
 
   fixedUpdate(_dt: number): void {

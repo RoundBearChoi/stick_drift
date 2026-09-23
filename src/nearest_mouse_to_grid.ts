@@ -3,7 +3,7 @@ import {
   Engine,
   vec,
 } from 'excalibur';
-import { CELL_SIZE } from './solid_grid';
+import { CELL_SIZE } from './solid_grid_system';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { getEditorWorldPos } from './editor_world_pos';
 

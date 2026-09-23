@@ -1,5 +1,5 @@
 import { Engine, Keys } from 'excalibur';
-import { CELL_SIZE } from './solid_grid';
+import { CELL_SIZE } from './solid_grid_system';
 import { GameContext } from './game_context';
 import { SelectableSolid } from './editor_select_tool';
 

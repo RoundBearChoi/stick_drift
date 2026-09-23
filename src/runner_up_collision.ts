@@ -1,4 +1,4 @@
-import { CELL_SIZE, SolidGrid } from './solid_grid';
+import { CELL_SIZE, SolidGridSystem } from './solid_grid_system';
 import { RunnerContext } from './runner_context';
 
 /**
@@ -8,7 +8,7 @@ export function resolveUpCollision(
   runnerX: number,
   runnerY: number,
   runnerCtx: RunnerContext,
-  solidGrid: SolidGrid
+  solidGrid: SolidGridSystem
 ): number {
   const up = runnerCtx.move_up_buffer;
 

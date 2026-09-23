@@ -1,7 +1,7 @@
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
-import { SolidGrid } from './solid_grid';
+import { SolidGridSystem } from './solid_grid_system';
 import { resolveHorizontalCollision } from './runner_horizontal_collision';
 import { resolveDownCollision } from './runner_down_collision';
 import { resolveUpCollision } from './runner_up_collision';
@@ -14,7 +14,7 @@ export class RunnerMovementBufferResolve implements Tickable {
   constructor(
     private readonly runner: StickRunner,
     private readonly gameCtx: GameContext,
-    private readonly solidGrid: SolidGrid
+    private readonly solidGrid: SolidGridSystem
   ) {}
 
   fixedUpdate(_dt: number): void {

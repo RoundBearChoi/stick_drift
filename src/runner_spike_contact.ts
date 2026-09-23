@@ -3,19 +3,19 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerContext } from './runner_context';
 import {
-  SolidGrid,
+  SolidGridSystem,
   CELL_SIZE,
   CELL_SPIKE_UP,
   CELL_SPIKE_RIGHT,
   CELL_SPIKE_DOWN,
   CELL_SPIKE_LEFT,
-} from './solid_grid';
+} from './solid_grid_system';
 
 export function checkSpikeContact(
   runnerX: number,
   runnerY: number,
   runnerCtx: RunnerContext,
-  solidGrid: SolidGrid
+  solidGridSystem: SolidGridSystem
 ): boolean {
   const halfW = runnerCtx.collider_width / 2;
   const left = runnerX - halfW;
@@ -23,16 +23,16 @@ export function checkSpikeContact(
   const top = runnerY - runnerCtx.collider_height;
   const bottom = runnerY;
 
-  if (anyFlagOnHorizontalEdge(left, right, bottom, CELL_SPIKE_UP, solidGrid)) {
+  if (anyFlagOnHorizontalEdge(left, right, bottom, CELL_SPIKE_UP, solidGridSystem)) {
     return true;
   }
-  if (anyFlagOnHorizontalEdge(left, right, top - 1, CELL_SPIKE_DOWN, solidGrid)) {
+  if (anyFlagOnHorizontalEdge(left, right, top - 1, CELL_SPIKE_DOWN, solidGridSystem)) {
     return true;
   }
-  if (anyFlagOnVerticalEdge(top, bottom, right, CELL_SPIKE_RIGHT, solidGrid)) {
+  if (anyFlagOnVerticalEdge(top, bottom, right, CELL_SPIKE_RIGHT, solidGridSystem)) {
     return true;
   }
-  if (anyFlagOnVerticalEdge(top, bottom, left - 1, CELL_SPIKE_LEFT, solidGrid)) {
+  if (anyFlagOnVerticalEdge(top, bottom, left - 1, CELL_SPIKE_LEFT, solidGridSystem)) {
     return true;
   }
 
@@ -44,7 +44,7 @@ function anyFlagOnHorizontalEdge(
   right: number,
   worldY: number,
   flag: number,
-  solidGrid: SolidGrid
+  solidGrid: SolidGridSystem
 ): boolean {
   const row = Math.floor(worldY / CELL_SIZE);
   const colStart = Math.floor(left / CELL_SIZE);
@@ -61,7 +61,7 @@ function anyFlagOnVerticalEdge(
   bottom: number,
   worldX: number,
   flag: number,
-  solidGrid: SolidGrid
+  solidGrid: SolidGridSystem
 ): boolean {
   const col = Math.floor(worldX / CELL_SIZE);
   const rowStart = Math.floor(top / CELL_SIZE);
@@ -77,7 +77,7 @@ export class RunnerSpikeContactCheck implements Tickable {
   constructor(
     private readonly runner: StickRunner,
     private readonly gameCtx: GameContext,
-    private readonly solidGrid: SolidGrid
+    private readonly solidGrid: SolidGridSystem
   ) {}
 
   fixedUpdate(_dt: number): void {
@@ -95,7 +95,7 @@ export class RunnerSpikeContactCheck implements Tickable {
       return;
     }
 
-    //ctx.is_dead = true;
+    //ctx.is_dead = true; // not dealing with runner death yet...
     ctx.horizontal_move_buffer = 0;
     ctx.move_down_buffer = 0;
     ctx.current_fall_accel = 0;

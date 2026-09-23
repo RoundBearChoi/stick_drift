@@ -2,7 +2,7 @@ import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { RunnerContext } from './runner_context';
-import { SolidGrid, CELL_SIZE } from './solid_grid';
+import { SolidGridSystem, CELL_SIZE } from './solid_grid_system';
 
 /**
  * this script's sole responsibility is to check if runner is grounded.
@@ -12,7 +12,7 @@ export function checkIsGrounded(
   runnerX: number,
   runnerY: number,
   runnerCtx: RunnerContext,
-  solidGrid: SolidGrid
+  solidGrid: SolidGridSystem
 ): boolean {
   const halfW = runnerCtx.collider_width / 2;
   const left = runnerX - halfW;
@@ -39,7 +39,7 @@ export class RunnerGroundChecker implements Tickable {
   constructor(
     private readonly runner: StickRunner,
     private readonly gameCtx: GameContext,
-    private readonly solidGrid: SolidGrid
+    private readonly solidGrid: SolidGridSystem
   ) {}
 
   fixedUpdate(_dt: number): void {

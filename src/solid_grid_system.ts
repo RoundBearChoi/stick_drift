@@ -37,7 +37,7 @@ export function spikeFacingFlag(facing: SpikeFacing): number {
   }
 }
 
-export class SolidGrid {
+export class SolidGridSystem {
   readonly widthCells: number;
   readonly heightCells: number;
 

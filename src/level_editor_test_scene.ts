@@ -227,9 +227,9 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
   private spawnSpikeActor(placed: arrSpikePlacement): void {
     const actor = createSpike(this.engine, {
-      pos: vec(placed.x, placed.y),
-      type: placed.type,
-      facing: placed.facing,
+      spike_pos: vec(placed.x, placed.y),
+      spike_type: placed.type,
+      spike_facing: placed.facing,
     });
     this.add(actor);
     this._spikeActors.set(placed.id, actor);
