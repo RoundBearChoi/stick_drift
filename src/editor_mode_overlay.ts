@@ -157,6 +157,7 @@ export class EditorModeOverlay {
   }
 }
 
+//probably not a good place but it'll do for now...
 export function isShiftHeld(engine: Engine): boolean {
   const kb = engine.input.keyboard;
   return kb.isHeld(Keys.ShiftLeft) || kb.isHeld(Keys.ShiftRight);
