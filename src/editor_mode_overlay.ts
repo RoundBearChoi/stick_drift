@@ -127,6 +127,7 @@ export class EditorModeOverlay {
 
   private cycleType(): void {
     if (this._category !== ObjectCategory.Bricks) return;
+
     this._brickType = nextBrickType(this._brickType);
     this.refresh();
   }

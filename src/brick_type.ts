@@ -24,5 +24,5 @@ export function brickDef(type: BrickType): BrickDef {
 
 export function nextBrickType(current: BrickType): BrickType {
   const i = BRICK_TYPES.indexOf(current);
-  return BRICK_TYPES[(i + 1) % BRICK_TYPES.length];
+  return BRICK_TYPES[(i + 1) % BRICK_TYPES.length]; // classic cycling code
 }
