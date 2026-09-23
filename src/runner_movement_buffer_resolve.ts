@@ -59,7 +59,7 @@ export class RunnerMovementBufferResolve implements Tickable {
       }
     }
 
-    // any ascent cancels fall / wall-slide-down energy
+    // ascent cancels downward energy
     if (
       ctx.current_air_up_vector > 0 ||
       ctx.current_wall_slide_up_vector > 0 ||
