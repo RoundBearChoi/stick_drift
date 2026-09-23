@@ -5,7 +5,6 @@ import { GameplayTestScene1 } from './gameplay_test_scene_1';
 import { GameplayTestScene2 } from './gameplay_test_scene_2';
 import { LevelEditorTestScene } from './level_editor_test_scene';
 import { TestScene1 } from './test_scene_1';
-import { TestScene2 } from './test_scene_2';
 import { GameContext, NATIVE_RESOLUTION } from './game_context';
 import { setupSceneCycle } from './scene_cycle';
 import { ResolutionScale } from './resolution_scale';
@@ -40,7 +39,6 @@ engine.add('gameplay_test_scene_1', new GameplayTestScene1());
 engine.add('gameplay_test_scene_2', new GameplayTestScene2());
 engine.add('level_editor_test_scene', new LevelEditorTestScene());
 engine.add('test_scene_1', new TestScene1());
-engine.add('test_scene_2', new TestScene2());
 
 // start and pass game context into scene
 engine.start(loader).then(() => {

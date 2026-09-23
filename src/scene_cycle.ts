@@ -4,7 +4,6 @@ import { GameplayTestScene1 } from './gameplay_test_scene_1';
 import { GameplayTestScene2 } from './gameplay_test_scene_2';
 import { LevelEditorTestScene } from './level_editor_test_scene';
 import { TestScene1 } from './test_scene_1';
-import { TestScene2 } from './test_scene_2';
 
 //--------------------
 // temporary scene cycling (F2 = previous, F4 = next)
@@ -16,7 +15,6 @@ const SCENE_CTORS = [
   GameplayTestScene2,
   LevelEditorTestScene,
   TestScene1,
-  TestScene2,
 ] as const;
 
 const SCENE_KEYS = [
@@ -24,7 +22,6 @@ const SCENE_KEYS = [
   'gameplay_test_scene_2',
   'level_editor_test_scene',
   'test_scene_1',
-  'test_scene_2',
 ] as const;
 
 type SceneCtor = (typeof SCENE_CTORS)[number];

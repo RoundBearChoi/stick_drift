@@ -22,15 +22,6 @@ export const debugFontSource = new FontSource(
 
 // designed size or integer multiple of 5
 // 5 → 10 → 15 → 20, etc.
-export function createCenterFont(): Font {
-  return debugFontSource.toFont({
-    size: 10,
-    filtering: ImageFiltering.Pixel,
-    textAlign: TextAlign.Center,
-    baseAlign: BaseAlign.Middle,
-  });
-}
-
 export function createTopLeftFont(): Font {
   return debugFontSource.toFont({
     size: 5,

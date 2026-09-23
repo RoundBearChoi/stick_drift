@@ -54,7 +54,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._game_ctx = context.data!;
     console.log('onActivate level_editor_test_scene');
 
-    // shared debug overlays (same pattern as test_scene_1 / test_scene_2)
+    // shared debug overlays (same pattern as test_scene_1)
     this._game_ctx.fps_overlay.attach(this);
     this._game_ctx.screen_resolution_debug.attachToScene(this);
 
