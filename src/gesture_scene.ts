@@ -4,14 +4,25 @@ import {
   SceneActivationContext,
   Label,
   vec,
+  CoordPlane,
+  TransformComponent,
 } from 'excalibur';
-import { GameContext } from './game_context';
-import { createCenterFont } from './debug_font';
+import { GameContext, NATIVE_RESOLUTION } from './game_context';
+import { createTopLeftFont } from './debug_font';
 
 /**
  * "press any key"
  * unlock WebAudio on first user gesture
  */
+const PRESS_ANY_KEY = 'press any key';
+
+// QuinqueFive at size 5: 5px ink + 1px gap per cell.
+const GLYPH_CELL = 6;
+const FONT_SIZE = 5;
+const TEXT_W = PRESS_ANY_KEY.length * GLYPH_CELL; // 78
+const TEXT_X = (NATIVE_RESOLUTION.width - TEXT_W) / 2; // 281
+const TEXT_Y = Math.round((NATIVE_RESOLUTION.height - FONT_SIZE) / 2); // 178
+
 export class GestureScene extends Scene<GameContext> {
   private ctx!: GameContext;
   private press_any_key_label?: Label;
@@ -27,12 +38,13 @@ export class GestureScene extends Scene<GameContext> {
 
     if (!this.press_any_key_label) {
       this.press_any_key_label = new Label({
-        text: 'press any key',
-        pos: vec(this.engine.halfDrawWidth, this.engine.halfDrawHeight),
-        font: createCenterFont(),
+        text: PRESS_ANY_KEY,
+        pos: vec(TEXT_X, TEXT_Y),
+        font: createTopLeftFont(),
       });
 
       this.press_any_key_label.color = this.ctx.dracula_colors.white;
+      this.press_any_key_label.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
       this.add(this.press_any_key_label);
     }
 
