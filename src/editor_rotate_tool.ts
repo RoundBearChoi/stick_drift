@@ -3,9 +3,6 @@ import { nextSpikeFacingClockwise, SpikeFacing } from './spike_type';
 import { SelectableSolid } from './editor_select_tool';
 import { isShiftHeld } from './editor_mode_overlay';
 
-/**
- * IMPORTANT: for now 16x16 spikes are square — only facing changes, top-left stays put.
- */
 export class EditorRotateTool {
   constructor(
     private readonly getSelected: () => SelectableSolid[],
