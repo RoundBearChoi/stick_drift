@@ -9,8 +9,6 @@ import {
 } from './solid_grid_system';
 import { InputAction, InputInterpreter } from './input_interpreter';
 
-export const WALL_SLIDE_MIN_OVERLAP = 25;
-
 function solidOverlapInColumn(
   checkX: number,
   top: number,
@@ -46,8 +44,8 @@ export function checkWallSlideContact(
   const rightOverlap = solidOverlapInColumn(right, top, bottom, solidGrid);
 
   return {
-    left: leftOverlap >= WALL_SLIDE_MIN_OVERLAP,
-    right: rightOverlap >= WALL_SLIDE_MIN_OVERLAP,
+    left: leftOverlap >= runnerCtx.wall_slide_min_overlap,
+    right: rightOverlap >= runnerCtx.wall_slide_min_overlap,
   };
 }
 

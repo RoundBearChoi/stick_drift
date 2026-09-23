@@ -20,6 +20,7 @@ export class RunnerContext {
 
   get collider_width() { return 20; }
   get collider_height() { return 30; }
+  get wall_slide_min_overlap() { return 1; } // pixels of vertical solid overlap required to count as wall contact
 
   // live toggle visual debug. not cleared by reset()
   show_collider_debug = true;
