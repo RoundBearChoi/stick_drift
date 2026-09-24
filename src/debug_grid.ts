@@ -9,7 +9,7 @@ import {
  * only renders lines that intersect the current camera viewport.
  * not a Tickable — pure rendering.
  */
-export class GridSystem extends Actor {
+export class GridDebug extends Actor {
   private cellSize: number;
   private lineColor = Color.fromRGB(140, 140, 160, 0.15);
   private lineThickness = 1;
@@ -17,7 +17,7 @@ export class GridSystem extends Actor {
   constructor(cellSize = 8) {
     super({
       name: 'GridSystem',
-      //z: 1000, // we could use z, but we're already adding grid actor after the runner, so it should be fine
+      //z: 500, // we could use z, but we're already adding grid actor after the runner, so it should be fine for now
     });
 
     this.cellSize = cellSize;

@@ -16,7 +16,7 @@ import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { RunnerGroundChecker } from './runner_ground_checker';
 import { RunnerWallSlideCheck } from './runner_wall_slide_check';
 import { createBrick } from './brick_creator';
-import { GridSystem } from './grid_system';
+import { GridDebug } from './debug_grid';
 import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
 import { SolidGridSystem, CELL_SIZE } from './solid_grid_system';
@@ -35,7 +35,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _wall_slide_check?: RunnerWallSlideCheck;
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
-  private _grid?: GridSystem;
+  private _grid?: GridDebug;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks_16x16?: Actor[]; // keep reference to the actors
   private _bricks_8x8?: Actor[];
@@ -218,7 +218,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
 
     // grid is added to scene after the runner so it draws on top
     if (!this._grid) {
-      this._grid = new GridSystem(8);
+      this._grid = new GridDebug(8);
       this.add(this._grid);
     }
 

@@ -18,7 +18,7 @@ import { RunnerWallSlideCheck } from './runner_wall_slide_check';
 import { RunnerSpikeContactCheck } from './runner_spike_contact';
 import { createBrick } from './brick_creator';
 import { createSpike } from './spike_creator';
-import { GridSystem } from './grid_system';
+import { GridDebug } from './debug_grid';
 import { CameraController } from './camera_controller';
 import { CameraDebug } from './camera_debug';
 import { SolidGridSystem } from './solid_grid_system';
@@ -39,7 +39,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _spike_contact_check?: RunnerSpikeContactCheck;
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
-  private _grid?: GridSystem;
+  private _grid?: GridDebug;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _bricks: Actor[] = [];
   private _spikes: Actor[] = [];
@@ -124,7 +124,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
     // grid is added to scene after the runner so it draws on top
     if (!this._grid) {
-      this._grid = new GridSystem(8);
+      this._grid = new GridDebug(8);
       this.add(this._grid);
     }
 

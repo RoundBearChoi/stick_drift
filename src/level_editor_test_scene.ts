@@ -9,7 +9,7 @@ import {
   TransformComponent,
 } from 'excalibur';
 import { GameContext } from './game_context';
-import { GridSystem } from './grid_system';
+import { GridDebug } from './debug_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
@@ -29,7 +29,7 @@ import { assignZ } from './z_order';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
-  private _grid?: GridSystem;
+  private _grid?: GridDebug;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _titleLabel?: Label;
   private _nearestMouse?: NearestMouseToGrid;
@@ -78,7 +78,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
     // grid (8 px cells, same as gameplay)
     if (!this._grid) {
-      this._grid = new GridSystem(8);
+      this._grid = new GridDebug(8);
       this.add(this._grid);
     }
 
