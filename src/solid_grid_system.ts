@@ -2,21 +2,14 @@ import { SpikeFacing } from './spike_type';
 
 /**
  * IMPORTANT: top-left origin for both world and cell coordinates. brick pivot must be top-left.
- *
- * each cell is one uint8. several flags can be on at once:
- *   00000001 solid
- *   00000010 spike up    (lethal if the runner hits this cell from above)
- *   00000100 spike right (lethal if the runner hits this cell from the right)
- *   00001000 spike down
- *   00010000 spike left
  */
 export const CELL_SIZE = 8;
 
-export const CELL_SOLID = 1;        // 00000001
-export const CELL_SPIKE_UP = 2;     // 00000010
-export const CELL_SPIKE_RIGHT = 4;  // 00000100
-export const CELL_SPIKE_DOWN = 8;   // 00001000
-export const CELL_SPIKE_LEFT = 16;  // 00010000
+export const CELL_SOLID = 1;
+export const CELL_SPIKE_UP = 2;
+export const CELL_SPIKE_RIGHT = 4;
+export const CELL_SPIKE_DOWN = 8;
+export const CELL_SPIKE_LEFT = 16;
 
 export function verticalOverlapWithCell(top: number, bottom: number, row: number): number {
   const cellTop = row * CELL_SIZE;
