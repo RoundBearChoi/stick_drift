@@ -41,10 +41,17 @@ export class SolidGridSystem {
   readonly widthCells: number;
   readonly heightCells: number;
 
-  /**
-   * one giant array that contains all 8x8 cells in the level.
-   * uint8 is the smallest native unit in js (8 bits 00000000 0~255).
-   * manually packing 1 bit per cell wouldn't be worth it.
+  /*
+   one giant array that contains all 8x8 cells in the level.
+   uint8 is the smallest native unit in js (8 bits 00000000 0~255).
+   manually packing 1 bit per cell wouldn't be worth it.
+
+   bitfield grid
+   bit 0  00000001  CELL_SOLID        = 1     yes / no
+   bit 1  00000010  CELL_SPIKE_UP     = 2     yes / no
+   bit 2  00000100  CELL_SPIKE_RIGHT  = 4     yes / no
+   bit 3  00001000  CELL_SPIKE_DOWN   = 8     yes / no
+   bit 4  00010000  CELL_SPIKE_LEFT   = 16    yes / no
    */
   private readonly _arr_level_width_height: Uint8Array;
 
