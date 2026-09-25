@@ -20,7 +20,7 @@ export type EditorPlacedObject =
   | { category: ObjectCategory.Bricks; array: arrBrickPlacement }
   | { category: ObjectCategory.Spikes; array: arrSpikePlacement };
 
-type SnapCell = { x: number; y: number };
+export type SnapCell = { x: number; y: number };
 
 export class EditorPlaceTool {
   activeCategory: ObjectCategory = ObjectCategory.Bricks;
@@ -75,6 +75,26 @@ export class EditorPlaceTool {
     this.start = null;
   }
 
+  /**
+   * cells that a release would actually place right now.
+   * empty when not holding, or when the start cell itself is illegal.
+   */
+  previewCells(): SnapCell[] {
+    if (!this.holding || !this.start) return [];
+
+    const end = this.currentSnap() ?? this.start;
+    const horizontal =
+      Math.abs(end.x - this.start.x) >= Math.abs(end.y - this.start.y);
+    const cells = axisLockedCells(this.start, end, this.stepAlong(horizontal));
+
+    const shown: SnapCell[] = [];
+    for (const cell of cells) {
+      if (!this.canPlaceAt(cell.x, cell.y)) break;
+      shown.push(cell);
+    }
+    return shown;
+  }
+
   private beginPress(): void {
     const cell = this.currentSnap();
     if (!cell) {
@@ -96,13 +116,10 @@ export class EditorPlaceTool {
       return;
     }
 
-    const end = this.currentSnap() ?? this.start;
-    const horizontal = Math.abs(end.x - this.start.x) >= Math.abs(end.y - this.start.y);
-    const cells = axisLockedCells(this.start, end, this.stepAlong(horizontal));
+    const cells = this.previewCells();
 
     let placedCount = 0;
     for (const cell of cells) {
-      if (!this.canPlaceAt(cell.x, cell.y)) break;
       this.placeAt(cell.x, cell.y);
       placedCount++;
     }

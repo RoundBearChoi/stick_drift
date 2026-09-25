@@ -168,6 +168,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
     if (overlay.mode === EditorMode.PlaceObjects) {
       this._placeTool?.handle(engine);
+      this._nearestMouse?.setGuideDots(this._placeTool?.previewCells() ?? []);
     } else {
       this._selectTool?.handle(engine);
       this._moveTool?.handle(engine);
@@ -189,6 +190,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     }
     this._selectTool?.cancelDrag();
     this._placeTool?.cancelDrag();
+    this._nearestMouse?.setGuideDots([]);
   }
 
   private syncPlacePalette(): void {
@@ -205,6 +207,9 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
     if (this._nearestMouse) {
       this._nearestMouse.graphics.visible = isPlace;
+      if (!isPlace) {
+        this._nearestMouse.setGuideDots([]);
+      }
     }
     this._selectTool?.setActive(!isPlace);
     if (!isPlace) {

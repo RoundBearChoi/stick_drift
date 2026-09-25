@@ -31,6 +31,9 @@ export class NearestMouseToGrid extends Actor {
   /** whether the current snap point is inside the level */
   private _isInsideLevel = false;
 
+  /** extra snap cells for an in-progress place-drag line */
+  private _guideDots: { x: number; y: number }[] = [];
+
   constructor() {
     super({
       name: 'NearestMouseToGrid',
@@ -41,7 +44,24 @@ export class NearestMouseToGrid extends Actor {
     this.graphics.forceOnScreen = true;
 
     this.graphics.onPostDraw = (ctx) => {
-      // only draw when the snap point is inside the level
+      // guide dots are already inside the level; keep them visible even if
+      // the live cursor itself has gone outside the bounds
+      for (const cell of this._guideDots) {
+        if (
+          this._isInsideLevel &&
+          cell.x === this.pos.x &&
+          cell.y === this.pos.y
+        ) {
+          continue; // live cursor circle already covers this cell
+        }
+        ctx.drawCircle(
+          vec(cell.x - this.pos.x, cell.y - this.pos.y),
+          this._radius,
+          this._color
+        );
+      }
+
+      // only draw the follow-mouse circle when the snap point is inside the level
       if (!this._isInsideLevel) return;
 
       // draw in local space (circle sits on the actor’s own position)
@@ -59,6 +79,11 @@ export class NearestMouseToGrid extends Actor {
     this.refreshInsideFlag();
   }
 
+  /** extra green dots for the current place-drag line (empty = none) */
+  setGuideDots(cells: readonly { x: number; y: number }[]): void {
+    this._guideDots = cells.map((c) => ({ x: c.x, y: c.y }));
+  }
+
   /** true when the snapped grid point itself is inside the level */
   get isInsideLevel(): boolean {
     return this._isInsideLevel;
@@ -74,6 +99,7 @@ export class NearestMouseToGrid extends Actor {
     this._followMouse = false;
     this._prevPageX = null;
     this._prevPageY = null;
+    this._guideDots = [];
     this.refreshInsideFlag();
   }
 
