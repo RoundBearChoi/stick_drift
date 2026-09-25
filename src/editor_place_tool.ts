@@ -12,7 +12,7 @@ import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 import { NearestMouseToGrid } from './nearest_mouse_to_grid';
 
 /**
- * TypeScript discriminated union (also called a tagged union)
+ * TypeScript discriminated union (also called tagged union)
  * you can't put spike data on a brick object, or brick data on a spike object
  */
 export type EditorPlacedObject =
