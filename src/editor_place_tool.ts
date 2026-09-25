@@ -42,7 +42,7 @@ export class EditorPlaceTool {
   ) {}
 
   handle(engine: Engine): void {
-    for (const evt of engine.input.pointers.currentFrameDown) {
+    for (const evt of engine.input.pointers.currentFrameUp) { //currentFrameDown vs currentFrameUP press vs release
       if (evt.button === PointerButton.Left) {
         this.tryPlace();
         break;
