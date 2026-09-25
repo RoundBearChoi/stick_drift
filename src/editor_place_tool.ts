@@ -44,13 +44,13 @@ export class EditorPlaceTool {
   handle(engine: Engine): void {
     for (const evt of engine.input.pointers.currentFrameUp) { //currentFrameDown vs currentFrameUP press vs release
       if (evt.button === PointerButton.Left) {
-        this.tryPlace();
+        this.tryPlacingObject();
         break;
       }
     }
   }
 
-  private tryPlace(): void {
+  private tryPlacingObject(): void {
     const cursor = this.getCursor();
     if (!cursor) return;
     if (!cursor.isInsideLevel) return;
