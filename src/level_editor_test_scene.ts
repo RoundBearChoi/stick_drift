@@ -188,6 +188,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._camMover.unregister();
     }
     this._selectTool?.cancelDrag();
+    this._placeTool?.cancelDrag();
   }
 
   private syncPlacePalette(): void {
@@ -206,6 +207,9 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._nearestMouse.graphics.visible = isPlace;
     }
     this._selectTool?.setActive(!isPlace);
+    if (!isPlace) {
+      this._placeTool?.cancelDrag();
+    }
   }
 
   private spawnPlacedObject(obj: EditorPlacedObject): void {
