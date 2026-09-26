@@ -44,6 +44,8 @@ export class RunnerGroundChecker implements Tickable {
 
   fixedUpdate(_dt: number): void {
     const ctx = this.gameCtx.runner_ctx;
+    if (ctx.is_dead) return;
+
     ctx.is_grounded = checkIsGrounded(
       this.runner.pos.x,
       this.runner.pos.y,

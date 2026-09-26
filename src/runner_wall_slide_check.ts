@@ -89,6 +89,8 @@ export class RunnerWallSlideCheck implements Tickable {
 
   fixedUpdate(_dt: number): void {
     const ctx = this.gameCtx.runner_ctx;
+    if (ctx.is_dead) return;
+
     const contact = checkWallSlideContact(
       this.runner.pos.x,
       this.runner.pos.y,

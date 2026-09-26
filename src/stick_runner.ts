@@ -24,6 +24,7 @@ export class StickRunner extends Actor implements Tickable {
   private _runner_state: RunnerState = new RunnerIdle(); // starting state (onEnter deferred until reset)
   private _queued_state: RunnerState | null = null;
   private _frame_based_animation!: FrameBasedAnimation;
+  private _runner_ctx: RunnerContext | null = null;
 
   /** visual-only collider outline (completely separate from animation + gameplay) */
   private _colliderDebug: RunnerColliderDebug | null = null;
@@ -147,6 +148,7 @@ export class StickRunner extends Actor implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
+    if (this._runner_ctx?.is_dead) return;
     this._frame_based_animation?.tick();
   }
 
@@ -166,8 +168,15 @@ export class StickRunner extends Actor implements Tickable {
    * force a full re-enter of idle state.
    * animation graphic is attached even when already in the idle state. this recreates animation graphic from scratch.
    * (on every onEnter we call playAnimationForState)
+   * pass spawn pos so scene enter and death reset both start from the same place.
    */
-  resetRunner(runnerCtx: RunnerContext): void {
+  resetRunner(runnerCtx: RunnerContext, spawnPos?: Vector): void {
+    this._runner_ctx = runnerCtx;
+
+    if (spawnPos) {
+      this.pos = spawnPos.clone();
+    }
+
     // clear shared simulation buffers so nothing leaks across scene visits
     runnerCtx.reset();
 

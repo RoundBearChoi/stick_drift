@@ -95,7 +95,7 @@ export class RunnerSpikeContactCheck implements Tickable {
       return;
     }
 
-    ctx.is_dead = true; // not dealing with runner death yet...
+    ctx.is_dead = true;
     ctx.horizontal_move_buffer = 0;
     ctx.move_down_buffer = 0;
     ctx.current_fall_accel = 0;
