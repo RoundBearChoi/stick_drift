@@ -1,14 +1,9 @@
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 
-/**
- * scene-owned death delay.
- * spike contact (or later sources) only set is_dead.
- * this script waits one simulation second, then asks the scene to restart gameplay.
- */
 export class OnRunnerDeath implements Tickable {
-  private dead_ticks = 0;
-  private readonly delay_ticks = 60; // 1s at 60 Hz
+  private _current_death_ticks = 0;
+  private readonly _total_delay_ticks_on_death = 60; // 1s at 60 Hz
 
   constructor(
     private readonly gameCtx: GameContext,
@@ -17,14 +12,14 @@ export class OnRunnerDeath implements Tickable {
 
   fixedUpdate(_dt: number): void {
     if (!this.gameCtx.runner_ctx.is_dead) {
-      this.dead_ticks = 0;
+      this._current_death_ticks = 0;
       return;
     }
 
-    this.dead_ticks++;
-    if (this.dead_ticks < this.delay_ticks) return;
+    this._current_death_ticks++;
+    if (this._current_death_ticks < this._total_delay_ticks_on_death) return;
 
-    this.dead_ticks = 0;
+    this._current_death_ticks = 0;
     this.onReset();
   }
 

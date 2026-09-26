@@ -41,7 +41,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _bricks_8x8?: Actor[];
   private _solid_grid?: SolidGridSystem;
   private _titleLabel?: Label;
-  private readonly _spawn = vec(320, 280);
+  private readonly _runner_spawn = vec(320, 280);
 
   onInitialize(_engine: Engine): void {}
 
@@ -72,7 +72,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // stick runner
     if (!this._stick_runner) {
       this._stick_runner = new StickRunner({
-        pos: this._spawn.clone(),
+        pos: this._runner_spawn.clone(),
       });
       this.add(this._stick_runner);
     }
@@ -118,7 +118,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // reset every time we enter the scene.
     // this is where the runner context is first passed to runner.
     // later it's also passed on every fixed update.
-    this._stick_runner.resetRunner(this._game_ctx.runner_ctx, this._spawn);
+    this._stick_runner.resetRunner(this._game_ctx.runner_ctx, this._runner_spawn);
 
     // bricks
     if (!this._bricks_16x16) {

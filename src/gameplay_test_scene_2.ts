@@ -39,7 +39,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _wall_slide_check?: RunnerWallSlideCheck;
   private _spike_contact_check?: RunnerSpikeContactCheck;
   private _on_runner_death?: OnRunnerDeath;
-  private readonly _spawn = vec(320, 280);
+  private readonly _runner_spawn = vec(320, 280);
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
   private _grid?: GridDebug;
@@ -75,7 +75,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     // stick runner
     if (!this._stick_runner) {
       this._stick_runner = new StickRunner({
-        pos: this._spawn.clone(),
+        pos: this._runner_spawn.clone(),
       });
       this.add(this._stick_runner);
     }
@@ -119,6 +119,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._solid_grid_system
     );
 
+    // right now runner death is only possible in this scene. gameplay_test_scene_1 has no resetGameplay
     if (!this._on_runner_death) {
       this._on_runner_death = new OnRunnerDeath(
         this._game_ctx,
@@ -210,7 +211,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private resetGameplay(): void {
     if (!this._stick_runner) return;
 
-    this._stick_runner.resetRunner(this._game_ctx.runner_ctx, this._spawn);
+    this._stick_runner.resetRunner(this._game_ctx.runner_ctx, this._runner_spawn);
     this._camera_controller?.snapToTarget();
   }
 
