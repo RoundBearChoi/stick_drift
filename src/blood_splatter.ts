@@ -34,8 +34,11 @@ void main() {
   vec2 origin = floor(u_quad_size * 0.5);
 
   float p = clamp(u_progress, 0.0, 1.0);
-  float travel = 1.0 - pow(1.0 - min(p * 1.35, 1.0), 2.0);
-  float fade = 1.0 - smoothstep(0.72, 1.0, p);
+  // milder ease-out across the full death window (used to finish by ~0.74)
+  float travel = 1.0 - pow(1.0 - p, 1.35);
+  // stay solid longer, then ease alpha out over the last third
+  float fade = 1.0 - smoothstep(0.68, 1.0, p);
+  fade = pow(fade, 0.7);
 
   float hit = 0.0;
   float tone = 0.0;
