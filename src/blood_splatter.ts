@@ -12,8 +12,6 @@ export const BLOOD_SPLATTER_SIZE = 256; // actor size and quad size
 
 /**
  * raw GLSL ES 300 — no ex.glsl helper.
- * paints quantized droplets over a placeholder quad.
- * output is premultiplied to match Excalibur's pipeline.
  */
 const FRAGMENT = `#version 300 es
 precision mediump float;
@@ -40,8 +38,9 @@ void main() {
   float random_color = 0.0;
   float fade = 0.0;
 
-  const int DROPLETS = 140;
-  for (int i = 0; i < DROPLETS; i++) {
+  const int max_particles = 140;
+
+  for (int i = 0; i < max_particles; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
     float spd = 0.1 + hash(vec2(fi, 19.2)) * 46.5;
