@@ -36,10 +36,10 @@ void main() {
   float p = clamp(u_progress, 0.0, 1.0);
   // strong ease-out over the full window: most distance in the first ticks,
   // then a long decelerating crawl instead of stopping early.
-  float travel = 1.0 - pow(1.0 - p, 3.4);
+  float travel = 1.25 - pow(1.0 - p, 5.0);
   // stay solid longer, then ease alpha out over the last third
-  float fade = 1.0 - smoothstep(0.68, 1.0, p);
-  fade = pow(fade, 0.7);
+  float fade = 1.0 - smoothstep(0.6, 1.0, p);
+  fade = pow(fade, 0.65);
 
   float hit = 0.0;
   float tone = 0.0;
@@ -52,7 +52,7 @@ void main() {
     tone = hash(pixel);
   }
 
-  const int DROPLETS = 160;
+  const int DROPLETS = 140;
   for (int i = 0; i < DROPLETS; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
