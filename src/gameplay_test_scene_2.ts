@@ -17,6 +17,7 @@ import { RunnerGroundChecker } from './runner_ground_checker';
 import { RunnerWallSlideCheck } from './runner_wall_slide_check';
 import { RunnerSpikeContactCheck } from './runner_spike_contact';
 import { OnRunnerDeath } from './on_runner_death';
+import { RunnerDeathVfx } from './runner_death_vfx';
 import { createBrick } from './brick_creator';
 import { createSpike } from './spike_creator';
 import { GridDebug } from './debug_grid';
@@ -39,6 +40,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _wall_slide_check?: RunnerWallSlideCheck;
   private _spike_contact_check?: RunnerSpikeContactCheck;
   private _on_runner_death?: OnRunnerDeath;
+  private _runner_death_vfx?: RunnerDeathVfx;
   private readonly _runner_spawn = vec(320, 280);
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
@@ -127,6 +129,15 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       );
     }
 
+    if (!this._runner_death_vfx) {
+      this._runner_death_vfx = new RunnerDeathVfx(
+        this._stick_runner,
+        this._game_ctx,
+        this.engine
+      );
+    }
+    this._runner_death_vfx.attachToScene((actor) => this.add(actor));
+
     // bricks + spikes from level_ctx
     this.buildSolidsFromLevelCtx();
 
@@ -161,6 +172,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this.resetGameplay();
 
     // order matters. ie spike contact runs after movement.
+    // death vfx runs after spike contact so the rising edge is same-tick.
     // death reset runs after runner systems and before camera.
     this._runner_controller.register();
     this._runner_ground_checker.register();
@@ -168,6 +180,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
     this._spike_contact_check.register();
+    this._runner_death_vfx.register();
     this._runner_state_switcher.register();
     this._on_runner_death.register();
     this._camera_controller.register();
@@ -199,6 +212,9 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     if (this._spike_contact_check) {
       this._spike_contact_check.unregister();
     }
+    if (this._runner_death_vfx) {
+      this._runner_death_vfx.unregister();
+    }
     if (this._on_runner_death) {
       this._on_runner_death.unregister();
     }
@@ -212,6 +228,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     if (!this._stick_runner) return;
 
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx, this._runner_spawn);
+    this._runner_death_vfx?.clear();
     this._camera_controller?.snapToTarget();
   }
 
