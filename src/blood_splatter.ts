@@ -40,16 +40,6 @@ void main() {
   float tone = 0.0;
   float fade = 0.0;
 
-  float coreR = mix(8.0, 1.0, travel);
-  float dCore = length(pixel - origin);
-  if (dCore < coreR && hash(pixel + 3.1) > mix(0.35, 0.82, p)) {
-    hit = 1.0;
-    tone = hash(pixel);
-    float coreDeath = mix(0.28, 0.95, hash(pixel + 11.3));
-    float coreLen = mix(0.08, 0.20, hash(pixel + 23.7));
-    fade = 1.0 - smoothstep(coreDeath - coreLen, coreDeath, p);
-  }
-
   const int DROPLETS = 140;
   for (int i = 0; i < DROPLETS; i++) {
     float fi = float(i);
