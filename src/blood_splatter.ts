@@ -37,12 +37,10 @@ void main() {
   // strong ease-out over the full window: most distance in the first ticks,
   // then a long decelerating crawl instead of stopping early.
   float travel = 1.25 - pow(1.0 - p, 5.0);
-  // stay solid longer, then ease alpha out over the last third
-  float fade = 1.0 - smoothstep(0.6, 1.0, p);
-  fade = pow(fade, 0.65);
 
   float hit = 0.0;
   float tone = 0.0;
+  float fade = 0.0;
 
   // noisy speckled core instead of a solid blob
   float coreR = mix(8.0, 2.0, travel);
@@ -50,6 +48,9 @@ void main() {
   if (dCore < coreR && hash(pixel + 3.1) > mix(0.35, 0.82, p)) {
     hit = 1.0;
     tone = hash(pixel);
+    // core pixels also stagger; 11.3 is a separate salt from speed/size/color
+    float coreStart = mix(0.42, 0.78, hash(pixel + 11.3));
+    fade = pow(1.0 - smoothstep(coreStart, 1.0, p), 0.65);
   }
 
   const int DROPLETS = 140;
@@ -68,6 +69,10 @@ void main() {
     if (max(d.x, d.y) < size) {
       hit = 1.0;
       tone = hash(vec2(fi, 4.4));
+      // fade start 0.42–0.82 so some vanish early, some hang until reset
+      float fadeStart = mix(0.42, 0.82, hash(vec2(fi, 11.3)));
+      float dropFade = pow(1.0 - smoothstep(fadeStart, 1.0, p), 0.65);
+      fade = max(fade, dropFade);
     }
   }
 
