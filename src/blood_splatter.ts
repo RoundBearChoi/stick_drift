@@ -42,16 +42,18 @@ void main() {
 
   for (int i = 0; i < max_particles; i++) {
     float fi = float(i);
-    float ang = hash(vec2(fi, u_seed)) * 6.2831853;
-    float speed = 0.5 /*minimum speed*/ + hash(vec2(fi, 19.2)) * 50.0 /*extra. max speed is this value + min*/;
-    float size = hash(vec2(fi, 7.7)) > 0.82 ? 2.0 : 1.0;
-    vec2 dir = vec2(cos(ang), sin(ang));
+    float angle_radian = hash(vec2(fi, u_seed)) * 6.2831853; // random angle
+
+    vec2 dir = vec2(cos(angle_radian), sin(angle_radian));
     dir.y += 0.35;
     dir = normalize(dir);
 
-    vec2 drop = floor(origin + dir * speed * travel);
+    float random_speed = mix(0.5, 80.0, hash(vec2(fi, 19.2)));
+    float random_size = mix(0.05, 1.15, hash(vec2(fi, 7.7)));
+
+    vec2 drop = floor(origin + dir * random_speed * travel);
     vec2 d = abs(pixel - drop);
-    if (max(d.x, d.y) < size) {
+    if (max(d.x, d.y) < random_size) {
       is_inside = true;
       random_color = hash(vec2(fi, 4.4));
       float deathAt = mix(0.1, 1.5, hash(vec2(fi, 11.3)));
