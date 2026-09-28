@@ -58,7 +58,7 @@ void main() {
 
   bool is_inside = false;
   float random_color = 0.0;
-  float fade = 0.0;
+  float cell_opacity = 0.0;
 
   const int max_particles = 140;
 
@@ -80,13 +80,21 @@ void main() {
       is_inside = true;
       random_color = hash(vec2(fi, 4.4));
       float random_death_time = mix(0.005, 0.999, hash(vec2(fi, 11.3)));
-      float fadeLen = mix(0.05, 0.3, hash(vec2(fi, 23.7)));
-      float dropFade = 1.0 - smoothstep(random_death_time - fadeLen, random_death_time, p);
-      fade = max(fade, dropFade);
+      float random_fade_length = mix(0.1, 0.6, hash(vec2(fi, 23.7)));
+      cell_opacity = 1.0 - smoothstep(random_death_time - random_fade_length, random_death_time, p);
     }
+
+    /*
+    p = 0                                                    p = 1
+
+    |--------- solid ----------|----- fading -----|---- gone ----|
+                               ^                  ^
+                        start_fade         random_death_time
+                        (death - random_fade_length)
+    */
   }
 
-  if (!is_inside || fade <= 0.0) {
+  if (!is_inside || cell_opacity <= 0.0) {
     fragColor = vec4(0.0);
     return;
   }
@@ -96,7 +104,7 @@ void main() {
   vec3 dark = vec3(0.42, 0.06, 0.08);
   vec3 rgb = random_color < 0.72 ? red : (random_color < 0.92 ? deep : dark);
 
-  fragColor = vec4(rgb * fade, fade);
+  fragColor = vec4(rgb * cell_opacity, cell_opacity);
 }
 `;
 
