@@ -8,7 +8,7 @@ import {
 } from 'excalibur';
 import { RUNNER_DEATH_DELAY_TICKS } from './on_runner_death';
 
-export const BLOOD_SPLATTER_SIZE = 256;
+export const BLOOD_SPLATTER_SIZE = 256; // actor size and quad size
 
 /**
  * raw GLSL ES 300 — no ex.glsl helper.
@@ -18,11 +18,11 @@ export const BLOOD_SPLATTER_SIZE = 256;
 const FRAGMENT = `#version 300 es
 precision mediump float;
 
-uniform float u_progress;
+uniform float u_progress; // animation clock 0 ~ 1
 uniform float u_seed;
-uniform vec2 u_quad_size;
+uniform vec2 u_quad_size; // we're uploading BLOOD_SPLATTER_SIZE (256 x 256) to GLSL
 
-in vec2 v_uv;
+in vec2 v_uv; // each fragment's position on the quad in 0 ~ 1
 out vec4 fragColor;
 
 float hash(vec2 p) {
@@ -30,8 +30,8 @@ float hash(vec2 p) {
 }
 
 void main() {
-  vec2 pixel = floor(v_uv * u_quad_size);
-  vec2 origin = floor(u_quad_size * 0.5);
+  vec2 pixel = floor(v_uv * u_quad_size); // get pixel position
+  vec2 origin = floor(u_quad_size * 0.5); // center pixel of the quad
 
   float p = clamp(u_progress, 0.0, 1.0);
   float travel = 1.1 /*moves the graph*/ - pow(1.0 - p, 6.0 /*strength of the curve*/);
