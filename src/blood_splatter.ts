@@ -34,8 +34,9 @@ void main() {
   vec2 origin = floor(u_quad_size * 0.5);
 
   float p = clamp(u_progress, 0.0, 1.0);
-  // milder ease-out across the full death window (used to finish by ~0.74)
-  float travel = 1.0 - pow(1.0 - p, 1.35);
+  // strong ease-out over the full window: most distance in the first ticks,
+  // then a long decelerating crawl instead of stopping early.
+  float travel = 1.0 - pow(1.0 - p, 3.4);
   // stay solid longer, then ease alpha out over the last third
   float fade = 1.0 - smoothstep(0.68, 1.0, p);
   fade = pow(fade, 0.7);
