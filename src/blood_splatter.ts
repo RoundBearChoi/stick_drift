@@ -27,8 +27,30 @@ float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7)) + u_seed) * 43758.5453);
 }
 
+/*
+in this particular case each cell is 1px
+we start with 128x128 quad and decide which cell we wanna render
+
+(0,0) top-left                              (255,0)
+
+      +------------------------------------+
+      |                                    |
+      |                                    |
+      |              origin                |
+      |             (128,128)              |
+      |                 +                  |
+      |                                    |
+      |                                    |
+      |                                    |
+      +------------------------------------+
+
+(0,255)                                     (255,255)
+
+GPU runs main once per cell of the quad
+*/
+
 void main() {
-  vec2 quad_grid_pos = floor(v_uv * u_quad_size);
+  vec2 quad_cell_pos = floor(v_uv * u_quad_size);
   vec2 origin = floor(u_quad_size * 0.5); // center pos of the quad
 
   float p = clamp(u_progress, 0.0, 1.0);
@@ -52,14 +74,14 @@ void main() {
     float random_size = mix(0.05, 1.15, hash(vec2(fi, 7.7)));
 
     vec2 current_particle_pos = floor(origin + random_dir * random_speed * travel);
-    vec2 delta = abs(quad_grid_pos - current_particle_pos);
+    vec2 delta = abs(quad_cell_pos - current_particle_pos);
 
     if (max(delta.x, delta.y) < random_size) {
       is_inside = true;
       random_color = hash(vec2(fi, 4.4));
-      float deathAt = mix(0.1, 1.5, hash(vec2(fi, 11.3)));
+      float random_death_time = mix(0.005, 0.999, hash(vec2(fi, 11.3)));
       float fadeLen = mix(0.05, 0.3, hash(vec2(fi, 23.7)));
-      float dropFade = 1.0 - smoothstep(deathAt - fadeLen, deathAt, p);
+      float dropFade = 1.0 - smoothstep(random_death_time - fadeLen, random_death_time, p);
       fade = max(fade, dropFade);
     }
   }
