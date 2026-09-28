@@ -8,7 +8,7 @@ import {
 } from 'excalibur';
 import { RUNNER_DEATH_DELAY_TICKS } from './on_runner_death';
 
-export const BLOOD_SPLATTER_SIZE = 128;
+export const BLOOD_SPLATTER_SIZE = 256;
 
 /**
  * raw GLSL ES 300 — no ex.glsl helper.
@@ -34,16 +34,13 @@ void main() {
   vec2 origin = floor(u_quad_size * 0.5);
 
   float p = clamp(u_progress, 0.0, 1.0);
-  // strong ease-out over the full window: most distance in the first ticks,
-  // then a long decelerating crawl instead of stopping early.
-  float travel = 1.25 - pow(1.0 - p, 5.0);
+  float travel = 1.1 /*moves the graph*/ - pow(1.0 - p, 6.0 /*strength of the curve*/);
 
   float hit = 0.0;
   float tone = 0.0;
   float fade = 0.0;
 
-  // noisy speckled core instead of a solid blob
-  float coreR = mix(8.0, 2.0, travel);
+  float coreR = mix(8.0, 1.0, travel);
   float dCore = length(pixel - origin);
   if (dCore < coreR && hash(pixel + 3.1) > mix(0.35, 0.82, p)) {
     hit = 1.0;
@@ -69,9 +66,8 @@ void main() {
     if (max(d.x, d.y) < size) {
       hit = 1.0;
       tone = hash(vec2(fi, 4.4));
-      // unique death time: some gone by ~tick 18, some still solid at reset
-      float deathAt = mix(0.10, 1.5, hash(vec2(fi, 11.3)));
-      float fadeLen = mix(0.1, 0.25, hash(vec2(fi, 23.7)));
+      float deathAt = mix(0.1, 1.5, hash(vec2(fi, 11.3)));
+      float fadeLen = mix(0.05, 0.3, hash(vec2(fi, 23.7)));
       float dropFade = 1.0 - smoothstep(deathAt - fadeLen, deathAt, p);
       fade = max(fade, dropFade);
     }
