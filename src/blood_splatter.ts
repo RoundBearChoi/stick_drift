@@ -8,7 +8,7 @@ import {
 } from 'excalibur';
 import { RUNNER_DEATH_DELAY_TICKS } from './on_runner_death';
 
-export const BLOOD_SPLATTER_SIZE = 256; // actor size and quad size
+export const BLOOD_SPLATTER_SIZE = 128; // actor size and quad size
 
 /**
  * raw GLSL ES 300 — no ex.glsl helper.
@@ -32,7 +32,7 @@ void main() {
   vec2 origin = floor(u_quad_size * 0.5); // center pixel of the quad
 
   float p = clamp(u_progress, 0.0, 1.0);
-  float travel = 1.1 /*moves the graph*/ - pow(1.0 - p, 6.0 /*strength of the curve*/);
+  float travel = 1.0 /*moves the graph*/ - pow(1.0 - p, 5.0 /*strength of the curve*/);
 
   bool is_inside = false;
   float random_color = 0.0;
@@ -43,7 +43,7 @@ void main() {
   for (int i = 0; i < max_particles; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
-    float speed = 0.1 + hash(vec2(fi, 19.2)) * 46.5;
+    float speed = 0.5 /*minimum speed*/ + hash(vec2(fi, 19.2)) * 50.0 /*extra. max speed is this value + min*/;
     float size = hash(vec2(fi, 7.7)) > 0.82 ? 2.0 : 1.0;
     vec2 dir = vec2(cos(ang), sin(ang));
     dir.y += 0.35;
