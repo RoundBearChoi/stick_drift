@@ -57,7 +57,7 @@ void main() {
   for (int i = 0; i < DROPLETS; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
-    float spd = 0.1 + hash(vec2(fi, 19.2)) * 60.0;
+    float spd = 0.1 + hash(vec2(fi, 19.2)) * 55.0;
     // almost all 1px, occasional 2px
     float size = hash(vec2(fi, 7.7)) > 0.82 ? 2.0 : 1.0;
     vec2 dir = vec2(cos(ang), sin(ang));
@@ -70,8 +70,8 @@ void main() {
       hit = 1.0;
       tone = hash(vec2(fi, 4.4));
       // unique death time: some gone by ~tick 18, some still solid at reset
-      float deathAt = mix(0.30, 1.0, hash(vec2(fi, 11.3)));
-      float fadeLen = mix(0.06, 0.18, hash(vec2(fi, 23.7)));
+      float deathAt = mix(0.10, 1.5, hash(vec2(fi, 11.3)));
+      float fadeLen = mix(0.03, 0.3, hash(vec2(fi, 23.7)));
       float dropFade = 1.0 - smoothstep(deathAt - fadeLen, deathAt, p);
       fade = max(fade, dropFade);
     }
