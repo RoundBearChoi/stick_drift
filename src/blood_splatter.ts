@@ -54,13 +54,13 @@ void main() {
   vec2 origin = floor(u_quad_size * 0.5); // center pos of the quad
 
   float p = clamp(u_progress, 0.0, 1.0);
-  float travel = 1.0 /*moves the graph*/ - pow(1.0 - p, 5.0 /*strength of the curve*/);
+  float travel = 1.0 /*moves the graph*/ - pow(1.0 - p, 5.5 /*strength of the curve*/);
 
   bool is_inside = false;
   float random_color = 0.0;
   float cell_opacity = 0.0;
 
-  const int max_particles = 140;
+  const int max_particles = 450;
 
   for (int i = 0; i < max_particles; i++) {
     float fi = float(i);
@@ -71,7 +71,7 @@ void main() {
     random_dir = normalize(random_dir);
 
     float random_speed = mix(0.5, 80.0, hash(vec2(fi, 19.2)));
-    float random_size = mix(0.05, 1.15, hash(vec2(fi, 7.7)));
+    float random_size = mix(0.2, 1.2, hash(vec2(fi, 7.7)));
 
     vec2 current_particle_pos = floor(origin + random_dir * random_speed * travel);
     vec2 delta = abs(quad_cell_pos - current_particle_pos);
@@ -99,10 +99,13 @@ void main() {
     return;
   }
 
-  vec3 red = vec3(1.0, 0.333, 0.333);
-  vec3 deep = vec3(0.72, 0.10, 0.12);
-  vec3 dark = vec3(0.42, 0.06, 0.08);
-  vec3 rgb = random_color < 0.72 ? red : (random_color < 0.92 ? deep : dark);
+  vec3 blood_a = vec3(0.50, 0.07, 0.08);
+  vec3 blood_b = vec3(0.36, 0.04, 0.05);
+  vec3 blood_c = vec3(0.22, 0.02, 0.03);
+  vec3 rgb = random_color < 0.333 ?
+    blood_a :
+      (random_color < 0.666 ?
+        blood_b : blood_c);
 
   fragColor = vec4(rgb * cell_opacity, cell_opacity);
 }
