@@ -57,7 +57,7 @@ void main() {
   for (int i = 0; i < DROPLETS; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
-    float spd = 3.0 + hash(vec2(fi, 19.2)) * 60.0;
+    float spd = 0.1 + hash(vec2(fi, 19.2)) * 60.0;
     // almost all 1px, occasional 2px
     float size = hash(vec2(fi, 7.7)) > 0.82 ? 2.0 : 1.0;
     vec2 dir = vec2(cos(ang), sin(ang));
@@ -69,8 +69,7 @@ void main() {
     if (max(d.x, d.y) < size) {
       hit = 1.0;
       tone = hash(vec2(fi, 4.4));
-      // fade start 0.42–0.82 so some vanish early, some hang until reset
-      float fadeStart = mix(0.42, 0.82, hash(vec2(fi, 11.3)));
+      float fadeStart = mix(0.1, 0.5, hash(vec2(fi, 11.3)));
       float dropFade = pow(1.0 - smoothstep(fadeStart, 1.0, p), 0.65);
       fade = max(fade, dropFade);
     }
