@@ -36,7 +36,7 @@ void main() {
   float p = clamp(u_progress, 0.0, 1.0);
   float travel = 1.1 /*moves the graph*/ - pow(1.0 - p, 6.0 /*strength of the curve*/);
 
-  float hit = 0.0;
+  bool hit = false;
   float tone = 0.0;
   float fade = 0.0;
 
@@ -54,7 +54,7 @@ void main() {
     vec2 drop = floor(origin + dir * spd * travel);
     vec2 d = abs(pixel - drop);
     if (max(d.x, d.y) < size) {
-      hit = 1.0;
+      hit = true;
       tone = hash(vec2(fi, 4.4));
       float deathAt = mix(0.1, 1.5, hash(vec2(fi, 11.3)));
       float fadeLen = mix(0.05, 0.3, hash(vec2(fi, 23.7)));
@@ -63,7 +63,7 @@ void main() {
     }
   }
 
-  if (hit < 0.5 || fade <= 0.0) {
+  if (!hit || fade <= 0.0) {
     fragColor = vec4(0.0);
     return;
   }
