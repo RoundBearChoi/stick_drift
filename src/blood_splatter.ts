@@ -48,9 +48,9 @@ void main() {
   if (dCore < coreR && hash(pixel + 3.1) > mix(0.35, 0.82, p)) {
     hit = 1.0;
     tone = hash(pixel);
-    // core pixels also stagger; 11.3 is a separate salt from speed/size/color
-    float coreStart = mix(0.42, 0.78, hash(pixel + 11.3));
-    fade = pow(1.0 - smoothstep(coreStart, 1.0, p), 0.65);
+    float coreDeath = mix(0.28, 0.95, hash(pixel + 11.3));
+    float coreLen = mix(0.08, 0.20, hash(pixel + 23.7));
+    fade = 1.0 - smoothstep(coreDeath - coreLen, coreDeath, p);
   }
 
   const int DROPLETS = 140;
@@ -69,8 +69,10 @@ void main() {
     if (max(d.x, d.y) < size) {
       hit = 1.0;
       tone = hash(vec2(fi, 4.4));
-      float fadeStart = mix(0.1, 0.5, hash(vec2(fi, 11.3)));
-      float dropFade = pow(1.0 - smoothstep(fadeStart, 1.0, p), 0.65);
+      // unique death time: some gone by ~tick 18, some still solid at reset
+      float deathAt = mix(0.30, 1.0, hash(vec2(fi, 11.3)));
+      float fadeLen = mix(0.06, 0.18, hash(vec2(fi, 23.7)));
+      float dropFade = 1.0 - smoothstep(deathAt - fadeLen, deathAt, p);
       fade = max(fade, dropFade);
     }
   }
