@@ -29,10 +29,12 @@ export function checkSpikeContact(
   if (anyFlagOnHorizontalEdge(left, right, top - 1, CELL_SPIKE_DOWN, solidGridSystem)) {
     return true;
   }
-  if (anyFlagOnVerticalEdge(top, bottom, right, CELL_SPIKE_RIGHT, solidGridSystem)) {
+  // right edge of runner vs spikes pointing left (into the runner)
+  if (anyFlagOnVerticalEdge(top, bottom, right, CELL_SPIKE_LEFT, solidGridSystem)) {
     return true;
   }
-  if (anyFlagOnVerticalEdge(top, bottom, left - 1, CELL_SPIKE_LEFT, solidGridSystem)) {
+  // left edge of runner vs spikes pointing right (into the runner)
+  if (anyFlagOnVerticalEdge(top, bottom, left - 1, CELL_SPIKE_RIGHT, solidGridSystem)) {
     return true;
   }
 
