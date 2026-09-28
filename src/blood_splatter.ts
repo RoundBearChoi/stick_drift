@@ -37,7 +37,7 @@ void main() {
   float travel = 1.1 /*moves the graph*/ - pow(1.0 - p, 6.0 /*strength of the curve*/);
 
   bool is_inside = false;
-  float tone = 0.0;
+  float random_color = 0.0;
   float fade = 0.0;
 
   const int DROPLETS = 140;
@@ -55,7 +55,7 @@ void main() {
     vec2 d = abs(pixel - drop);
     if (max(d.x, d.y) < size) {
       is_inside = true;
-      tone = hash(vec2(fi, 4.4));
+      random_color = hash(vec2(fi, 4.4));
       float deathAt = mix(0.1, 1.5, hash(vec2(fi, 11.3)));
       float fadeLen = mix(0.05, 0.3, hash(vec2(fi, 23.7)));
       float dropFade = 1.0 - smoothstep(deathAt - fadeLen, deathAt, p);
@@ -71,7 +71,7 @@ void main() {
   vec3 red = vec3(1.0, 0.333, 0.333);
   vec3 deep = vec3(0.72, 0.10, 0.12);
   vec3 dark = vec3(0.42, 0.06, 0.08);
-  vec3 rgb = tone < 0.72 ? red : (tone < 0.92 ? deep : dark);
+  vec3 rgb = random_color < 0.72 ? red : (random_color < 0.92 ? deep : dark);
 
   fragColor = vec4(rgb * fade, fade);
 }
