@@ -111,10 +111,6 @@ void main() {
 }
 `;
 
-/**
- * world-space splat quad. lives as its own actor so hiding the runner
- * does not also hide the effect (materials only run when a graphic draws).
- */
 export class BloodSplatter extends Actor {
   private _material: Material | null = null;
   private _ticks = 0;
