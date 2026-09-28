@@ -52,7 +52,7 @@ void main() {
     tone = hash(pixel);
   }
 
-  const int DROPLETS = 220;
+  const int DROPLETS = 160;
   for (int i = 0; i < DROPLETS; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
