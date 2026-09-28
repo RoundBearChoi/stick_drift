@@ -56,7 +56,7 @@ void main() {
   for (int i = 0; i < DROPLETS; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
-    float spd = 10.0 + hash(vec2(fi, 19.2)) * 50.0;
+    float spd = 3.0 + hash(vec2(fi, 19.2)) * 60.0;
     // almost all 1px, occasional 2px
     float size = hash(vec2(fi, 7.7)) > 0.82 ? 2.0 : 1.0;
     vec2 dir = vec2(cos(ang), sin(ang));
