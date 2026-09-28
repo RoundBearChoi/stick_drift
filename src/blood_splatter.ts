@@ -8,7 +8,7 @@ import {
 } from 'excalibur';
 import { RUNNER_DEATH_DELAY_TICKS } from './on_runner_death';
 
-export const BLOOD_SPLATTER_SIZE = 64;
+export const BLOOD_SPLATTER_SIZE = 128;
 
 /**
  * raw GLSL ES 300 — no ex.glsl helper.
@@ -40,26 +40,26 @@ void main() {
   float hit = 0.0;
   float tone = 0.0;
 
-  float coreR = mix(7.0, 2.0, travel);
+  float coreR = mix(14.0, 4.0, travel);
   float dCore = length(pixel - origin);
-  if (dCore < coreR && hash(pixel + 3.1) > mix(0.15, 0.75, p)) {
+  if (dCore < coreR && hash(pixel + 3.1) > mix(0.12, 0.72, p)) {
     hit = 1.0;
     tone = hash(pixel);
   }
 
-  const int DROPLETS = 18;
+  const int DROPLETS = 56;
   for (int i = 0; i < DROPLETS; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
-    float spd = 8.0 + hash(vec2(fi, 19.2)) * 22.0;
-    float size = 1.0 + floor(hash(vec2(fi, 7.7)) * 2.0);
+    float spd = 12.0 + hash(vec2(fi, 19.2)) * 46.0;
+    float size = 1.0 + floor(hash(vec2(fi, 7.7)) * 3.0);
     vec2 dir = vec2(cos(ang), sin(ang));
     dir.y += 0.35;
     dir = normalize(dir);
 
     vec2 drop = floor(origin + dir * spd * travel);
     vec2 d = abs(pixel - drop);
-    if (max(d.x, d.y) < size && hash(vec2(fi, pixel.x)) > 0.12) {
+    if (max(d.x, d.y) < size && hash(vec2(fi, pixel.x)) > 0.08) {
       hit = 1.0;
       tone = hash(vec2(fi, 4.4));
     }
