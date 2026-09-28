@@ -43,14 +43,13 @@ void main() {
   for (int i = 0; i < max_particles; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
-    float spd = 0.1 + hash(vec2(fi, 19.2)) * 46.5;
-    // almost all 1px, occasional 2px
+    float speed = 0.1 + hash(vec2(fi, 19.2)) * 46.5;
     float size = hash(vec2(fi, 7.7)) > 0.82 ? 2.0 : 1.0;
     vec2 dir = vec2(cos(ang), sin(ang));
     dir.y += 0.35;
     dir = normalize(dir);
 
-    vec2 drop = floor(origin + dir * spd * travel);
+    vec2 drop = floor(origin + dir * speed * travel);
     vec2 d = abs(pixel - drop);
     if (max(d.x, d.y) < size) {
       is_inside = true;
