@@ -28,8 +28,8 @@ float hash(vec2 p) {
 }
 
 void main() {
-  vec2 pixel = floor(v_uv * u_quad_size); // get pixel position
-  vec2 origin = floor(u_quad_size * 0.5); // center pixel of the quad
+  vec2 quad_grid_pos = floor(v_uv * u_quad_size);
+  vec2 origin = floor(u_quad_size * 0.5); // center pos of the quad
 
   float p = clamp(u_progress, 0.0, 1.0);
   float travel = 1.0 /*moves the graph*/ - pow(1.0 - p, 5.0 /*strength of the curve*/);
@@ -52,7 +52,8 @@ void main() {
     float random_size = mix(0.05, 1.15, hash(vec2(fi, 7.7)));
 
     vec2 current_particle_pos = floor(origin + random_dir * random_speed * travel);
-    vec2 delta = abs(pixel - current_particle_pos);
+    vec2 delta = abs(quad_grid_pos - current_particle_pos);
+
     if (max(delta.x, delta.y) < random_size) {
       is_inside = true;
       random_color = hash(vec2(fi, 4.4));
