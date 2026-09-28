@@ -44,26 +44,28 @@ void main() {
   float hit = 0.0;
   float tone = 0.0;
 
-  float coreR = mix(14.0, 4.0, travel);
+  // noisy speckled core instead of a solid blob
+  float coreR = mix(8.0, 2.0, travel);
   float dCore = length(pixel - origin);
-  if (dCore < coreR && hash(pixel + 3.1) > mix(0.12, 0.72, p)) {
+  if (dCore < coreR && hash(pixel + 3.1) > mix(0.35, 0.82, p)) {
     hit = 1.0;
     tone = hash(pixel);
   }
 
-  const int DROPLETS = 56;
+  const int DROPLETS = 110;
   for (int i = 0; i < DROPLETS; i++) {
     float fi = float(i);
     float ang = hash(vec2(fi, u_seed)) * 6.2831853;
-    float spd = 12.0 + hash(vec2(fi, 19.2)) * 46.0;
-    float size = 1.0 + floor(hash(vec2(fi, 7.7)) * 3.0);
+    float spd = 10.0 + hash(vec2(fi, 19.2)) * 50.0;
+    // almost all 1px, occasional 2px
+    float size = hash(vec2(fi, 7.7)) > 0.82 ? 2.0 : 1.0;
     vec2 dir = vec2(cos(ang), sin(ang));
     dir.y += 0.35;
     dir = normalize(dir);
 
     vec2 drop = floor(origin + dir * spd * travel);
     vec2 d = abs(pixel - drop);
-    if (max(d.x, d.y) < size && hash(vec2(fi, pixel.x)) > 0.08) {
+    if (max(d.x, d.y) < size) {
       hit = 1.0;
       tone = hash(vec2(fi, 4.4));
     }
@@ -75,9 +77,9 @@ void main() {
   }
 
   vec3 red = vec3(1.0, 0.333, 0.333);
-  vec3 pink = vec3(1.0, 0.475, 0.776);
-  vec3 dark = vec3(0.55, 0.12, 0.16);
-  vec3 rgb = tone < 0.55 ? red : (tone < 0.82 ? pink : dark);
+  vec3 deep = vec3(0.72, 0.10, 0.12);
+  vec3 dark = vec3(0.42, 0.06, 0.08);
+  vec3 rgb = tone < 0.72 ? red : (tone < 0.92 ? deep : dark);
 
   fragColor = vec4(rgb * fade, fade);
 }
