@@ -104,7 +104,7 @@ export class BloodSplatter extends Actor {
   constructor() {
     super({
       name: 'BloodSplatter',
-      anchor: vec(0.5, 0.5),
+      anchor: vec(0.5, 0.5), // center mass
     });
 
     this.graphics.use(

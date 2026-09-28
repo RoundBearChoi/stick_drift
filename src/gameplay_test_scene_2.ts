@@ -171,9 +171,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     // runner back to spawn + snap camera so we don't start with a long catch-up
     this.resetGameplay();
 
-    // order matters. ie spike contact runs after movement.
-    // death vfx runs after spike contact so the rising edge is same-tick.
-    // death reset runs after runner systems and before camera.
+    // IMPORTANT: order matters.
     this._runner_controller.register();
     this._runner_ground_checker.register();
     this._wall_slide_check.register();

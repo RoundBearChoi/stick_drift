@@ -4,12 +4,6 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { BloodSplatter } from './blood_splatter';
 
-/**
- * same-frame death visual handoff.
- * rising edge of is_dead hides the runner graphic and starts the splat
- * at collider center. falling edge / explicit clear restores the runner
- * and hides the splat (no stain).
- */
 export class RunnerDeathVfx implements Tickable {
   private _was_dead = false;
   private readonly _splatter = new BloodSplatter();
