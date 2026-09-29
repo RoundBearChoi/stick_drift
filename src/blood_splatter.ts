@@ -31,9 +31,10 @@ float hash(vec2 p) {
 
 /*
 in this particular case each cell is 1px
-we start with 128x128 quad and decide which cell we wanna render
 
-(0,0) top-left                              (255,0)
+128x128 quad
+
+(0,0) top-left                              (127,0)
 
       +------------------------------------+
       |                                    |
@@ -46,10 +47,11 @@ we start with 128x128 quad and decide which cell we wanna render
       |                                    |
       +------------------------------------+
 
-(0,255)                                     (255,255)
+(0,127)                                     (127,127)
 
 GPU runs main once per cell of the quad.
 we can draw individual particles without each of them being an object.
+we pin point each pixel first and then paint, so the direction is reversed from a typical object -> update -> render.
 */
 
 void main() {
