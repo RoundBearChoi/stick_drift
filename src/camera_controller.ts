@@ -12,6 +12,20 @@ import {
 } from './camera_chase_speed';
 
 /**
+ * integer death kick, in native pixels.
+ * front-loaded jerk, short aftershock, then hold still for the rest of the death delay.
+ * direction is fixed for now.
+ */
+const DEATH_SHAKE: ReadonlyArray<readonly [number, number]> = [
+  [3, -2], [3, -2],
+  [-2, 1], [-2, 1],
+  [2, 1], [2, 1],
+  [-1, 0], [-1, 0], [-1, 0],
+  [1, -1], [1, -1], [1, -1],
+  [0, 1], [0, 1], [0, 1],
+];
+
+/**
  * future-friendly stuff:
  * - setFollowTarget() so the follow source can change later
  * - snapToTarget() for scene transitions and/or resets
@@ -28,6 +42,15 @@ export class CameraController implements Tickable {
 
   private _followTarget: Actor | null = null;
 
+  /** chased position. shake is never written here. */
+  private _baseX = 0;
+  private _baseY = 0;
+  private _hasBase = false;
+
+  /** index into DEATH_SHAKE. -1 means inactive. */
+  private _shakeTick = -1;
+  private _wasDead = false;
+
   constructor(
     private readonly scene: Scene,
     private readonly gameCtx: GameContext
@@ -41,19 +64,36 @@ export class CameraController implements Tickable {
     const desired = this.getDesiredTargetPos();
     if (!desired) return;
 
+    this._shakeTick = -1;
+    this._wasDead = this.gameCtx.runner_ctx.is_dead;
+
+    this._baseX = Math.round(desired.x);
+    this._baseY = Math.round(desired.y);
+    this._hasBase = true;
+
     const cam = this.scene.camera;
-    cam.pos.x = Math.round(desired.x);
-    cam.pos.y = Math.round(desired.y);
+    cam.pos.x = this._baseX;
+    cam.pos.y = this._baseY;
   }
 
   fixedUpdate(_dt: number): void {
+    const dead = this.gameCtx.runner_ctx.is_dead;
+    if (dead && !this._wasDead) this._shakeTick = 0;
+    if (!dead) this._shakeTick = -1;
+    this._wasDead = dead;
+
     const desired = this.getDesiredTargetPos();
     if (!desired) return;
 
     const cam = this.scene.camera;
+    if (!this._hasBase) {
+      this._baseX = Math.round(cam.pos.x);
+      this._baseY = Math.round(cam.pos.y);
+      this._hasBase = true;
+    }
 
-    const rawDx = desired.x - cam.pos.x;
-    const rawDy = desired.y - cam.pos.y;
+    const rawDx = desired.x - this._baseX;
+    const rawDy = desired.y - this._baseY;
 
     const overflowX = Math.max(0, Math.abs(rawDx) - this.deadzoneX);
     const overflowY = Math.max(0, Math.abs(rawDy) - this.deadzoneY);
@@ -61,17 +101,25 @@ export class CameraController implements Tickable {
     // resolve horizontal first, then vertical. pure axis-aligned integer moves.
     if (overflowX > 0) {
       const step = chaseSpeedFromOverflowX(overflowX);
-      cam.pos.x += Math.sign(rawDx) * Math.min(Math.abs(rawDx), step);
+      this._baseX += Math.sign(rawDx) * Math.min(Math.abs(rawDx), step);
     }
 
     if (overflowY > 0) {
       const step = chaseSpeedFromOverflowY(overflowY);
-      cam.pos.y += Math.sign(rawDy) * Math.min(Math.abs(rawDy), step);
+      this._baseY += Math.sign(rawDy) * Math.min(Math.abs(rawDy), step);
     }
 
     // keep whole numbers (this is defensive. when you put in integers nothing happens in Math.round)
-    cam.pos.x = Math.round(cam.pos.x);
-    cam.pos.y = Math.round(cam.pos.y);
+    this._baseX = Math.round(this._baseX);
+    this._baseY = Math.round(this._baseY);
+
+    const [ox, oy] = this.currentShake();
+    cam.pos.x = this._baseX + ox;
+    cam.pos.y = this._baseY + oy;
+
+    if (this._shakeTick >= 0 && this._shakeTick < DEATH_SHAKE.length) {
+      this._shakeTick++;
+    }
   }
 
   /**
@@ -98,5 +146,10 @@ export class CameraController implements Tickable {
 
   unregister(): void {
     this.gameCtx.unregisterTickable(this);
+  }
+
+  private currentShake(): readonly [number, number] {
+    if (this._shakeTick < 0 || this._shakeTick >= DEATH_SHAKE.length) return [0, 0];
+    return DEATH_SHAKE[this._shakeTick];
   }
 }
