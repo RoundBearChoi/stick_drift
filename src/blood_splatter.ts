@@ -67,7 +67,7 @@ void main() {
   float random_color = 0.0;
   float cell_opacity = 0.0;
 
-  const int max_particles = 450;
+  const int max_particles = 700;
 
   // since u_seed in this case remains the same, "random color" for nth particle remains same throughout different cells for the quad
   // runner position which is used to create u_seed is the basis for "random color" etc
