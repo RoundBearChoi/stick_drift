@@ -38,8 +38,8 @@ we start with 128x128 quad and decide which cell we wanna render
       +------------------------------------+
       |                                    |
       |                                    |
-      |              origin                |
-      |             (128,128)              |
+      |               origin               |
+      |               (64,64)              |
       |                 +                  |
       |                                    |
       |                                    |
@@ -48,7 +48,8 @@ we start with 128x128 quad and decide which cell we wanna render
 
 (0,255)                                     (255,255)
 
-GPU runs main once per cell of the quad
+GPU runs main once per cell of the quad.
+we can draw individual particles without each of them being an object.
 */
 
 void main() {
