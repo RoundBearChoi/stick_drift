@@ -11,11 +11,7 @@ import {
   chaseSpeedFromOverflowY,
 } from './camera_chase_speed';
 
-/**
- * integer death kick, in native pixels.
- * front-loaded jerk, short aftershock, then hold still for the rest of the death delay.
- * direction is fixed for now.
- */
+// fixed shake values for now
 const DEATH_SHAKE: ReadonlyArray<readonly [number, number]> = [
   [3, -2], [3, -2],
   [-2, 1], [-2, 1],
@@ -42,14 +38,12 @@ export class CameraController implements Tickable {
 
   private _followTarget: Actor | null = null;
 
-  /** chased position. shake is never written here. */
   private _baseX = 0;
   private _baseY = 0;
   private _hasBase = false;
 
-  /** index into DEATH_SHAKE. -1 means inactive. */
-  private _shakeTick = -1;
-  private _wasDead = false;
+  private _shakeTick = -1; // -1 means inactive
+  private _wasDead = false; // flag so that cam shake starts once, instead of every tick while the runner stays dead
 
   constructor(
     private readonly scene: Scene,
@@ -113,9 +107,9 @@ export class CameraController implements Tickable {
     this._baseX = Math.round(this._baseX);
     this._baseY = Math.round(this._baseY);
 
-    const [ox, oy] = this.currentShake();
-    cam.pos.x = this._baseX + ox;
-    cam.pos.y = this._baseY + oy;
+    const [shake_x, shake_y] = this.currentShake();
+    cam.pos.x = this._baseX + shake_x;
+    cam.pos.y = this._baseY + shake_y;
 
     if (this._shakeTick >= 0 && this._shakeTick < DEATH_SHAKE.length) {
       this._shakeTick++;
