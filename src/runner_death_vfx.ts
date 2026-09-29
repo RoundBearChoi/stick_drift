@@ -56,7 +56,8 @@ export class RunnerDeathVfx implements Tickable {
     this._splatter.start(
       centerX,
       centerY,
-      Math.floor(centerX * 13 + centerY * 7) // multiplying some arbitrary numbers to create seed
+      Math.floor(centerX * 13 + centerY * 7) // multiplying some arbitrary numbers to create seed.
+      // we're simply scrambling the numbers. no actual randomness here
     );
   }
 
