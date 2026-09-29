@@ -52,11 +52,11 @@ export class RunnerDeathVfx implements Tickable {
     const centerX = this.runner.pos.x;
     const centerY = this.runner.pos.y - ctx.collider_height / 2;
 
-    // runner's center position becomes seed
+    // runner's center position is used to create seed
     this._splatter.start(
       centerX,
       centerY,
-      Math.floor(centerX * 13 + centerY * 7)
+      Math.floor(centerX * 13 + centerY * 7) // multiplying some arbitrary numbers to create seed
     );
   }
 
