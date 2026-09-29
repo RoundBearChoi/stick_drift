@@ -24,7 +24,7 @@ in vec2 v_uv; // each fragment's position on the quad in 0 ~ 1
 out vec4 fragColor;
 
 // take 2 numbers and turn into a float -> scrambled into 0..1
-// fract keeps the fractional part of a float and throws away the whole number, so result is always 0..1
+// fract() keeps fractional part of float and throws away the whole number, so result is always 0..1
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(284.1, 737.775)) + u_seed) * 13801.2685);
 }
