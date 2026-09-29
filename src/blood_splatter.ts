@@ -23,7 +23,7 @@ uniform vec2 u_quad_size; // we're uploading BLOOD_SPLATTER_SIZE (256 x 256) to 
 in vec2 v_uv; // each fragment's position on the quad in 0 ~ 1
 out vec4 fragColor;
 
-// take 2 numbers and turn into a float -> scrambled into 0..1
+// take 2 numbers and turn into float -> scrambled into 0..1
 // fract() keeps fractional part of float and throws away the whole number, so result is always 0..1
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(284.1, 737.775)) + u_seed) * 13801.2685);
