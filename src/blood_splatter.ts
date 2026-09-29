@@ -67,6 +67,8 @@ void main() {
 
   const int max_particles = 450;
 
+  // since u_seed in this case remains the same, "random color" for nth particle remains same throughout different cells for the quad
+  // runner position which is used to create u_seed is the basis for "random color" etc
   for (int i = 0; i < max_particles; i++) {
     float fi = float(i);
     float random_angle_radian = hash(vec2(fi, u_seed)) * 6.2831853; // random angle
