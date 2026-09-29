@@ -23,8 +23,8 @@ uniform vec2 u_quad_size; // we're uploading BLOOD_SPLATTER_SIZE (256 x 256) to 
 in vec2 v_uv; // each fragment's position on the quad in 0 ~ 1
 out vec4 fragColor;
 
-// take 2 numbers and turn into float -> scrambled into 0..1
-// fract() keeps fractional part of float and throws away the whole number, so result is always 0..1
+// dot collapses p, u_seed shifts it, sin multiplication scrambles it, fract keeps 0 <= result < 1
+// sin's range-reduction pi and polynomial are GPU/driver-specific, so this is not stable across machines
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(284.1, 737.775)) + u_seed) * 13801.2685);
 }
