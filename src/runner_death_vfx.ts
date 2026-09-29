@@ -49,10 +49,10 @@ export class RunnerDeathVfx implements Tickable {
     this.runner.graphics.visible = false;
 
     const ctx = this.gameCtx.runner_ctx;
-    // runner pivot is bottom-center; collider grows upward from pos.
     const centerX = this.runner.pos.x;
     const centerY = this.runner.pos.y - ctx.collider_height / 2;
 
+    // runner's center position becomes seed
     this._splatter.start(
       centerX,
       centerY,

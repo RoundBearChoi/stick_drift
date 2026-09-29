@@ -146,7 +146,6 @@ export class BloodSplatter extends Actor {
 
   start(worldX: number, worldY: number, seed: number): void {
     this.pos = vec(Math.floor(worldX), Math.floor(worldY));
-    this._seed = seed === 0 ? 1 : seed;
     this._ticks = 0;
     this._playing = true;
     this.graphics.visible = true;
