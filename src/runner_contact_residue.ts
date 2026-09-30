@@ -5,7 +5,6 @@ import {
   Material,
   Rectangle,
   vec,
-  vec3,
 } from 'excalibur';
 import { Tickable } from './tickable';
 import { GameContext, NATIVE_RESOLUTION } from './game_context';
@@ -17,7 +16,6 @@ import {
   CELL_SPIKE_RIGHT,
   CELL_SPIKE_LEFT,
 } from './solid_grid_system';
-import { DraculaColorScheme } from './dracula_color_scheme';
 
 /** air-side pulse height in pixels at birth */
 export const RESIDUE_GLOW_PX = 3;
@@ -31,6 +29,7 @@ const MAX_SEGS = 64;
  * raw GLSL ES 300 — same path as blood_splatter.
  * each fragment is one native pixel of a camera-sized quad.
  * CPU still owns contact stamps; the shader only paints edge + air pulse.
+ * colors are hardcoded like blood_splatter (0.32 has no vec3 uniform helper).
  */
 const FRAGMENT = `#version 300 es
 precision mediump float;
@@ -41,8 +40,6 @@ uniform float u_tick;
 uniform float u_life;
 uniform float u_glow_px;
 uniform float u_count;
-uniform vec3 u_green;
-uniform vec3 u_white;
 
 uniform float u_a[${MAX_SEGS}];
 uniform float u_start[${MAX_SEGS}];
@@ -58,6 +55,10 @@ void main() {
   vec2 world = u_origin + v_uv * u_quad_size;
   vec3 acc_rgb = vec3(0.0);
   float acc_a = 0.0;
+
+  // Dracula green #50fa7b / foreground #f8f8f2
+  vec3 green = vec3(0.314, 0.980, 0.482);
+  vec3 white = vec3(0.973, 0.973, 0.949);
 
   int count = int(u_count);
   for (int i = 0; i < ${MAX_SEGS}; i++) {
@@ -80,7 +81,6 @@ void main() {
     float pulse = 0.82 + 0.18 * (0.5 + 0.5 * sin((u_tick + a) * 0.21));
     float height = u_glow_px * fade;
 
-    // contact-side air pulse — shrinks from the outside
     for (int k = 1; k <= 4; k++) {
       float fi = float(k);
       if (fi > u_glow_px) break;
@@ -91,21 +91,16 @@ void main() {
       float glow_a = fade * pulse * 0.32 * falloff * layer;
       float glow_perp = a - inward * fi;
       if (abs(perp - glow_perp) <= 0.5) {
-        vec3 glow_rgb = vec3(
-          u_green.r,
-          min(1.0, u_green.g + 40.0 / 255.0),
-          min(1.0, u_green.b + 20.0 / 255.0)
-        );
+        vec3 glow_rgb = vec3(green.r, min(1.0, green.g + 40.0 / 255.0), min(1.0, green.b + 20.0 / 255.0));
         acc_rgb = max(acc_rgb, glow_rgb * glow_a);
         acc_a = max(acc_a, glow_a);
       }
     }
 
-    // 0.5px on the air-facing half of the brick / level-edge pixel
     float edge_offset = 0.5 - inward * 0.25;
     float edge_center = a + edge_offset;
     if (abs(perp - edge_center) <= 0.25) {
-      vec3 edge_rgb = mix(u_green, u_white, shine);
+      vec3 edge_rgb = mix(green, white, shine);
       acc_rgb = max(acc_rgb, edge_rgb * fade);
       acc_a = max(acc_a, fade);
     }
@@ -129,6 +124,12 @@ interface ResidueSeg {
   born: number;
 }
 
+function zeroArray(len: number): number[] {
+  const out: number[] = [];
+  for (let i = 0; i < len; i++) out.push(0);
+  return out;
+}
+
 /**
  * visual-only residue on floors, walls, and level bounds the runner collider touches.
  * CPU stamps contacts; GLSL paints the 0.5px edge and the shrinking air pulse.
@@ -141,12 +142,12 @@ export class RunnerContactResidue implements Tickable {
   private _added = false;
   private _material: Material | null = null;
 
-  private readonly _u_a = new Float32Array(MAX_SEGS);
-  private readonly _u_start = new Float32Array(MAX_SEGS);
-  private readonly _u_end = new Float32Array(MAX_SEGS);
-  private readonly _u_inward = new Float32Array(MAX_SEGS);
-  private readonly _u_axis = new Float32Array(MAX_SEGS);
-  private readonly _u_born = new Float32Array(MAX_SEGS);
+  private readonly _u_a = zeroArray(MAX_SEGS);
+  private readonly _u_start = zeroArray(MAX_SEGS);
+  private readonly _u_end = zeroArray(MAX_SEGS);
+  private readonly _u_inward = zeroArray(MAX_SEGS);
+  private readonly _u_axis = zeroArray(MAX_SEGS);
+  private readonly _u_born = zeroArray(MAX_SEGS);
 
   constructor(
     private readonly runner: StickRunner,
@@ -231,7 +232,7 @@ export class RunnerContactResidue implements Tickable {
     }
 
     const n = Math.min(this._segments.length, MAX_SEGS);
-    const startIndex = this._segments.length - n; // keep the newest if we overflow
+    const startIndex = this._segments.length - n;
     this._u_a.fill(0);
     this._u_start.fill(0);
     this._u_end.fill(0);
@@ -249,8 +250,6 @@ export class RunnerContactResidue implements Tickable {
       this._u_born[i] = seg.born;
     }
 
-    const green = DraculaColorScheme.green;
-    const white = DraculaColorScheme.white;
     const origin = this._actor.pos;
 
     this._material.update((shader) => {
@@ -263,14 +262,6 @@ export class RunnerContactResidue implements Tickable {
       shader.trySetUniformFloat('u_life', RESIDUE_LIFE_TICKS);
       shader.trySetUniformFloat('u_glow_px', RESIDUE_GLOW_PX);
       shader.trySetUniformFloat('u_count', n);
-      shader.trySetUniformFloatVector3(
-        'u_green',
-        vec3(green.r / 255, green.g / 255, green.b / 255)
-      );
-      shader.trySetUniformFloatVector3(
-        'u_white',
-        vec3(white.r / 255, white.g / 255, white.b / 255)
-      );
       shader.trySetUniformFloatArray('u_a', this._u_a);
       shader.trySetUniformFloatArray('u_start', this._u_start);
       shader.trySetUniformFloatArray('u_end', this._u_end);
