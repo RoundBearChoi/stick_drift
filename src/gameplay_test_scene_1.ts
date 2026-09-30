@@ -15,7 +15,6 @@ import { RunnerStateSwitcher } from './runner_state_switcher';
 import { RunnerMovementBufferResolve } from './runner_movement_buffer_resolve';
 import { RunnerGroundChecker } from './runner_ground_checker';
 import { RunnerWallSlideCheck } from './runner_wall_slide_check';
-import { RunnerContactResidue } from './runner_contact_residue';
 import { createBrick } from './brick_creator';
 import { GridDebug } from './debug_grid';
 import { CameraController } from './camera_controller';
@@ -34,7 +33,6 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _runner_move_buffer_resolve?: RunnerMovementBufferResolve;
   private _ground_checker?: RunnerGroundChecker;
   private _wall_slide_check?: RunnerWallSlideCheck;
-  private _contact_residue?: RunnerContactResidue;
   private _camera_controller?: CameraController;
   private _camera_debug?: CameraDebug;
   private _grid?: GridDebug;
@@ -116,16 +114,6 @@ export class GameplayTestScene1 extends Scene<GameContext> {
         this._solid_grid
       );
     }
-
-    if (!this._contact_residue) {
-      this._contact_residue = new RunnerContactResidue(
-        this._stick_runner,
-        this._game_ctx
-      );
-    }
-    this._contact_residue.setSolidGrid(this._solid_grid);
-    this._contact_residue.attachToScene((actor) => this.add(actor));
-    this._contact_residue.clear();
 
     // reset every time we enter the scene.
     // this is where the runner context is first passed to runner.
@@ -264,7 +252,6 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._wall_slide_check.register();
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
-    this._contact_residue.register();
     this._state_switcher.register();
     this._camera_controller.register();
   }
@@ -293,10 +280,6 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
     if (this._wall_slide_check) {
       this._wall_slide_check.unregister();
-    }
-    if (this._contact_residue) {
-      this._contact_residue.unregister();
-      this._contact_residue.clear();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();
