@@ -32,10 +32,10 @@ interface ResidueSeg {
 }
 
 /**
- * visual-only residue on floors and walls the runner collider touches.
- * 0.5px on the air-facing half of the brick edge.
+ * visual-only residue on floors, walls, and level bounds the runner collider touches.
+ * 0.5px on the air-facing half of the edge pixel.
  * pulse lives in the air on the contact side — tallest at birth, shrinks and fades over 1s.
- * does not paint spike faces or out-of-bounds solids.
+ * does not paint spike faces. out-of-bounds is the level wall (same as collision).
  */
 export class RunnerContactResidue implements Tickable {
   private _solid_grid: SolidGridSystem | null = null;
@@ -108,7 +108,7 @@ export class RunnerContactResidue implements Tickable {
     const y0 = Math.floor(top);
     const y1 = Math.floor(bottom - 1);
 
-    // exclusive bottom edge — first pixel not inside the collider (brick top edge)
+    // exclusive bottom edge — first pixel not inside the collider (brick top / level floor)
     const floorY = Math.floor(bottom);
     this.stampRuns(
       'h',
@@ -118,6 +118,19 @@ export class RunnerContactResidue implements Tickable {
       x1,
       (x) => this.isPaintable(grid, x, floorY, CELL_SPIKE_UP)
     );
+
+    // level ceiling only (y < 0). in-bounds brick undersides stay unpainted.
+    const ceilY = Math.floor(top - 1);
+    if (ceilY < 0) {
+      this.stampRuns(
+        'h',
+        ceilY,
+        -1,
+        x0,
+        x1,
+        (x) => this.isPaintable(grid, x, ceilY, 0)
+      );
+    }
 
     // flush left column (last solid pixel on the left is left-1)
     const leftX = Math.floor(left - 1);
@@ -198,17 +211,17 @@ export class RunnerContactResidue implements Tickable {
     const cellX = Math.floor(worldX / CELL_SIZE);
     const cellY = Math.floor(worldY / CELL_SIZE);
 
-    // isSolid treats out-of-bounds as solid. residue must not paint the void.
+    // out-of-bounds is the level wall — same solid the collider already hits
     if (
       cellX < 0 ||
       cellX >= grid.widthCells ||
       cellY < 0 ||
       cellY >= grid.heightCells
     ) {
-      return false;
+      return true;
     }
     if (!grid.isSolid(cellX, cellY)) return false;
-    if (grid.hasFlag(cellX, cellY, spikeFlag)) return false;
+    if (spikeFlag !== 0 && grid.hasFlag(cellX, cellY, spikeFlag)) return false;
     return true;
   }
 
@@ -254,7 +267,7 @@ export class RunnerContactResidue implements Tickable {
         this.drawLayer(ctx, seg, -seg.inward * i, glow, 1);
       }
 
-      // 0.5px on the air-facing half of the brick edge pixel
+      // 0.5px on the air-facing half of the brick / level-edge pixel
       const edge = Color.fromRGB(
         green.r + (white.r - green.r) * shine,
         green.g + (white.g - green.g) * shine,
