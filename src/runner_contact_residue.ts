@@ -16,10 +16,7 @@ import {
 } from './solid_grid_system';
 import { DraculaColorScheme } from './dracula_color_scheme';
 
-/** 2px into the solid. bump this if the line disappears at 1x scale. */
-export const RESIDUE_THICKNESS = 2;
-
-/** extra pixels leaking into air so the line reads as light, not paint */
+/** extra pixels on the air side of the contact face */
 export const RESIDUE_GLOW_PX = 3;
 
 /** 1s at 60 Hz */
@@ -36,7 +33,7 @@ interface ResidueSeg {
 
 /**
  * visual-only residue on floors and walls the runner collider touches.
- * stamps axis-aligned segments after movement resolve, grows into the solid,
+ * one pixel on the brick edge, pulse / glow only in the air on the contact side.
  * fades over 1s. does not paint spike faces or out-of-bounds solids.
  */
 export class RunnerContactResidue implements Tickable {
@@ -110,7 +107,7 @@ export class RunnerContactResidue implements Tickable {
     const y0 = Math.floor(top);
     const y1 = Math.floor(bottom - 1);
 
-    // exclusive bottom edge — first pixel not inside the collider
+    // exclusive bottom edge — first pixel not inside the collider (brick top edge)
     const floorY = Math.floor(bottom);
     this.stampRuns(
       'h',
@@ -236,56 +233,45 @@ export class RunnerContactResidue implements Tickable {
       const t = Math.min(1, Math.max(0, (this._tick - seg.born) / life));
       const fade = 1 - t;
       const shine = Math.max(0, 1 - t * 2);
-      // slow radioactive pulse — tied to the face coord so neighbors don't sync
+      // pulse lives only in the air layers — tied to the face coord so neighbors don't sync
       const pulse =
-        0.82 + 0.18 * (0.5 + 0.5 * Math.sin((this._tick + seg.a) * 0.21));
-      const energy = fade * pulse;
+        0.55 + 0.45 * (0.5 + 0.5 * Math.sin((this._tick + seg.a) * 0.21));
 
-      // air-side halo first so the hot core stays sharp on top
+      // contact-side air only
       for (let i = RESIDUE_GLOW_PX; i >= 1; i--) {
         const falloff = (RESIDUE_GLOW_PX + 1 - i) / (RESIDUE_GLOW_PX + 1);
         const glow = Color.fromRGB(
           green.r,
           Math.min(255, green.g + 40),
           Math.min(255, green.b + 20),
-          energy * 0.28 * falloff
+          fade * pulse * 0.32 * falloff
         );
-        this.drawLayer(ctx, seg, -seg.inward * i, glow, 1);
+        this.drawLayer(ctx, seg, -seg.inward * i, glow);
       }
 
-      // brick-side core: surface pixel is near-white, inner pixel stays green
-      for (let i = 0; i < RESIDUE_THICKNESS; i++) {
-        const hot = i === 0 ? shine : shine * 0.35;
-        const core = Color.fromRGB(
-          green.r + (white.r - green.r) * hot,
-          green.g + (white.g - green.g) * hot,
-          green.b + (white.b - green.b) * hot,
-          Math.min(1, energy * (i === 0 ? 1 : 0.7))
-        );
-        this.drawLayer(ctx, seg, seg.inward * i, core, 0);
-      }
+      // exactly the 1px brick edge. no pulse, no inward fill.
+      const edge = Color.fromRGB(
+        green.r + (white.r - green.r) * shine,
+        green.g + (white.g - green.g) * shine,
+        green.b + (white.b - green.b) * shine,
+        fade
+      );
+      this.drawLayer(ctx, seg, 0, edge);
     }
   }
 
-  /**
-   * glowExtend stretches the line 1px past each end so floor/wall corners bloom.
-   */
   private drawLayer(
     ctx: ExcaliburGraphicsContext,
     seg: ResidueSeg,
     offsetFromFace: number,
-    color: Color,
-    glowExtend: number
+    color: Color
   ): void {
-    const start = seg.start - glowExtend;
-    const end = seg.end + glowExtend;
-
     if (seg.axis === 'h') {
       const y = seg.a + offsetFromFace;
-      ctx.drawLine(vec(start, y), vec(end, y), color, 1);
+      ctx.drawLine(vec(seg.start, y), vec(seg.end, y), color, 1);
     } else {
       const x = seg.a + offsetFromFace;
-      ctx.drawLine(vec(x, start), vec(x, end), color, 1);
+      ctx.drawLine(vec(x, seg.start), vec(x, seg.end), color, 1);
     }
   }
 }
