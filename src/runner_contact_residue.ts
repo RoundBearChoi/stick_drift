@@ -16,7 +16,7 @@ import {
 } from './solid_grid_system';
 import { DraculaColorScheme } from './dracula_color_scheme';
 
-/** extra pixels on the air side of the contact face */
+/** air-side pulse height in pixels at birth */
 export const RESIDUE_GLOW_PX = 3;
 
 /** 1s at 60 Hz */
@@ -33,8 +33,9 @@ interface ResidueSeg {
 
 /**
  * visual-only residue on floors and walls the runner collider touches.
- * one pixel on the brick edge, pulse / glow only in the air on the contact side.
- * fades over 1s. does not paint spike faces or out-of-bounds solids.
+ * 0.5px on the air-facing half of the brick edge.
+ * pulse lives in the air on the contact side — tallest at birth, shrinks and fades over 1s.
+ * does not paint spike faces or out-of-bounds solids.
  */
 export class RunnerContactResidue implements Tickable {
   private _solid_grid: SolidGridSystem | null = null;
@@ -233,30 +234,35 @@ export class RunnerContactResidue implements Tickable {
       const t = Math.min(1, Math.max(0, (this._tick - seg.born) / life));
       const fade = 1 - t;
       const shine = Math.max(0, 1 - t * 2);
-      // pulse lives only in the air layers — tied to the face coord so neighbors don't sync
       const pulse =
-        0.55 + 0.45 * (0.5 + 0.5 * Math.sin((this._tick + seg.a) * 0.21));
+        0.82 + 0.18 * (0.5 + 0.5 * Math.sin((this._tick + seg.a) * 0.21));
 
-      // contact-side air only
-      for (let i = RESIDUE_GLOW_PX; i >= 1; i--) {
+      // tallest at birth, shrinks from the outside as the segment ages
+      const height = RESIDUE_GLOW_PX * fade;
+
+      for (let i = 1; i <= RESIDUE_GLOW_PX; i++) {
+        const remain = height - (i - 1);
+        if (remain <= 0) continue;
+        const layer = Math.min(1, remain);
         const falloff = (RESIDUE_GLOW_PX + 1 - i) / (RESIDUE_GLOW_PX + 1);
         const glow = Color.fromRGB(
           green.r,
           Math.min(255, green.g + 40),
           Math.min(255, green.b + 20),
-          fade * pulse * 0.32 * falloff
+          fade * pulse * 0.32 * falloff * layer
         );
-        this.drawLayer(ctx, seg, -seg.inward * i, glow);
+        this.drawLayer(ctx, seg, -seg.inward * i, glow, 1);
       }
 
-      // exactly the 1px brick edge. no pulse, no inward fill.
+      // 0.5px on the air-facing half of the brick edge pixel
       const edge = Color.fromRGB(
         green.r + (white.r - green.r) * shine,
         green.g + (white.g - green.g) * shine,
         green.b + (white.b - green.b) * shine,
         fade
       );
-      this.drawLayer(ctx, seg, 0, edge);
+      const edgeOffset = 0.5 - seg.inward * 0.25;
+      this.drawLayer(ctx, seg, edgeOffset, edge, 0.5);
     }
   }
 
@@ -264,14 +270,15 @@ export class RunnerContactResidue implements Tickable {
     ctx: ExcaliburGraphicsContext,
     seg: ResidueSeg,
     offsetFromFace: number,
-    color: Color
+    color: Color,
+    thickness: number
   ): void {
     if (seg.axis === 'h') {
       const y = seg.a + offsetFromFace;
-      ctx.drawLine(vec(seg.start, y), vec(seg.end, y), color, 1);
+      ctx.drawLine(vec(seg.start, y), vec(seg.end, y), color, thickness);
     } else {
       const x = seg.a + offsetFromFace;
-      ctx.drawLine(vec(x, seg.start), vec(x, seg.end), color, 1);
+      ctx.drawLine(vec(x, seg.start), vec(x, seg.end), color, thickness);
     }
   }
 }
