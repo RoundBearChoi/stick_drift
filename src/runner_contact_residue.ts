@@ -5,6 +5,7 @@ import {
   Material,
   Rectangle,
   vec,
+  vec3,
 } from 'excalibur';
 import { Tickable } from './tickable';
 import { GameContext, NATIVE_RESOLUTION } from './game_context';
@@ -262,11 +263,14 @@ export class RunnerContactResidue implements Tickable {
       shader.trySetUniformFloat('u_life', RESIDUE_LIFE_TICKS);
       shader.trySetUniformFloat('u_glow_px', RESIDUE_GLOW_PX);
       shader.trySetUniformFloat('u_count', n);
-      shader.trySetUniformFloatVector(
+      shader.trySetUniformFloatVector3(
         'u_green',
-        vec(green.r / 255, green.g / 255)
+        vec3(green.r / 255, green.g / 255, green.b / 255)
       );
-      shader.trySetUniformFloat('u_white', white.r / 255);
+      shader.trySetUniformFloatVector3(
+        'u_white',
+        vec3(white.r / 255, white.g / 255, white.b / 255)
+      );
       shader.trySetUniformFloatArray('u_a', this._u_a);
       shader.trySetUniformFloatArray('u_start', this._u_start);
       shader.trySetUniformFloatArray('u_end', this._u_end);
