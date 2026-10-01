@@ -33,7 +33,6 @@ export class GreenParticle extends Actor {
     this.pushUniforms();
   }
 
-  /** top-left of the 2x2, inside the level's bottom-left corner */
   placeAtLevelBottomLeft(levelWidthPx: number, levelHeightPx: number): void {
     void levelWidthPx;
     this.pos = vec(0, levelHeightPx - GREEN_PARTICLE_SIZE);
