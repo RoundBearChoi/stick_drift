@@ -44,9 +44,9 @@ export class GreenParticle extends Actor {
    * debug offset so the halo is on screen.
    * bulb is the center of the quad, so the falloff has the same room on every side.
    */
-  placeAtLevelBottomLeft(levelWidthPx: number, levelHeightPx: number): void {
+  placeInLevel(levelWidthPx: number, levelHeightPx: number): void {
     void levelWidthPx;
-    this.pos = vec(100, levelHeightPx - GREEN_PARTICLE_SIZE - 100);
+    this.pos = vec(50, levelHeightPx);
     this.pushUniforms();
   }
 

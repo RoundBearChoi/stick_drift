@@ -238,7 +238,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._green_particle.ensureMaterial(this.engine);
       this.add(this._green_particle);
     }
-    this._green_particle.placeAtLevelBottomLeft(
+    this._green_particle.placeInLevel(
       this._game_ctx.level_ctx.width_px,
       this._game_ctx.level_ctx.height_px
     );
