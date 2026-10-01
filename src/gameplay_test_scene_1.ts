@@ -24,6 +24,7 @@ import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { BrickType, brickDef } from './brick_type';
+import { GreenParticle } from './green_particle';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -41,6 +42,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _bricks_8x8?: Actor[];
   private _solid_grid?: SolidGridSystem;
   private _titleLabel?: Label;
+  private _green_particle?: GreenParticle;
   private readonly _runner_spawn = vec(320, 280);
 
   onInitialize(_engine: Engine): void {}
@@ -230,6 +232,17 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._levelBoundaries = new LevelBoundariesDebug(widthPx, heightPx);
       this.add(this._levelBoundaries);
     }
+
+    // 2x2 green shader particle, inside the level's bottom-left corner
+    if (!this._green_particle) {
+      this._green_particle = new GreenParticle();
+      this._green_particle.ensureMaterial(this.engine);
+      this.add(this._green_particle);
+    }
+    this._green_particle.placeAtLevelBottomLeft(
+      this._game_ctx.level_ctx.width_px,
+      this._game_ctx.level_ctx.height_px
+    );
 
     // camera
     if (!this._camera_controller) {
