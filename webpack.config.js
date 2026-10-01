@@ -38,6 +38,10 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
+                test: /\.frag$/,
+                type: 'asset/source'
+            },
+            {
                 test: /\.(png|jpg|bmp|wav|mp3)$/,
                 type: 'asset/resource'
             }
