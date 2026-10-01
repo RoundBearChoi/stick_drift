@@ -34,11 +34,11 @@ void main() {
   float glow = exp(-band * 0.16);
   if (band > 16.0) glow = 0.0;
 
-  // glass: bright ellipse, no dark rim and no screw base
-  vec2 glass = delta / vec2(2.4, 3.2);
+  // glass: 3 cells wide, 3 tall. corners fall outside the ellipse.
+  vec2 glass = delta / vec2(1.2, 1.5);
   bool in_glass = dot(glass, glass) <= 1.0;
 
-  // 2x2 filament
+  // center cell
   bool filament = max(abs(delta.x), abs(delta.y)) < 1.0;
 
   vec3 rgb = green * glow;
