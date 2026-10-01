@@ -1,7 +1,11 @@
 import { Actor, Color, Engine, Material, Rectangle, vec } from 'excalibur';
 import FRAGMENT from './green_particle.frag';
 
-export const GREEN_PARTICLE_SIZE = 5;
+/** quad the shader paints into. the bulb itself is a few cells inside it. */
+export const GREEN_PARTICLE_SIZE = 48;
+
+/** bulb center, in cells from the quad's top-left. kept near the bottom-left. */
+const BULB_CELL = vec(5, GREEN_PARTICLE_SIZE - 8);
 
 export class GreenParticle extends Actor {
   private _material: Material | null = null;
@@ -33,6 +37,10 @@ export class GreenParticle extends Actor {
     this.pushUniforms();
   }
 
+  /**
+   * quad sits inside the level's bottom-left corner.
+   * the bulb is near that corner; the rest of the quad is the glow.
+   */
   placeAtLevelBottomLeft(levelWidthPx: number, levelHeightPx: number): void {
     void levelWidthPx;
     this.pos = vec(0, levelHeightPx - GREEN_PARTICLE_SIZE);
@@ -46,6 +54,7 @@ export class GreenParticle extends Actor {
         'u_quad_size',
         vec(GREEN_PARTICLE_SIZE, GREEN_PARTICLE_SIZE)
       );
+      shader.trySetUniformFloatVector('u_bulb_cell', BULB_CELL);
     });
   }
 }
