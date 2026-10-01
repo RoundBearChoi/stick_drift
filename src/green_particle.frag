@@ -1,24 +1,10 @@
 #version 300 es
 precision mediump float;
 
-uniform vec2 u_quad_size; // GREEN_PARTICLE_SIZE, 2 x 2
+uniform vec2 u_quad_size;
 
 in vec2 v_uv; // fragment position on the quad, 0 ~ 1
 out vec4 fragColor;
-
-/*
-2x2 quad. GPU runs main once per fragment.
-we pin the cell first, then paint — same direction as blood_splatter.
-
-(0,0) top-left of the quad          (1,0)
-
-      +--------+
-      |        |
-      |        |
-      +--------+
-
-(0,1)                               (1,1)
-*/
 
 void main() {
   vec2 cell = floor(v_uv * u_quad_size);

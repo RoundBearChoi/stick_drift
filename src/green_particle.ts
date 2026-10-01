@@ -1,7 +1,7 @@
 import { Actor, Color, Engine, Material, Rectangle, vec } from 'excalibur';
 import FRAGMENT from './green_particle.frag';
 
-export const GREEN_PARTICLE_SIZE = 2;
+export const GREEN_PARTICLE_SIZE = 5;
 
 export class GreenParticle extends Actor {
   private _material: Material | null = null;
