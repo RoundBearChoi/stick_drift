@@ -239,7 +239,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(this._green_particle);
     }
     this._green_particle.placeInLevel(
-      this._game_ctx.level_ctx.width_px,
+      0,
       this._game_ctx.level_ctx.height_px
     );
 

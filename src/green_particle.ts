@@ -47,9 +47,8 @@ export class GreenParticle extends Actor {
    * pos is the bulb center.
    * y = levelHeightPx sits on the bottom edge of the level.
    */
-  placeInLevel(levelWidthPx: number, levelHeightPx: number): void {
-    void levelWidthPx;
-    this.pos = vec(50, levelHeightPx);
+  placeInLevel(x: number, y: number): void {
+    this.pos = vec(x, y);
     this.pushUniforms();
   }
 

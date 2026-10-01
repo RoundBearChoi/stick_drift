@@ -163,7 +163,9 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._green_particle.ensureMaterial(this.engine);
       this.add(this._green_particle);
     }
-    this._green_particle.placeInLevel(level.width_px, level.height_px);
+    this._green_particle.placeInLevel(
+      level.width_px,
+      level.height_px);
 
     // camera
     if (!this._camera_controller) {
