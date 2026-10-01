@@ -158,7 +158,6 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this.add(this._levelBoundaries);
     }
 
-    // 2x2 green shader particle, inside the level's bottom-left corner
     if (!this._green_particle) {
       this._green_particle = new GreenParticle();
       this._green_particle.ensureMaterial(this.engine);
