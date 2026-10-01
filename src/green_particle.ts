@@ -7,7 +7,7 @@ import FRAGMENT from './green_particle.frag';
  */
 export const GREEN_PARTICLE_SIZE = 80;
 
-/** bulb center, in cells from the quad's top-left. */
+/** bulb center, in cells from the quad's top-left. matches the actor pivot. */
 const BULB_CELL = vec(GREEN_PARTICLE_SIZE / 2, GREEN_PARTICLE_SIZE / 2);
 
 export class GreenParticle extends Actor {
@@ -16,7 +16,9 @@ export class GreenParticle extends Actor {
   constructor() {
     super({
       name: 'GreenParticle',
-      anchor: vec(0, 0), // top-left, same pivot as bricks
+      anchor: vec(0.5, 0.5), // bulb center. pos is the filament, not the quad corner
+      width: GREEN_PARTICLE_SIZE,
+      height: GREEN_PARTICLE_SIZE,
     });
 
     this.graphics.use(
@@ -26,6 +28,7 @@ export class GreenParticle extends Actor {
         color: Color.White, // shader replaces this
       })
     );
+    this.graphics.anchor = vec(0.5, 0.5);
     this.graphics.forceOnScreen = true;
   }
 
@@ -41,8 +44,8 @@ export class GreenParticle extends Actor {
   }
 
   /**
-   * debug offset so the halo is on screen.
-   * bulb is the center of the quad, so the falloff has the same room on every side.
+   * pos is the bulb center.
+   * y = levelHeightPx sits on the bottom edge of the level.
    */
   placeInLevel(levelWidthPx: number, levelHeightPx: number): void {
     void levelWidthPx;
