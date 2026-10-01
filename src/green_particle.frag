@@ -8,10 +8,9 @@ in vec2 v_uv; // fragment position on the quad, 0 ~ 1
 out vec4 fragColor;
 
 /*
-the actor quad is the light's bounding box, not the bulb.
-main only runs for fragments on that quad.
-we pin the cell, then paint the filament, the glass, and the falloff.
-cells outside the glow stay alpha 0 so the quad does not hide the level.
+the actor quad is only the light's bounding box.
+main only runs for fragments on that quad, so the halo must fade out
+before it reaches the quad edge or the falloff is cut into a rectangle.
 */
 
 void main() {
@@ -30,17 +29,14 @@ void main() {
   vec3 green = vec3(0.31372549, 0.98039216, 0.48235294);
   vec3 hot = vec3(0.86, 1.0, 0.92);
 
-  // 2px bands so the halo stays chunky
+  // 2px bands so the halo stays chunky. 16 bands = 32px, inside an 80px quad.
   float band = floor(dist / 2.0);
   float glow = exp(-band * 0.16);
   if (band > 16.0) glow = 0.0;
 
-  // glass: 5 x 7 ellipse sitting on the bulb cell
+  // glass: bright ellipse, no dark rim and no screw base
   vec2 glass = delta / vec2(2.4, 3.2);
   bool in_glass = dot(glass, glass) <= 1.0;
-
-  // screw base, just under the glass
-  bool in_base = abs(delta.x) <= 1.0 && delta.y >= 3.0 && delta.y <= 5.0;
 
   // 2x2 filament
   bool filament = max(abs(delta.x), abs(delta.y)) < 1.0;
@@ -49,18 +45,12 @@ void main() {
   float alpha = glow * 0.45;
 
   if (in_glass) {
-    float edge = smoothstep(0.55, 1.0, length(glass));
-    rgb = mix(hot, green * 0.55, edge);
-    alpha = 0.92;
+    rgb = mix(hot, green, 0.35);
+    alpha = 0.95;
   }
 
   if (filament) {
     rgb = hot;
-    alpha = 1.0;
-  }
-
-  if (in_base) {
-    rgb = green * 0.28;
     alpha = 1.0;
   }
 

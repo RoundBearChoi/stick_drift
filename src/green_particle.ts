@@ -1,11 +1,14 @@
 import { Actor, Color, Engine, Material, Rectangle, vec } from 'excalibur';
 import FRAGMENT from './green_particle.frag';
 
-/** quad the shader paints into. the bulb itself is a few cells inside it. */
-export const GREEN_PARTICLE_SIZE = 48;
+/**
+ * quad the shader paints into.
+ * halo radius is 32px, so the quad must be bigger than 64 or the falloff clips.
+ */
+export const GREEN_PARTICLE_SIZE = 80;
 
-/** bulb center, in cells from the quad's top-left. kept near the bottom-left. */
-const BULB_CELL = vec(5, GREEN_PARTICLE_SIZE - 8);
+/** bulb center, in cells from the quad's top-left. */
+const BULB_CELL = vec(GREEN_PARTICLE_SIZE / 2, GREEN_PARTICLE_SIZE / 2);
 
 export class GreenParticle extends Actor {
   private _material: Material | null = null;
@@ -38,8 +41,8 @@ export class GreenParticle extends Actor {
   }
 
   /**
-   * quad sits inside the level's bottom-left corner.
-   * the bulb is near that corner; the rest of the quad is the glow.
+   * debug offset so the halo is on screen.
+   * bulb is the center of the quad, so the falloff has the same room on every side.
    */
   placeAtLevelBottomLeft(levelWidthPx: number, levelHeightPx: number): void {
     void levelWidthPx;
