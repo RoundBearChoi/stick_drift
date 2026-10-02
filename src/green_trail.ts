@@ -4,6 +4,7 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { SolidGridSystem } from './solid_grid_system';
 import { checkIsGrounded } from './runner_ground_checker';
+import { checkWallSlideContact } from './runner_wall_slide_check';
 import FRAGMENT from './green_trail.frag';
 import { assignZ } from './z_order';
 
@@ -11,6 +12,8 @@ export const MAX_PARTICLES = 100;
 export const PARTICLE_SIZE = 2; // 2x2
 export const PARTICLE_LIFE = 15; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
+
+type ContactSide = 'none' | 'ground' | 'left' | 'right';
 
 class ParticleSlot {
   is_playing = false;
@@ -25,8 +28,11 @@ class ParticleSlot {
 }
 
 /**
- * one birth per pixel of a grounded step whose bottom-center sits on a solid.
- * grounded alone is a full-width sole probe, so a toe on a ledge still counts.
+ * one birth per pixel of a contact step whose center sits on a solid.
+ * ground: full-width sole probe, then the exclusive bottom-center pivot.
+ * wall: checkWallSlideContact on that side, then the exclusive mid-edge pixel.
+ * a toe or a corner graze still counts as contact, so it does not trail.
+ * probes the post-move foot itself. does not read ctx contact flags or stateName.
  */
 export class GreenTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
@@ -35,9 +41,8 @@ export class GreenTrail implements Tickable {
 
   private _slots: ParticleSlot[] = [];
   private _cursor = 0;
-  private _prev_foot: Vector | null = null;
-  private _prev_grounded = false;
-  private _prev_center_on_solid = false;
+  private _prev_point: Vector | null = null;
+  private _prev_side: ContactSide = 'none';
   private _built = false;
 
   constructor(
@@ -85,9 +90,8 @@ export class GreenTrail implements Tickable {
 
   /** drop the segment so a respawn does not draw a line back to the end point. */
   clear(): void {
-    this._prev_foot = null;
-    this._prev_grounded = false;
-    this._prev_center_on_solid = false;
+    this._prev_point = null;
+    this._prev_side = 'none';
     for (const slot of this._slots) this.turn_off(slot);
   }
 
@@ -100,29 +104,18 @@ export class GreenTrail implements Tickable {
 
     this.age();
 
-    const foot = this.runner.pos;
-    const grounded = checkIsGrounded(
-      foot.x,
-      foot.y,
-      ctx,
-      this._solid_grid
-    );
-    // exclusive bottom-center: same y the sole probe uses, only the pivot cell
-    const center_on_solid = this._solid_grid.isSolidAtWorldSpace(foot.x, foot.y);
-
+    const sample = this.sample(this.runner.pos);
     if (
-      this._prev_foot &&
-      this._prev_grounded &&
-      grounded &&
-      this._prev_center_on_solid &&
-      center_on_solid
+      this._prev_point &&
+      sample.point &&
+      this._prev_side !== 'none' &&
+      sample.side === this._prev_side
     ) {
-      this.stamp(this._prev_foot, foot);
+      this.stamp(this._prev_point, sample.point, sample.side);
     }
 
-    this._prev_foot = foot.clone();
-    this._prev_grounded = grounded;
-    this._prev_center_on_solid = center_on_solid;
+    this._prev_point = sample.point?.clone() ?? null;
+    this._prev_side = sample.side;
   }
 
   register(): void {
@@ -131,6 +124,41 @@ export class GreenTrail implements Tickable {
 
   unregister(): void {
     this.gameCtx.unregisterTickable(this);
+  }
+
+  /**
+   * ground wins, so a landing does not also paint the wall.
+   * wall is air-only: a grounded side scrape is not a wall slide.
+   * squeezed between two solids, keep the facing wall only.
+   */
+  private sample(foot: Vector): { side: ContactSide; point: Vector | null } {
+    const ctx = this.gameCtx.runner_ctx;
+    const grounded = checkIsGrounded(foot.x, foot.y, ctx, this._solid_grid);
+    const sole_center = this._solid_grid.isSolidAtWorldSpace(foot.x, foot.y);
+    if (grounded && sole_center) {
+      return { side: 'ground', point: foot.clone() };
+    }
+    if (grounded) return { side: 'none', point: null };
+
+    const halfW = ctx.collider_width / 2;
+    const midY = foot.y - ctx.collider_height / 2;
+    const walls = checkWallSlideContact(foot.x, foot.y, ctx, this._solid_grid);
+    const left = walls.left && !(walls.right && ctx.is_facing_right_side);
+    const right = walls.right && !(walls.left && !ctx.is_facing_right_side);
+
+    if (left) {
+      const x = foot.x - halfW - 1; // last solid pixel left of the collider
+      if (this._solid_grid.isSolidAtWorldSpace(x, midY)) {
+        return { side: 'left', point: vec(x, midY) };
+      }
+    }
+    if (right) {
+      const x = foot.x + halfW; // first solid pixel right of the collider
+      if (this._solid_grid.isSolidAtWorldSpace(x, midY)) {
+        return { side: 'right', point: vec(x, midY) };
+      }
+    }
+    return { side: 'none', point: null };
   }
 
   private age(): void {
@@ -146,7 +174,7 @@ export class GreenTrail implements Tickable {
     }
   }
 
-  private stamp(from: Vector, to: Vector): void {
+  private stamp(from: Vector, to: Vector, side: ContactSide): void {
     const delta = to.sub(from);
     const dist = delta.magnitude;
     if (dist < 1 || dist > SPAWN_MAX_DIST) return;
@@ -157,7 +185,7 @@ export class GreenTrail implements Tickable {
       const progress = this.birth_progress(px);
       if (progress >= 1) continue;
       const t = i / steps;
-      this.turn_on(from.x + delta.x * t, from.y + delta.y * t, progress);
+      this.turn_on(from.x + delta.x * t, from.y + delta.y * t, progress, side);
     }
   }
 
@@ -170,12 +198,15 @@ export class GreenTrail implements Tickable {
     return Math.pow(px_from_prev, this.curve) * this.progress_per_px;
   }
 
-  private turn_on(x: number, y: number, progress: number): void {
+  private turn_on(x: number, y: number, progress: number, side: ContactSide): void {
     const slot = this._slots[this._cursor];
     this._cursor = (this._cursor + 1) % MAX_PARTICLES;
 
     slot.is_playing = true;
     slot.progress = progress;
+    // grow the quad into the body, same as the floor dots sitting on the sole
+    slot.actor.anchor =
+      side === 'left' ? vec(0, 0.5) : side === 'right' ? vec(1, 0.5) : vec(0.5, 1);
     slot.actor.pos = vec(Math.round(x), Math.round(y));
     slot.actor.graphics.visible = true;
     this.pushProgress(slot);
