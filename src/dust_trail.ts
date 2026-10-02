@@ -31,7 +31,7 @@ class DustSlot {
 export class DustTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
   progress_per_px = 0.02;
-  curve = 1.1; // 1 = linear. 2 pushes the offset toward the front of the step
+  curve = 0.75; // 1 = linear. 2 pushes the offset toward the front of the step
 
   private _slots: DustSlot[] = [];
   private _cursor = 0;
