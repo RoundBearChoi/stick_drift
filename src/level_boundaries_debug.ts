@@ -4,6 +4,7 @@ import {
   vec,
 } from 'excalibur';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { assignZ } from './z_order';
 
 /**
  * draw outer level boundary in yellow. only the segments that intersect viewport are rendered.
@@ -21,6 +22,7 @@ export class LevelBoundariesDebug extends Actor {
    */
   constructor(widthPx: number, heightPx: number) {
     super({ name: 'LevelBoundariesDebug' });
+    assignZ(this, 'debug_graphics');
 
     this._width = widthPx;
     this._height = heightPx;

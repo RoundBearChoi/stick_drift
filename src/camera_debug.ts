@@ -7,6 +7,7 @@ import {
 } from 'excalibur';
 import { CameraController } from './camera_controller';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { assignZ } from './z_order';
 
 /** visual-only camera target debug overlay. */
 export class CameraDebug extends Actor {
@@ -15,6 +16,7 @@ export class CameraDebug extends Actor {
     private readonly hostScene: Scene
   ) {
     super({ name: 'CameraDebug' });
+    assignZ(this, 'debug_graphics');
 
     // required so Excalibur doesn't cull an actor with no size/graphics
     this.graphics.forceOnScreen = true;

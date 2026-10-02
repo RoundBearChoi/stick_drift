@@ -1,6 +1,7 @@
 import { Actor, vec, ExcaliburGraphicsContext } from 'excalibur';
 import { RunnerContext } from './runner_context';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { assignZ } from './z_order';
 
 /**
  * visual-only jump-momentum bar.
@@ -22,6 +23,7 @@ export class RunnerJumpDebug {
       name: 'RunnerJumpDebug',
       // local origin stays at the runner’s pivot (bottom-center)
     });
+    assignZ(debug, 'debug_graphics');
 
     // safety flag to make sure it renders
     debug.graphics.forceOnScreen = true;

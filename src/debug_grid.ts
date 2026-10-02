@@ -4,6 +4,7 @@ import {
   ExcaliburGraphicsContext,
   vec,
 } from 'excalibur';
+import { assignZ } from './z_order';
 
 /**
  * only renders lines that intersect the current camera viewport.
@@ -17,8 +18,8 @@ export class GridDebug extends Actor {
   constructor(cellSize = 8) {
     super({
       name: 'GridSystem',
-      //z: 500, // we could use z, but we're already adding grid actor after the runner, so it should be fine for now
     });
+    assignZ(this, 'debug_graphics');
 
     this.cellSize = cellSize;
 

@@ -1,6 +1,7 @@
 import { Actor, vec, ExcaliburGraphicsContext } from 'excalibur';
 import { RunnerContext } from './runner_context';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { assignZ } from './z_order';
 
 /**
  * visual-only yellow collider outline for the runner.
@@ -24,6 +25,7 @@ export class RunnerColliderDebug {
       name: 'RunnerColliderDebug',
       // local origin stays at the runner’s pivot (bottom-center)
     });
+    assignZ(debug, 'debug_graphics');
 
     // same safety flag GridSystem / CameraController use
     debug.graphics.forceOnScreen = true;

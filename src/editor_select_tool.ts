@@ -13,6 +13,7 @@ import { spikeDef } from './spike_type';
 import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { getEditorWorldPos } from './editor_world_pos';
+import { assignZ } from './z_order';
 
 const DRAG_THRESHOLD = 4;
 
@@ -46,6 +47,7 @@ export class EditorSelectTool {
       name: 'EditorSelectOverlay',
       pos: vec(0, 0),
     });
+    assignZ(this.overlay, 'debug_graphics');
     this.overlay.graphics.forceOnScreen = true;
     this.overlay.graphics.onPostDraw = (ctx) => {
       if (!this.active) return;

@@ -5,6 +5,7 @@ import { StickRunner } from './stick_runner';
 import { SolidGridSystem } from './solid_grid_system';
 import { checkIsGrounded } from './runner_ground_checker';
 import FRAGMENT from './green_trail.frag';
+import { assignZ } from './z_order';
 
 export const MAX_PARTICLES = 100;
 export const PARTICLE_SIZE = 2; // 2x2
@@ -59,8 +60,8 @@ export class GreenTrail implements Tickable {
         anchor: vec(0.5, 1), // bottom-center, same pivot as the runner foot
         width: PARTICLE_SIZE,
         height: PARTICLE_SIZE,
-        z: 2,
       });
+      assignZ(actor, 'runner_vfx');
       actor.graphics.use(
         new Rectangle({
           width: PARTICLE_SIZE,

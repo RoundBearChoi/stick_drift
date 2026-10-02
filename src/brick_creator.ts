@@ -2,6 +2,7 @@ import { Actor, Engine, Vector, vec } from 'excalibur';
 import { Resources } from './resources';
 import { applySpriteRenderOffset } from './sprite_render';
 import { BrickType, DEFAULT_BRICK_TYPE } from './brick_type';
+import { assignZ } from './z_order';
 
 export interface BrickCreateOptions {
   pos?: Vector;
@@ -21,6 +22,7 @@ export function createBrick(
     pos: options.pos ?? vec(0, 0),
     anchor: vec(0, 0), // top left pivot for easy registration on uint8array grid
   });
+  assignZ(actor, 'environment');
 
   const sheet =
     type === BrickType.Brick8x8

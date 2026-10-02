@@ -6,6 +6,7 @@ import {
 import { CELL_SIZE } from './solid_grid_system';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { getEditorWorldPos } from './editor_world_pos';
+import { assignZ } from './z_order';
 
 /**
  * visual helper for level_editor_test_scene.
@@ -39,6 +40,7 @@ export class NearestMouseToGrid extends Actor {
       name: 'NearestMouseToGrid',
       pos: vec(0, 0),
     });
+    assignZ(this, 'debug_graphics');
 
     // required so Excalibur does not cull an actor with no size/graphics
     this.graphics.forceOnScreen = true;

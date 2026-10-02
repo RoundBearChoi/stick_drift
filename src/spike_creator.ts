@@ -9,6 +9,7 @@ import {
   spikeDef,
   spikeFacingToRadians,
 } from './spike_type';
+import { assignZ } from './z_order';
 
 // arguments are optional and callers don't have to remember argument order.
 export interface SpikeCreateOptions {
@@ -29,6 +30,7 @@ export function createSpike(
     pos: options.spike_pos ?? vec(0, 0),
     anchor: vec(0, 0), // top left pivot for easy registration on uint8array grid
   });
+  assignZ(actor, 'environment');
 
   const sheet =
     type === SpikeType.Spike16x16 ?

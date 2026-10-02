@@ -10,6 +10,7 @@ import { RunnerIdle } from './states/runner_idle';
 import { RunnerColliderDebug } from './runner_collider_debug';
 import { RunnerJumpDebug } from './runner_jump_debug';
 import { RunnerFallDebug } from './runner_fall_debug';
+import { assignZ } from './z_order';
 
 export interface RunnerOptions {
   pos?: Vector;
@@ -35,6 +36,7 @@ export class StickRunner extends Actor implements Tickable {
     super({
       pos: options.pos ?? vec(0, 0),
     });
+    assignZ(this, 'runner');
 
     // onEnter cannot be called here. at construction time runner does not have access to runner context.
     // constructor only creates the object and sets placeholder state. no animation is attached yet.

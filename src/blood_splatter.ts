@@ -8,6 +8,7 @@ import {
 } from 'excalibur';
 import { RUNNER_DEATH_DELAY_TICKS } from './on_runner_death';
 import FRAGMENT from './blood_splatter.frag';
+import { assignZ } from './z_order';
 
 export const BLOOD_SPLATTER_SIZE = 128; // actor size and quad size
 
@@ -22,6 +23,7 @@ export class BloodSplatter extends Actor {
       name: 'BloodSplatter',
       anchor: vec(0.5, 0.5), // center mass
     });
+    assignZ(this, 'runner_vfx');
 
     this.graphics.use(
       new Rectangle({
