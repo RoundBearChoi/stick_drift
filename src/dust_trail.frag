@@ -9,7 +9,7 @@ out vec4 fragColor;
 // only responsible for fading
 void main() {
   float p = clamp(u_progress, 0.0, 1.0);
-  float fade = 1.0 - smoothstep(0.65, 1.0, p);
+  float fade = 1.0 - smoothstep(0.2, 1.0, p); // start fading at 20% progress
   if (fade <= 0.004) {
     fragColor = vec4(0.0);
     return;

@@ -8,7 +8,7 @@ import FRAGMENT from './dust_trail.frag';
 
 export const DUST_MAX = 100;
 export const DUST_SIZE = 2; // 2x2
-export const DUST_LIFE = 10; // ticks from progress 0 to 1
+export const DUST_LIFE = 15; // ticks from progress 0 to 1
 const DUST_SPAWN_MAX_DIST = 20;
 
 class DustSlot {
@@ -30,8 +30,8 @@ class DustSlot {
  */
 export class DustTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
-  progress_per_px = 0.02;
-  curve = 0.75; // 1 = linear. 2 pushes the offset toward the front of the step
+  progress_per_px = 0.03;
+  curve = 0.9; // 1 = linear. 2 pushes the offset toward the front of the step
 
   private _slots: DustSlot[] = [];
   private _cursor = 0;
