@@ -7,9 +7,9 @@ import { checkIsGrounded } from './runner_ground_checker';
 import FRAGMENT from './dust_trail.frag';
 
 export const DUST_MAX = 100;
-export const DUST_SIZE = 2;
-export const DUST_LIFE = 24; // ticks from progress 0 to 1
-const DUST_SPAWN_MAX_DIST = 24; // longer than this is a teleport, not a step
+export const DUST_SIZE = 2; // 2x2
+export const DUST_LIFE = 12; // ticks
+const DUST_SPAWN_MAX_DIST = 20;
 
 class DustSlot {
   is_playing = false;
@@ -29,9 +29,9 @@ class DustSlot {
  * u_progress is ticks / DUST_LIFE, uploaded like BloodSplatter.
  */
 export class DustTrail implements Tickable {
-  spacing = 1; // px between births. 1 = one dot per pixel of the step
+  spacing = 2; // px between births. 1 = one dot per pixel of the step
   progress_per_px = 0.03; // x=1 starts at 0.03, x=2 at 0.06, ...
-  curve = 1; // 1 = linear. 2 pushes the offset toward the front of the step
+  curve = 1.1; // 1 = linear. 2 pushes the offset toward the front of the step
 
   private _slots: DustSlot[] = [];
   private _cursor = 0;
@@ -82,7 +82,7 @@ export class DustTrail implements Tickable {
     this._built = true;
   }
 
-  /** drop the segment so a respawn does not draw a line back to the death point. */
+  /** drop the segment so a respawn does not draw a line back to the end point. */
   clear(): void {
     this._prev_foot = null;
     this._prev_grounded = false;
