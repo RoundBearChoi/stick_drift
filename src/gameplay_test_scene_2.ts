@@ -29,7 +29,6 @@ import { brickDef } from './brick_type';
 import { spikeDef } from './spike_type';
 import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
-import { GreenParticle } from './green_particle';
 import { DustTrail } from './dust_trail';
 
 export class GameplayTestScene2 extends Scene<GameContext> {
@@ -52,7 +51,6 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _spikes: Actor[] = [];
   private _solid_grid_system?: SolidGridSystem;
   private _titleLabel?: Label;
-  private _green_particle?: GreenParticle;
   private _dust_trail?: DustTrail;
 
   onInitialize(_engine: Engine): void {}
@@ -170,15 +168,6 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       );
       this.add(this._levelBoundaries);
     }
-
-    if (!this._green_particle) {
-      this._green_particle = new GreenParticle();
-      this._green_particle.ensureMaterial(this.engine);
-      this.add(this._green_particle);
-    }
-    this._green_particle.placeInLevel(
-      level.width_px,
-      level.height_px);
 
     // camera
     if (!this._camera_controller) {
