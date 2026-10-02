@@ -5,6 +5,7 @@ export const Z_ORDER = {
   environment: 1,
   runner: 10,
   runner_vfx: 100,
+  debug_graphics: 500,
   hud: 1000,
 } as const;
 
