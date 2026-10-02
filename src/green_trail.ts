@@ -10,7 +10,7 @@ import { assignZ } from './z_order';
 
 export const MAX_PARTICLES = 100;
 export const PARTICLE_SIZE = 2; // 2x2
-export const PARTICLE_LIFE = 15; // ticks from progress 0 to 1
+export const PARTICLE_LIFE = 20; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
 
 type ContactSide = 'none' | 'ground' | 'left' | 'right';
