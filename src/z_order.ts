@@ -1,7 +1,10 @@
 import { Actor } from 'excalibur';
 
 export const Z_ORDER = {
-  world: 0,
+  //world: 0,
+  environment: 1,
+  runner: 10,
+  runner_vfx: 100,
   hud: 1000,
 } as const;
 
