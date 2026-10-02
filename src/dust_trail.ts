@@ -8,12 +8,12 @@ import FRAGMENT from './dust_trail.frag';
 
 export const DUST_MAX = 100;
 export const DUST_SIZE = 2; // 2x2
-export const DUST_LIFE = 10; // ticks
+export const DUST_LIFE = 10; // ticks from progress 0 to 1
 const DUST_SPAWN_MAX_DIST = 20;
 
 class DustSlot {
   is_playing = false;
-  ticks = 0;
+  progress = 0; // 0 ~ 1, uploaded as u_progress
   actor: Actor;
   material: Material;
 
@@ -25,8 +25,8 @@ class DustSlot {
 
 /**
  * one birth per pixel of a grounded step.
- * each slot is its own blood clock: ticks start at a staggered offset, then ++.
- * u_progress is ticks / DUST_LIFE, uploaded like BloodSplatter.
+ * each slot keeps the birth float and adds 1 / DUST_LIFE per tick.
+ * the frag fades that value. it is not floored to a tick first.
  */
 export class DustTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
@@ -123,10 +123,11 @@ export class DustTrail implements Tickable {
   }
 
   private age(): void {
+    const step = 1 / DUST_LIFE;
     for (const slot of this._slots) {
       if (!slot.is_playing) continue;
-      slot.ticks++;
-      if (slot.ticks >= DUST_LIFE) {
+      slot.progress += step;
+      if (slot.progress >= 1) {
         this.turn_off(slot);
         continue;
       }
@@ -163,7 +164,7 @@ export class DustTrail implements Tickable {
     this._cursor = (this._cursor + 1) % DUST_MAX;
 
     slot.is_playing = true;
-    slot.ticks = Math.floor(progress * DUST_LIFE);
+    slot.progress = progress;
     slot.actor.pos = vec(Math.round(x), Math.round(y));
     slot.actor.graphics.visible = true;
     this.pushProgress(slot);
@@ -171,14 +172,13 @@ export class DustTrail implements Tickable {
 
   private turn_off(slot: DustSlot): void {
     slot.is_playing = false;
-    slot.ticks = 0;
+    slot.progress = 0;
     slot.actor.graphics.visible = false;
   }
 
   private pushProgress(slot: DustSlot): void {
-    const progress = slot.ticks / DUST_LIFE;
     slot.material.update((shader) => {
-      shader.trySetUniformFloat('u_progress', progress);
+      shader.trySetUniformFloat('u_progress', slot.progress);
     });
   }
 }
