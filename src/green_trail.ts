@@ -24,7 +24,8 @@ class ParticleSlot {
 }
 
 /**
- * one birth per pixel of a grounded step.
+ * one birth per pixel of a grounded step whose bottom-center sits on a solid.
+ * grounded alone is a full-width sole probe, so a toe on a ledge still counts.
  */
 export class GreenTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
@@ -35,6 +36,7 @@ export class GreenTrail implements Tickable {
   private _cursor = 0;
   private _prev_foot: Vector | null = null;
   private _prev_grounded = false;
+  private _prev_center_on_solid = false;
   private _built = false;
 
   constructor(
@@ -84,6 +86,7 @@ export class GreenTrail implements Tickable {
   clear(): void {
     this._prev_foot = null;
     this._prev_grounded = false;
+    this._prev_center_on_solid = false;
     for (const slot of this._slots) this.turn_off(slot);
   }
 
@@ -103,13 +106,22 @@ export class GreenTrail implements Tickable {
       ctx,
       this._solid_grid
     );
+    // exclusive bottom-center: same y the sole probe uses, only the pivot cell
+    const center_on_solid = this._solid_grid.isSolidAtWorldSpace(foot.x, foot.y);
 
-    if (this._prev_foot && this._prev_grounded && grounded) {
+    if (
+      this._prev_foot &&
+      this._prev_grounded &&
+      grounded &&
+      this._prev_center_on_solid &&
+      center_on_solid
+    ) {
       this.stamp(this._prev_foot, foot);
     }
 
     this._prev_foot = foot.clone();
     this._prev_grounded = grounded;
+    this._prev_center_on_solid = center_on_solid;
   }
 
   register(): void {
