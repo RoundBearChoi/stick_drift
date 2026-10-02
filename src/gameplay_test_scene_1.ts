@@ -24,7 +24,7 @@ import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { BrickType, brickDef } from './brick_type';
-import { DustTrail } from './dust_trail';
+import { GreenTrail } from './green_trail';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -42,7 +42,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _bricks_8x8?: Actor[];
   private _solid_grid?: SolidGridSystem;
   private _titleLabel?: Label;
-  private _dust_trail?: DustTrail;
+  private _green_trail?: GreenTrail;
   private readonly _runner_spawn = vec(320, 280);
 
   onInitialize(_engine: Engine): void {}
@@ -233,17 +233,17 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(this._levelBoundaries);
     }
 
-    if (!this._dust_trail) {
-      this._dust_trail = new DustTrail(
+    if (!this._green_trail) {
+      this._green_trail = new GreenTrail(
         this._stick_runner,
         this._game_ctx,
         this.engine,
         this._solid_grid
       );
     }
-    this._dust_trail.setSolidGrid(this._solid_grid);
-    this._dust_trail.attachToScene((actor) => this.add(actor));
-    this._dust_trail.clear();
+    this._green_trail.setSolidGrid(this._solid_grid);
+    this._green_trail.attachToScene((actor) => this.add(actor));
+    this._green_trail.clear();
 
     // camera
     if (!this._camera_controller) {
@@ -266,7 +266,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._wall_slide_check.register();
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
-    this._dust_trail.register();
+    this._green_trail.register();
     this._state_switcher.register();
     this._camera_controller.register();
   }
@@ -296,9 +296,9 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (this._wall_slide_check) {
       this._wall_slide_check.unregister();
     }
-    if (this._dust_trail) {
-      this._dust_trail.unregister();
-      this._dust_trail.clear();
+    if (this._green_trail) {
+      this._green_trail.unregister();
+      this._green_trail.clear();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();

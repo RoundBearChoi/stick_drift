@@ -4,14 +4,14 @@ import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { SolidGridSystem } from './solid_grid_system';
 import { checkIsGrounded } from './runner_ground_checker';
-import FRAGMENT from './dust_trail.frag';
+import FRAGMENT from './green_trail.frag';
 
-export const DUST_MAX = 100;
-export const DUST_SIZE = 2; // 2x2
-export const DUST_LIFE = 15; // ticks from progress 0 to 1
-const DUST_SPAWN_MAX_DIST = 20;
+export const MAX_PARTICLES = 100;
+export const PARTICLE_SIZE = 2; // 2x2
+export const PARTICLE_LIFE = 15; // ticks from progress 0 to 1
+const SPAWN_MAX_DIST = 20;
 
-class DustSlot {
+class ParticleSlot {
   is_playing = false;
   progress = 0; // 0 ~ 1, uploaded as u_progress
   actor: Actor;
@@ -25,15 +25,13 @@ class DustSlot {
 
 /**
  * one birth per pixel of a grounded step.
- * each slot keeps the birth float and adds 1 / DUST_LIFE per tick.
- * the frag fades that value. it is not floored to a tick first.
  */
-export class DustTrail implements Tickable {
+export class GreenTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
   progress_per_px = 0.03;
   curve = 0.9; // 1 = linear. 2 pushes the offset toward the front of the step
 
-  private _slots: DustSlot[] = [];
+  private _slots: ParticleSlot[] = [];
   private _cursor = 0;
   private _prev_foot: Vector | null = null;
   private _prev_grounded = false;
@@ -53,29 +51,29 @@ export class DustTrail implements Tickable {
   attachToScene(sceneAdd: (actor: Actor) => void): void {
     if (this._built) return;
 
-    for (let i = 0; i < DUST_MAX; i++) {
+    for (let i = 0; i < MAX_PARTICLES; i++) {
       const actor = new Actor({
-        name: 'DustDot',
+        name: 'GreenDot',
         anchor: vec(0.5, 1), // bottom-center, same pivot as the runner foot
-        width: DUST_SIZE,
-        height: DUST_SIZE,
+        width: PARTICLE_SIZE,
+        height: PARTICLE_SIZE,
         z: 2,
       });
       actor.graphics.use(
         new Rectangle({
-          width: DUST_SIZE,
-          height: DUST_SIZE,
+          width: PARTICLE_SIZE,
+          height: PARTICLE_SIZE,
           color: Color.fromHex('#50fa7b'),
         })
       );
       actor.graphics.visible = false;
 
       const material = this.engine.graphicsContext.createMaterial({
-        name: `dust-dot-${i}`,
+        name: `green-dot-${i}`,
         fragmentSource: FRAGMENT,
       });
       actor.graphics.material = material;
-      this._slots.push(new DustSlot(actor, material));
+      this._slots.push(new ParticleSlot(actor, material));
       sceneAdd(actor);
     }
 
@@ -123,7 +121,7 @@ export class DustTrail implements Tickable {
   }
 
   private age(): void {
-    const step = 1 / DUST_LIFE;
+    const step = 1 / PARTICLE_LIFE;
     for (const slot of this._slots) {
       if (!slot.is_playing) continue;
       slot.progress += step;
@@ -138,7 +136,7 @@ export class DustTrail implements Tickable {
   private stamp(from: Vector, to: Vector): void {
     const delta = to.sub(from);
     const dist = delta.magnitude;
-    if (dist < 1 || dist > DUST_SPAWN_MAX_DIST) return;
+    if (dist < 1 || dist > SPAWN_MAX_DIST) return;
 
     const steps = Math.max(1, Math.round(dist / this.spacing));
     for (let i = 1; i <= steps; i++) {
@@ -161,7 +159,7 @@ export class DustTrail implements Tickable {
 
   private turn_on(x: number, y: number, progress: number): void {
     const slot = this._slots[this._cursor];
-    this._cursor = (this._cursor + 1) % DUST_MAX;
+    this._cursor = (this._cursor + 1) % MAX_PARTICLES;
 
     slot.is_playing = true;
     slot.progress = progress;
@@ -170,13 +168,13 @@ export class DustTrail implements Tickable {
     this.pushProgress(slot);
   }
 
-  private turn_off(slot: DustSlot): void {
+  private turn_off(slot: ParticleSlot): void {
     slot.is_playing = false;
     slot.progress = 0;
     slot.actor.graphics.visible = false;
   }
 
-  private pushProgress(slot: DustSlot): void {
+  private pushProgress(slot: ParticleSlot): void {
     slot.material.update((shader) => {
       shader.trySetUniformFloat('u_progress', slot.progress);
     });
