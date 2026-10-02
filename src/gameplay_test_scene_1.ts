@@ -25,6 +25,7 @@ import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { BrickType, brickDef } from './brick_type';
 import { GreenParticle } from './green_particle';
+import { DustTrail } from './dust_trail';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -43,6 +44,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _solid_grid?: SolidGridSystem;
   private _titleLabel?: Label;
   private _green_particle?: GreenParticle;
+  private _dust_trail?: DustTrail;
   private readonly _runner_spawn = vec(320, 280);
 
   onInitialize(_engine: Engine): void {}
@@ -243,6 +245,18 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._game_ctx.level_ctx.height_px
     );
 
+    if (!this._dust_trail) {
+      this._dust_trail = new DustTrail(
+        this._stick_runner,
+        this._game_ctx,
+        this.engine,
+        this._solid_grid
+      );
+    }
+    this._dust_trail.setSolidGrid(this._solid_grid);
+    this._dust_trail.attachToScene((actor) => this.add(actor));
+    this._dust_trail.clear();
+
     // camera
     if (!this._camera_controller) {
       this._camera_controller = new CameraController(this, this._game_ctx);
@@ -264,6 +278,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._wall_slide_check.register();
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
+    this._dust_trail.register();
     this._state_switcher.register();
     this._camera_controller.register();
   }
@@ -292,6 +307,10 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     }
     if (this._wall_slide_check) {
       this._wall_slide_check.unregister();
+    }
+    if (this._dust_trail) {
+      this._dust_trail.unregister();
+      this._dust_trail.clear();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();
