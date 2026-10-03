@@ -1,29 +1,40 @@
-import { Actor, Color, Engine, Material, Rectangle, Vector, vec } from 'excalibur';
+import { Actor, Color, Engine, Rectangle, Vector, vec } from 'excalibur';
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
 import { SolidGridSystem } from './solid_grid_system';
 import { checkIsGrounded } from './runner_ground_checker';
 import { checkWallSlideContact } from './runner_wall_slide_check';
-import FRAGMENT from './green_trail.frag';
 import { assignZ } from './z_order';
 
 export const MAX_PARTICLES = 100;
 export const PARTICLE_SIZE = 2; // 2x2
 export const PARTICLE_LIFE = 20; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
+const FADE_CUTOFF = 0.004;
 
 type ContactSide = 'none' | 'ground' | 'left' | 'right';
 
+const DOT = new Rectangle({
+  width: PARTICLE_SIZE,
+  height: PARTICLE_SIZE,
+  color: Color.fromHex('#50fa7b'),
+});
+
+/** same curve as the old green_trail.frag: full until 0.2, then smoothstep to 0. */
+function fadeFromProgress(p: number): number {
+  const t = Math.min(1, Math.max(0, (p - 0.2) / 0.8));
+  const s = t * t * (3 - 2 * t);
+  return 1 - s;
+}
+
 class ParticleSlot {
   is_playing = false;
-  progress = 0; // 0 ~ 1, uploaded as u_progress
+  progress = 0;
   actor: Actor;
-  material: Material;
 
-  constructor(actor: Actor, material: Material) {
+  constructor(actor: Actor) {
     this.actor = actor;
-    this.material = material;
   }
 }
 
@@ -33,6 +44,9 @@ class ParticleSlot {
  * wall: checkWallSlideContact on that side, then the exclusive mid-edge pixel.
  * a toe or a corner graze still counts as contact, so it does not trail.
  * probes the post-move foot itself. does not read ctx contact flags or stateName.
+ *
+ * dots are a shared Rectangle on the default rectangle batch. fade is graphics.opacity,
+ * which the rectangle shader premultiplies the same way the old fragment shader did.
  */
 export class GreenTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
@@ -48,7 +62,7 @@ export class GreenTrail implements Tickable {
   constructor(
     private readonly runner: StickRunner,
     private readonly gameCtx: GameContext,
-    private readonly engine: Engine,
+    _engine: Engine,
     private _solid_grid: SolidGridSystem
   ) {}
 
@@ -67,21 +81,10 @@ export class GreenTrail implements Tickable {
         height: PARTICLE_SIZE,
       });
       assignZ(actor, 'runner_vfx');
-      actor.graphics.use(
-        new Rectangle({
-          width: PARTICLE_SIZE,
-          height: PARTICLE_SIZE,
-          color: Color.fromHex('#50fa7b'),
-        })
-      );
+      actor.graphics.use(DOT);
+      actor.graphics.opacity = 0;
       actor.graphics.visible = false;
-
-      const material = this.engine.graphicsContext.createMaterial({
-        name: `green-dot-${i}`,
-        fragmentSource: FRAGMENT,
-      });
-      actor.graphics.material = material;
-      this._slots.push(new ParticleSlot(actor, material));
+      this._slots.push(new ParticleSlot(actor));
       sceneAdd(actor);
     }
 
@@ -170,7 +173,7 @@ export class GreenTrail implements Tickable {
         this.turn_off(slot);
         continue;
       }
-      this.pushProgress(slot);
+      this.applyFade(slot);
     }
   }
 
@@ -208,19 +211,19 @@ export class GreenTrail implements Tickable {
     slot.actor.anchor =
       side === 'left' ? vec(0, 0.5) : side === 'right' ? vec(1, 0.5) : vec(0.5, 1);
     slot.actor.pos = vec(Math.round(x), Math.round(y));
-    slot.actor.graphics.visible = true;
-    this.pushProgress(slot);
+    this.applyFade(slot);
   }
 
   private turn_off(slot: ParticleSlot): void {
     slot.is_playing = false;
     slot.progress = 0;
+    slot.actor.graphics.opacity = 0;
     slot.actor.graphics.visible = false;
   }
 
-  private pushProgress(slot: ParticleSlot): void {
-    slot.material.update((shader) => {
-      shader.trySetUniformFloat('u_progress', slot.progress);
-    });
+  private applyFade(slot: ParticleSlot): void {
+    const fade = fadeFromProgress(slot.progress);
+    slot.actor.graphics.opacity = fade;
+    slot.actor.graphics.visible = fade > FADE_CUTOFF;
   }
 }
