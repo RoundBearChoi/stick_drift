@@ -70,11 +70,11 @@ export class RunnerContext {
   get wall_slide_up_vector_decay_interval() { return 2; }
 
   get min_jump_up_ticks_from_ground() { return 1; } // guaranteed full-force jump ticks (ground -> jump vertical)
-  get min_jump_up_ticks_from_wall_slide() { return 3; } // guaranteed full-force jump ticks (wallslide -> jump vertical)
+  get min_jump_up_ticks_from_wall_slide() { return 2; } // guaranteed full-force jump ticks (wallslide -> jump vertical)
   min_jump_ticks_remaining = 0;
 
-  get wall_jump_start_accel() { return 5; }
-  get min_wall_jump_away_ticks_from_wall_slide() { return 6; } // guaranteed full-force jump ticks (wallslide -> jump horizontal)
+  get wall_jump_start_accel() { return 3; }
+  get min_wall_jump_away_ticks_from_wall_slide() { return 2; } // guaranteed full-force jump ticks (wallslide -> jump horizontal)
   wall_jump_away_ticks_remaining = 0;
 
   get release_hang_time() { return 4; } // for normal jump
