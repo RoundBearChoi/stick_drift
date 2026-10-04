@@ -9,10 +9,10 @@ uniform int u_count;
 in vec2 v_uv;
 out vec4 fragColor;
 
-const vec3 HOT = vec3(1.0, 1.0, 0.92);
+const vec3 HOT = vec3(0.55, 1.0, 0.70);  // brighter trail green, not white
 const vec3 COOL = vec3(0.314, 0.980, 0.482); // #50fa7b
 const float FALLOFF_POWER = 1.5; // 1 = linear. higher = the drop steepens toward the end
-const float COLOR_POWER = 1.5;   // white cools to green faster than the energy dies
+const float COLOR_POWER = 1.5;   // bright green cools to the trail green
 const float RADIUS = 8.0;       // world px at birth
 const float GAIN = 1.0;
 const float PEAK_ALPHA = 0.065;   // fresh core is already translucent
@@ -45,7 +45,7 @@ void main() {
     float spatial = exp(-(d * d) / (radius * radius));
     float presence = spatial * strength;
 
-    float heat = pow(1.0 - p, COLOR_POWER); // 1 = white, 0 = trail green
+    float heat = pow(1.0 - p, COLOR_POWER); // 1 = bright green, 0 = trail green
     vec3 col = mix(COOL, HOT, heat);
     accum += col * presence * GAIN;
     cover += presence;
