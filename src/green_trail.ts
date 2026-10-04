@@ -21,6 +21,7 @@ export const PARTICLE_SIZE = 2; // 2x2
 export const PARTICLE_LIFE = 25; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
 const FADE_CUTOFF = 0.004;
+const START_OPACITY = 0.55; // 1 = solid at birth. lower = more transparent dots
 const LIGHT_PACK = MAX_PARTICLES * 3; // xyz per slot
 
 type ContactSide = 'none' | 'ground' | 'left' | 'right';
@@ -37,11 +38,11 @@ const LIGHT_QUAD = new Rectangle({
   color: Color.White,
 });
 
-/** full until 0.2, then smoothstep to 0. */
+/** full until 0.2, then smoothstep to 0. scaled by START_OPACITY. */
 function fadeFromProgress(p: number): number {
   const t = Math.min(1, Math.max(0, (p - 0.2) / 0.8));
   const s = t * t * (3 - 2 * t);
-  return 1 - s;
+  return (1 - s) * START_OPACITY;
 }
 
 class ParticleSlot {
