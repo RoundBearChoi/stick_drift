@@ -14,7 +14,8 @@ const vec3 COOL = vec3(0.314, 0.980, 0.482); // #50fa7b
 const float FALLOFF_POWER = 2.2; // 1 = linear. higher = the drop steepens toward the end
 const float COLOR_POWER = 1.6;   // white cools to green faster than the energy dies
 const float RADIUS = 10.0;       // world px at birth
-const float GAIN = 1.75;
+const float GAIN = 0.85;
+const float PEAK_ALPHA = 0.42;   // fresh core is already translucent
 
 void main() {
   if (u_count <= 0) {
@@ -24,6 +25,7 @@ void main() {
 
   vec2 world = u_origin + v_uv * u_quad_size;
   vec3 accum = vec3(0.0);
+  float cover = 0.0;
 
   for (int i = 0; i < 100; i++) {
     if (i >= u_count) break;
@@ -41,14 +43,16 @@ void main() {
     vec2 pos = vec2(u_particles[base], u_particles[base + 1]);
     float d = length(world - pos);
     float spatial = exp(-(d * d) / (radius * radius));
+    float presence = spatial * strength;
 
     float heat = pow(1.0 - p, COLOR_POWER); // 1 = white, 0 = trail green
     vec3 col = mix(COOL, HOT, heat);
-    accum += col * spatial * strength * GAIN;
+    accum += col * presence * GAIN;
+    cover += presence;
   }
 
-  // soft knee so stacked halos do not clip to a flat white block
+  // same curve as strength: opaque-ish at birth, gone at 1. stack cannot go solid
+  float a = min(cover, 1.0) * PEAK_ALPHA;
   vec3 lit = accum / (1.0 + accum);
-  float a = max(lit.r, max(lit.g, lit.b));
   fragColor = vec4(lit * a, a);
 }
