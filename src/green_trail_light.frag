@@ -13,9 +13,9 @@ const vec3 HOT = vec3(0.55, 1.0, 0.70);  // brighter trail green, not white
 const vec3 COOL = vec3(0.314, 0.980, 0.482); // #50fa7b
 const float FALLOFF_POWER = 1.5; // 1 = linear. higher = the drop steepens toward the end
 const float COLOR_POWER = 1.5;   // bright green cools to the trail green
-const float RADIUS = 8.0;       // world px at birth
-const float GAIN = 1.0;
-const float PEAK_ALPHA = 0.065;   // fresh core is already translucent
+const float RADIUS = 5.5;       // world px at birth
+const float GAIN = 0.7;
+const float PEAK_ALPHA = 0.15;   // fresh core is already translucent
 
 void main() {
   if (u_count <= 0) {
