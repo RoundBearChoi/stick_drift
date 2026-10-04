@@ -11,11 +11,11 @@ out vec4 fragColor;
 
 const vec3 HOT = vec3(0.18, 1.0, 0.36);  // saturated birth green, stronger than #50fa7b
 const vec3 COOL = vec3(0.314, 0.980, 0.482); // #50fa7b
-const float FALLOFF_POWER = 3.0; // 1 = linear. higher = the drop steepens toward the end
-const float COLOR_POWER = 3.0;   // bright green cools to the trail green
-const float RADIUS = 2.2;       // world px at birth
-const float GAIN = 1.5;
-const float PEAK_ALPHA = 0.65;   // fresh core starts more transparent
+const float FALLOFF_POWER = 5.0; // 1 = linear. higher = the drop steepens toward the end
+const float COLOR_POWER = 5.0;   // bright green cools to the trail green
+const float RADIUS = 2.1;       // world px at birth
+const float GAIN = 1.8;
+const float PEAK_ALPHA = 0.6;   // fresh core starts more transparent
 
 void main() {
   if (u_count <= 0) {
