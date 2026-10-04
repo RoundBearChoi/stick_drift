@@ -18,7 +18,7 @@ import FRAGMENT from './green_trail_light.frag';
 
 export const MAX_PARTICLES = 100;
 export const PARTICLE_SIZE = 2; // 2x2
-export const PARTICLE_LIFE = 20; // ticks from progress 0 to 1
+export const PARTICLE_LIFE = 25; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
 const FADE_CUTOFF = 0.004;
 const LIGHT_PACK = MAX_PARTICLES * 3; // xyz per slot
