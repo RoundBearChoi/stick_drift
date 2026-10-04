@@ -15,7 +15,7 @@ const float FALLOFF_POWER = 0.7; // 1 = linear. higher = the drop steepens towar
 const float COLOR_POWER = 0.7;   // bright green cools to the trail green
 const float RADIUS = 3.2;       // world px at birth
 const float GAIN = 1.2;
-const float PEAK_ALPHA = 0.2;   // fresh core is already translucent
+const float PEAK_ALPHA = 0.1;   // fresh core starts more transparent
 
 void main() {
   if (u_count <= 0) {
