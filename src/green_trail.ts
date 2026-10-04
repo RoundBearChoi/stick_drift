@@ -17,8 +17,8 @@ import { assignZ, Z_ORDER } from './z_order';
 import FRAGMENT from './green_trail_light.frag';
 
 export const MAX_PARTICLES = 100;
-export const PARTICLE_SIZE = 2; // 2x2
-export const PARTICLE_LIFE = 25; // ticks from progress 0 to 1
+export const PARTICLE_SIZE = 3;
+export const PARTICLE_LIFE = 30; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
 const FADE_CUTOFF = 0.004;
 const START_OPACITY = 0.5; // 1 = solid at birth. lower = more transparent dots
