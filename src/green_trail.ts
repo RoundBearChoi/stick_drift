@@ -1,9 +1,7 @@
 import {
   Actor,
   Color,
-  CoordPlane,
   Engine,
-  ExcaliburGraphicsContext,
   Material,
   Rectangle,
   Vector,
@@ -57,29 +55,20 @@ class ParticleSlot {
 }
 
 /**
- * screen-sized field. each fragment rebuilds every halo from the uploaded
- * snapshot, so the gpu keeps no particle state.
- * drawn under the dots. onPreDraw so the camera pose is the one about to be drawn.
+ * camera-sized field in world space, above the dots.
+ * each fragment rebuilds every halo from the uploaded snapshot.
  */
 class GreenTrailLight extends Actor {
-  upload: (() => void) | null = null;
-
   constructor() {
     super({
       name: 'GreenTrailLight',
-      anchor: vec(0, 0),
-      pos: vec(0, 0),
+      anchor: vec(0.5, 0.5),
       width: NATIVE_RESOLUTION.width,
       height: NATIVE_RESOLUTION.height,
-      coordPlane: CoordPlane.Screen,
     });
-    this.z = Z_ORDER.runner_vfx - 1;
+    assignZ(this, 'trail_light');
     this.graphics.use(LIGHT_QUAD);
     this.graphics.forceOnScreen = true;
-  }
-
-  onPreDraw(_ctx: ExcaliburGraphicsContext, _elapsed: number): void {
-    this.upload?.();
   }
 }
 
@@ -122,7 +111,6 @@ export class GreenTrail implements Tickable {
     if (this._built) return;
 
     this._light = new GreenTrailLight();
-    this._light.upload = () => this.pushLight();
     this._light_material = this.engine.graphicsContext.createMaterial({
       name: 'green-trail-light',
       fragmentSource: FRAGMENT,
@@ -153,6 +141,7 @@ export class GreenTrail implements Tickable {
     this._prev_point = null;
     this._prev_side = 'none';
     for (const slot of this._slots) this.turn_off(slot);
+    this.pushLight();
   }
 
   fixedUpdate(_dt: number): void {
@@ -176,6 +165,7 @@ export class GreenTrail implements Tickable {
 
     this._prev_point = sample.point?.clone() ?? null;
     this._prev_side = sample.side;
+    this.pushLight();
   }
 
   register(): void {
@@ -312,11 +302,20 @@ export class GreenTrail implements Tickable {
       );
       shader.trySetUniformFloatVector('u_origin', vec(originX, originY));
       shader.trySetUniformInt('u_count', n);
-      const ok = shader.trySetUniformFloatArray('u_particles[0]', packed);
+      const ok =
+        shader.trySetUniformFloatArray('u_particles[0]', packed) ||
+        shader.trySetUniformFloatArray('u_particles', packed);
       if (!ok && !this._warned_uniform) {
         this._warned_uniform = true;
         console.warn('green trail light: u_particles uniform was not set');
       }
     });
+
+    // sit on the camera so the field cannot be culled off in world space
+    const light = this._light;
+    if (light) {
+      light.pos = vec(cam.x, cam.y);
+      light.graphics.visible = true;
+    }
   }
 }
