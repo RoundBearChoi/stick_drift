@@ -1,17 +1,29 @@
-import { Actor, Color, Engine, Rectangle, Vector, vec } from 'excalibur';
+import {
+  Actor,
+  Color,
+  CoordPlane,
+  Engine,
+  ExcaliburGraphicsContext,
+  Material,
+  Rectangle,
+  Vector,
+  vec,
+} from 'excalibur';
 import { Tickable } from './tickable';
-import { GameContext } from './game_context';
+import { GameContext, NATIVE_RESOLUTION } from './game_context';
 import { StickRunner } from './stick_runner';
 import { SolidGridSystem } from './solid_grid_system';
 import { checkIsGrounded } from './runner_ground_checker';
 import { checkWallSlideContact } from './runner_wall_slide_check';
-import { assignZ } from './z_order';
+import { assignZ, Z_ORDER } from './z_order';
+import FRAGMENT from './green_trail_light.frag';
 
 export const MAX_PARTICLES = 100;
 export const PARTICLE_SIZE = 2; // 2x2
 export const PARTICLE_LIFE = 20; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
 const FADE_CUTOFF = 0.004;
+const LIGHT_PACK = MAX_PARTICLES * 3; // xyz per slot
 
 type ContactSide = 'none' | 'ground' | 'left' | 'right';
 
@@ -21,7 +33,13 @@ const DOT = new Rectangle({
   color: Color.fromHex('#50fa7b'),
 });
 
-/** same curve as the old green_trail.frag: full until 0.2, then smoothstep to 0. */
+const LIGHT_QUAD = new Rectangle({
+  width: NATIVE_RESOLUTION.width,
+  height: NATIVE_RESOLUTION.height,
+  color: Color.White,
+});
+
+/** full until 0.2, then smoothstep to 0. */
 function fadeFromProgress(p: number): number {
   const t = Math.min(1, Math.max(0, (p - 0.2) / 0.8));
   const s = t * t * (3 - 2 * t);
@@ -39,14 +57,40 @@ class ParticleSlot {
 }
 
 /**
+ * screen-sized field. each fragment rebuilds every halo from the uploaded
+ * snapshot, so the gpu keeps no particle state.
+ * drawn under the dots. onPreDraw so the camera pose is the one about to be drawn.
+ */
+class GreenTrailLight extends Actor {
+  upload: (() => void) | null = null;
+
+  constructor() {
+    super({
+      name: 'GreenTrailLight',
+      anchor: vec(0, 0),
+      pos: vec(0, 0),
+      width: NATIVE_RESOLUTION.width,
+      height: NATIVE_RESOLUTION.height,
+      coordPlane: CoordPlane.Screen,
+    });
+    this.z = Z_ORDER.runner_vfx - 1;
+    this.graphics.use(LIGHT_QUAD);
+    this.graphics.forceOnScreen = true;
+  }
+
+  onPreDraw(_ctx: ExcaliburGraphicsContext, _elapsed: number): void {
+    this.upload?.();
+  }
+}
+
+/**
  * one birth per pixel of a contact step whose center sits on a solid.
  * ground: full-width sole probe, then the exclusive bottom-center pivot.
  * wall: checkWallSlideContact on that side, then the exclusive mid-edge pixel.
  * a toe or a corner graze still counts as contact, so it does not trail.
  * probes the post-move foot itself. does not read ctx contact flags or stateName.
  *
- * dots are a shared Rectangle on the default rectangle batch. fade is graphics.opacity,
- * which the rectangle shader premultiplies the same way the old fragment shader did.
+ * dots are a shared Rectangle on the default rectangle batch. fade is graphics.opacity.
  */
 export class GreenTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
@@ -58,11 +102,15 @@ export class GreenTrail implements Tickable {
   private _prev_point: Vector | null = null;
   private _prev_side: ContactSide = 'none';
   private _built = false;
+  private _light: GreenTrailLight | null = null;
+  private _light_material: Material | null = null;
+  private _packed = new Array<number>(LIGHT_PACK).fill(-1);
+  private _warned_uniform = false;
 
   constructor(
     private readonly runner: StickRunner,
     private readonly gameCtx: GameContext,
-    _engine: Engine,
+    private readonly engine: Engine,
     private _solid_grid: SolidGridSystem
   ) {}
 
@@ -72,6 +120,15 @@ export class GreenTrail implements Tickable {
 
   attachToScene(sceneAdd: (actor: Actor) => void): void {
     if (this._built) return;
+
+    this._light = new GreenTrailLight();
+    this._light.upload = () => this.pushLight();
+    this._light_material = this.engine.graphicsContext.createMaterial({
+      name: 'green-trail-light',
+      fragmentSource: FRAGMENT,
+    });
+    this._light.graphics.material = this._light_material;
+    sceneAdd(this._light);
 
     for (let i = 0; i < MAX_PARTICLES; i++) {
       const actor = new Actor({
@@ -225,5 +282,41 @@ export class GreenTrail implements Tickable {
     const fade = fadeFromProgress(slot.progress);
     slot.actor.graphics.opacity = fade;
     slot.actor.graphics.visible = fade > FADE_CUTOFF;
+  }
+
+  /** snapshot the living slots. the frag rebuilds the halos from this. no gpu state. */
+  private pushLight(): void {
+    const material = this._light_material;
+    if (!material) return;
+
+    const packed = this._packed;
+    let n = 0;
+    for (const slot of this._slots) {
+      if (!slot.is_playing) continue;
+      const base = n * 3;
+      packed[base] = slot.actor.pos.x;
+      packed[base + 1] = slot.actor.pos.y;
+      packed[base + 2] = slot.progress;
+      n++;
+    }
+    for (let i = n * 3; i < LIGHT_PACK; i++) packed[i] = -1;
+
+    const cam = this.engine.currentScene.camera.pos;
+    const originX = cam.x - NATIVE_RESOLUTION.width / 2;
+    const originY = cam.y - NATIVE_RESOLUTION.height / 2;
+
+    material.update((shader) => {
+      shader.trySetUniformFloatVector(
+        'u_quad_size',
+        vec(NATIVE_RESOLUTION.width, NATIVE_RESOLUTION.height)
+      );
+      shader.trySetUniformFloatVector('u_origin', vec(originX, originY));
+      shader.trySetUniformInt('u_count', n);
+      const ok = shader.trySetUniformFloatArray('u_particles[0]', packed);
+      if (!ok && !this._warned_uniform) {
+        this._warned_uniform = true;
+        console.warn('green trail light: u_particles uniform was not set');
+      }
+    });
   }
 }
