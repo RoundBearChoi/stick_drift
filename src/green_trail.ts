@@ -17,13 +17,13 @@ import { assignZ, Z_ORDER } from './z_order';
 import FRAGMENT from './green_trail_light.frag';
 
 export const MAX_PARTICLES = 100;
-export const PARTICLE_SIZE = 2;
-export const PARTICLE_LIFE = 35; // ticks from progress 0 to 1
+export const PARTICLE_SIZE = 2.2;
+export const PARTICLE_LIFE = 30; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
-const FADE_CUTOFF = 0.01;
-const START_OPACITY = 0.15; // 1 = solid at birth. lower = more transparent dots
+const FADE_CUTOFF = 0.001;
+const START_OPACITY = 0.85; // 1 = solid at birth. lower = more transparent dots
 const LIGHT_PACK = MAX_PARTICLES * 3; // xyz per slot
-const GROUND_TRAIL_UP = 1; // px. grounded trail + light only. y-down, so subtract
+const GROUND_TRAIL_UP = 0; // px. grounded trail + light only. y-down, so subtract
 
 type ContactSide = 'none' | 'ground' | 'left' | 'right';
 
