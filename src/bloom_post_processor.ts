@@ -10,7 +10,8 @@ import FRAGMENT from './bloom.frag';
 
 /**
  * one fullscreen pass on the 640x360 target, before CSS integer scale.
- * blooms every pixel over the knee. no actor or material test.
+ * prefilter keeps green-dominant pixels only, so the trail dots and light
+ * bloom and the bricks and debug text do not.
  */
 export class BloomPostProcessor implements PostProcessor {
   private _shader!: ScreenShader;

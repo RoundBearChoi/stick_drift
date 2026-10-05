@@ -15,13 +15,19 @@ float luma(vec3 c) {
   return dot(c, vec3(0.2126, 0.7152, 0.0722));
 }
 
+// #50fa7b dots and the hot light core stay positive after blending.
+// yellow bricks, white debug text, cyan, and pink do not.
+float trail(vec3 c) {
+  return smoothstep(0.08, 0.22, c.g - max(c.r, c.b));
+}
+
 vec3 prefilter(vec3 c) {
   float br = luma(c);
   float knee = max(u_threshold * u_knee, 1e-4);
   float soft = clamp(br - u_threshold + knee, 0.0, 2.0 * knee);
   soft = (soft * soft) / (4.0 * knee);
   float w = clamp(max(br - u_threshold, soft) / max(br, 1e-4), 0.0, 1.0);
-  return c * w;
+  return c * w * trail(c);
 }
 
 void main() {
