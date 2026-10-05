@@ -23,6 +23,7 @@ const SPAWN_MAX_DIST = 20;
 const FADE_CUTOFF = 0.01;
 const START_OPACITY = 0.15; // 1 = solid at birth. lower = more transparent dots
 const LIGHT_PACK = MAX_PARTICLES * 3; // xyz per slot
+const GROUND_TRAIL_UP = 1; // px. grounded trail + light only. y-down, so subtract
 
 type ContactSide = 'none' | 'ground' | 'left' | 'right';
 
@@ -75,7 +76,8 @@ class GreenTrailLight extends Actor {
 
 /**
  * one birth per pixel of a contact step whose center sits on a solid.
- * ground: full-width sole probe, then the exclusive bottom-center pivot.
+ * ground: full-width sole probe, then the exclusive bottom-center pivot,
+ * drawn 1px up so the dot and its light sit on the sole instead of the solid.
  * wall: checkWallSlideContact on that side, then the exclusive mid-edge pixel.
  * a toe or a corner graze still counts as contact, so it does not trail.
  * probes the post-move foot itself. does not read ctx contact flags or stateName.
@@ -258,7 +260,10 @@ export class GreenTrail implements Tickable {
     // grow the quad into the body, same as the floor dots sitting on the sole
     slot.actor.anchor =
       side === 'left' ? vec(0, 0.5) : side === 'right' ? vec(1, 0.5) : vec(0.5, 1);
-    slot.actor.pos = vec(Math.round(x), Math.round(y));
+    // grounded trail sits on the exclusive solid pixel. draw 1px up into the sole.
+    // light reads this pos, so the halo moves with the dot. walls stay put.
+    const drawY = side === 'ground' ? Math.round(y) - GROUND_TRAIL_UP : Math.round(y);
+    slot.actor.pos = vec(Math.round(x), drawY);
     this.applyFade(slot);
   }
 
