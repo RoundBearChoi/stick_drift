@@ -9,6 +9,7 @@ import { GameContext, NATIVE_RESOLUTION } from './game_context';
 import { setupSceneCycle } from './scene_cycle';
 import { ResolutionScale } from './resolution_scale';
 import { DraculaColorScheme } from './dracula_color_scheme';
+import { BloomPostProcessor } from './bloom_post_processor';
 
 const engine = new Engine({
   width: NATIVE_RESOLUTION.width,
@@ -29,6 +30,7 @@ const engine = new Engine({
 
 const game_context = new GameContext();
 const resolution_scale = new ResolutionScale();
+const bloom = new BloomPostProcessor();
 
 // create input interpreter once the Engine exists
 game_context.createInputInterpreter(engine);
@@ -44,6 +46,7 @@ engine.add('test_scene_1', new TestScene1());
 engine.start(loader).then(() => {
   // attach integer scaling after engine is ready
   resolution_scale.attachToEngine(engine);
+  bloom.attach(engine);
 
   // wire resolution debug so the on-screen label stays in sync
   game_context.screen_resolution_debug.setScale(resolution_scale);
@@ -58,9 +61,11 @@ engine.start(loader).then(() => {
 
   console.log('🚀 game started');
   console.log('integer resolution scaling ready (f8 to cycle)');
+  console.log('bloom post process ready');
 });
 
 // long-lived objects
 (window as any).engine = engine;
 (window as any).game_context = game_context;
 (window as any).resolution_scale = resolution_scale;
+(window as any).bloom = bloom;
