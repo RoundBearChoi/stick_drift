@@ -16,10 +16,10 @@ import FRAGMENT from './bloom.frag';
 export class BloomPostProcessor implements PostProcessor {
   private _shader!: ScreenShader;
 
-  threshold = 0.8;
-  knee = 0.4;
+  threshold = 0.7;
+  knee = 0.2;
   intensity = 1.5;
-  radius = 3.5; // native texels
+  radius = 5.0; // native texels
 
   initialize(graphicsContext: ExcaliburGraphicsContextWebGL): void {
     this._shader = new ScreenShader(graphicsContext, FRAGMENT);
