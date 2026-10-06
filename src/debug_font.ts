@@ -22,11 +22,12 @@ export const debugFontSource = new FontSource(
 
 // designed size or integer multiple of 5
 // 5 → 10 → 15 → 20, etc.
-export function createDebugFont(): Font {
+// default stays left so existing HUD labels keep their anchor.
+export function createDebugFont(align: TextAlign = TextAlign.Left): Font {
   return debugFontSource.toFont({
     size: 5,
     filtering: ImageFiltering.Pixel,
-    textAlign: TextAlign.Left,
+    textAlign: align,
     baseAlign: BaseAlign.Top,
   });
 }

@@ -7,8 +7,9 @@ import {
   vec,
   CoordPlane,
   TransformComponent,
+  TextAlign,
 } from 'excalibur';
-import { GameContext } from './game_context';
+import { GameContext, NATIVE_RESOLUTION } from './game_context';
 import { GridDebug } from './debug_grid';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { createDebugFont } from './debug_font';
@@ -32,6 +33,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _grid?: GridDebug;
   private _levelBoundaries?: LevelBoundariesDebug;
   private _titleLabel?: Label;
+  private _shortcutHint?: Label;
   private _nearestMouse?: NearestMouseToGrid;
   private _camMover?: LevelEditorCamMover;
   private _modeOverlay?: EditorModeOverlay;
@@ -69,6 +71,20 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
       assignZ(this._titleLabel, 'hud');
       this.add(this._titleLabel);
+    }
+
+    // save / load hint. text only — keys are not bound yet.
+    // right-aligned so both lines share the screen edge. comment color = not wired.
+    if (!this._shortcutHint) {
+      this._shortcutHint = new Label({
+        text: '[CTRL+S] SAVE SCENE\n[CTRL+L] LOAD SCENE',
+        pos: vec(NATIVE_RESOLUTION.width - 8, 8),
+        font: createDebugFont(TextAlign.Right),
+      });
+      this._shortcutHint.color = DraculaColorScheme.comment_color;
+      this._shortcutHint.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
+      assignZ(this._shortcutHint, 'hud');
+      this.add(this._shortcutHint);
     }
 
     if (!this._modeOverlay) {
