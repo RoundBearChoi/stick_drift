@@ -77,7 +77,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     // right-aligned so both lines share the screen edge. comment color = not wired.
     if (!this._shortcutHint) {
       this._shortcutHint = new Label({
-        text: '[CTRL+S] SAVE SCENE\n[CTRL+L] LOAD SCENE',
+        text: '[SHIFT+S] SAVE SCENE\n[SHIFT+L] LOAD SCENE',
         pos: vec(NATIVE_RESOLUTION.width - 8, 8),
         font: createDebugFont(TextAlign.Right),
       });
