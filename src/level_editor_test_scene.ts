@@ -27,6 +27,7 @@ import { EditorRotateTool } from './editor_rotate_tool';
 import { arrBrickPlacement, arrSpikePlacement } from './level_context';
 import { SpikeFacing, SpikeType, spikeDef } from './spike_type';
 import { assignZ } from './z_order';
+import { loadLevelFile, saveLevelFile } from './level_io';
 
 export class LevelEditorTestScene extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -44,6 +45,10 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   private _rotateTool?: EditorRotateTool;
   private _brickActors = new Map<number, Actor>(); // visual brick actors are keyed by placement id
   private _spikeActors = new Map<number, Actor>(); // visual spike actors are keyed by placement id
+  private _ioBusy = false;
+  private readonly _onKeyDown = (e: KeyboardEvent): void => {
+    this.handleSaveLoadKey(e);
+  };
 
   /*
   data brick / spike — level_ctx.bricks[] / level_ctx.spikes[]. nothing more than { id, x, y, type, facing? }. no sprite no actor.
@@ -73,19 +78,18 @@ export class LevelEditorTestScene extends Scene<GameContext> {
       this.add(this._titleLabel);
     }
 
-    // save / load hint. text only — keys are not bound yet.
-    // right-aligned so both lines share the screen edge. comment color = not wired.
+    // save / load hint. right-aligned so both lines share the screen edge.
     if (!this._shortcutHint) {
       this._shortcutHint = new Label({
         text: '[SHIFT+S] SAVE SCENE\n[SHIFT+L] LOAD SCENE',
         pos: vec(NATIVE_RESOLUTION.width - 8, 8),
         font: createDebugFont(TextAlign.Right),
       });
-      this._shortcutHint.color = DraculaColorScheme.comment_color;
       this._shortcutHint.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
       assignZ(this._shortcutHint, 'hud');
       this.add(this._shortcutHint);
     }
+    this._shortcutHint.color = DraculaColorScheme.white;
 
     if (!this._modeOverlay) {
       this._modeOverlay = new EditorModeOverlay();
@@ -169,6 +173,9 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     // restore last editor view (defaults to native center on first visit)
     this.camera.pos.x = this._game_ctx.editor_cam_x;
     this.camera.pos.y = this._game_ctx.editor_cam_y;
+
+    // file dialogs need the keydown turn itself. wasPressed in onPreUpdate is too late.
+    window.addEventListener('keydown', this._onKeyDown);
   }
 
   onPreUpdate(engine: Engine): void {
@@ -198,6 +205,8 @@ export class LevelEditorTestScene extends Scene<GameContext> {
   }
 
   onDeactivate(): void {
+    window.removeEventListener('keydown', this._onKeyDown);
+
     this._game_ctx.editor_cam_x = Math.round(this.camera.pos.x);
     this._game_ctx.editor_cam_y = Math.round(this.camera.pos.y);
 
@@ -207,6 +216,64 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._selectTool?.cancelDrag();
     this._placeTool?.cancelDrag();
     this._nearestMouse?.setGuideDots([]);
+  }
+
+  private handleSaveLoadKey(e: KeyboardEvent): void {
+    if (e.repeat || this._ioBusy) return;
+    if (!e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+    if (e.code !== 'KeyS' && e.code !== 'KeyL') return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    this._ioBusy = true;
+
+    const job = e.code === 'KeyS' ? this.saveLevel() : this.loadLevel();
+    void job.finally(() => {
+      this._ioBusy = false;
+    });
+  }
+
+  private async saveLevel(): Promise<void> {
+    try {
+      const saved = await saveLevelFile(this._game_ctx.level_ctx);
+      if (!saved) return;
+      const level = this._game_ctx.level_ctx;
+      console.log(
+        `saved level (${level.bricks.length} bricks, ${level.spikes.length} spikes)`
+      );
+    } catch (err) {
+      console.error('level save failed', err);
+    }
+  }
+
+  private async loadLevel(): Promise<void> {
+    try {
+      const file = await loadLevelFile();
+      if (!file) return;
+
+      this._game_ctx.level_ctx.replaceAll(
+        file.width_cells,
+        file.height_cells,
+        file.bricks,
+        file.spikes
+      );
+      this._selectTool?.clear();
+      this._placeTool?.cancelDrag();
+      this._nearestMouse?.setGuideDots([]);
+      this.rebuildSolidActors();
+      this.syncLevelBoundsVisuals();
+      console.log(
+        `loaded level (${file.bricks.length} bricks, ${file.spikes.length} spikes)`
+      );
+    } catch (err) {
+      console.error('level load failed', err);
+    }
+  }
+
+  private syncLevelBoundsVisuals(): void {
+    const level = this._game_ctx.level_ctx;
+    this._levelBoundaries?.setSize(level.width_px, level.height_px);
+    this._nearestMouse?.setLevelBounds(level.width_px, level.height_px);
   }
 
   private syncPlacePalette(): void {

@@ -11,8 +11,8 @@ import { assignZ } from './z_order';
  * this is pure visual — non tickable.
  */
 export class LevelBoundariesDebug extends Actor {
-  private readonly _width: number;
-  private readonly _height: number;
+  private _width: number;
+  private _height: number;
   private readonly _color = DraculaColorScheme.yellow;
   private readonly _thickness = 1;
 
@@ -31,6 +31,12 @@ export class LevelBoundariesDebug extends Actor {
     this.graphics.forceOnScreen = true;
 
     this.graphics.onPostDraw = (ctx) => this.draw(ctx);
+  }
+
+  /** loaded files can change the level size without recreating this actor */
+  setSize(widthPx: number, heightPx: number): void {
+    this._width = widthPx;
+    this._height = heightPx;
   }
 
   private draw(ctx: ExcaliburGraphicsContext): void {

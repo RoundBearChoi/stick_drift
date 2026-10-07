@@ -68,6 +68,28 @@ export class LevelContext {
     this.spikes.length = 0;
   }
 
+  /**
+   * swap the whole level for a loaded file.
+   * ids are assigned fresh. call only when a load finishes, not mid-frame.
+   */
+  replaceAll(
+    width_cells: number,
+    height_cells: number,
+    bricks: readonly { x: number; y: number; type: BrickType }[],
+    spikes: readonly { x: number; y: number; type: SpikeType; facing: SpikeFacing }[]
+  ): void {
+    this.width_cells = width_cells;
+    this.height_cells = height_cells;
+    this.clear();
+    this._nextId = 1;
+    for (const b of bricks) {
+      this.addBrick(b.x, b.y, b.type);
+    }
+    for (const s of spikes) {
+      this.addSpike(s.x, s.y, s.type, s.facing);
+    }
+  }
+
   addBrick(
     x: number,
     y: number,
