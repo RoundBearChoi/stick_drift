@@ -5,7 +5,7 @@ export const Z_ORDER = {
   runner: 10,
   runner_vfx: 100,
   debug_graphics: 200,
-  trail_light: 300,
+  runner_shader_effects: 300,
   hud: 1000,
 } as const;
 

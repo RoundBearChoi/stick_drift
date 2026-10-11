@@ -68,7 +68,7 @@ class GreenTrailLight extends Actor {
       width: NATIVE_RESOLUTION.width,
       height: NATIVE_RESOLUTION.height,
     });
-    assignZ(this, 'trail_light');
+    assignZ(this, 'runner_shader_effects');
     this.graphics.use(LIGHT_QUAD);
     this.graphics.forceOnScreen = true;
   }
