@@ -10,6 +10,7 @@ import { RunnerStateName } from './states/runner_state';
 const POOL_SIZE = 8;
 const SPAWN_INTERVAL_TICKS = 8; // emit roughly every 8 fixed updates while running
 const LIFE_TICKS = 24;          // how long a puff stays visible
+const BASE_OPACITY = 0.65;      // a bit of transparency so it doesn't sit too solid
 const RANDOM_X_OFFSET = 3;      // ± px around bottom-center
 const TRAIL_BIAS = 2;           // px opposite facing so it sits slightly behind the foot
 
@@ -59,7 +60,7 @@ export class WhiteDust implements Tickable {
         height: 16,
       });
       assignZ(actor, 'runner_vfx');
-      actor.graphics.opacity = 1;
+      actor.graphics.opacity = BASE_OPACITY;
       actor.graphics.visible = false;
 
       const anim = new FrameBasedAnimation(source, 4); // 4 ticks per frame — slower so the shapes read
@@ -129,7 +130,7 @@ export class WhiteDust implements Tickable {
     const y = Math.round(foot.y);
 
     slot.actor.pos = vec(x, y);
-    slot.actor.graphics.opacity = 1;
+    slot.actor.graphics.opacity = BASE_OPACITY;
     slot.actor.graphics.visible = true;
     slot.animation.reset();
     slot.life = LIFE_TICKS;
@@ -144,7 +145,7 @@ export class WhiteDust implements Tickable {
 
       // fade in the last third
       if (slot.life < LIFE_TICKS / 3) {
-        slot.actor.graphics.opacity = Math.max(0, slot.life / (LIFE_TICKS / 3));
+        slot.actor.graphics.opacity = Math.max(0, (slot.life / (LIFE_TICKS / 3)) * BASE_OPACITY);
       }
 
       if (slot.life <= 0) {
