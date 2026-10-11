@@ -30,6 +30,7 @@ import { spikeDef } from './spike_type';
 import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { GreenTrail } from './green_trail';
+import { WhiteDust } from './white_dust';
 
 export class GameplayTestScene2 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -52,6 +53,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _solid_grid_system?: SolidGridSystem;
   private _titleLabel?: Label;
   private _green_trail?: GreenTrail;
+  private _white_dust?: WhiteDust;
 
   onInitialize(_engine: Engine): void {}
 
@@ -151,6 +153,11 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._green_trail.setSolidGrid(this._solid_grid_system);
     this._green_trail.attachToScene((actor) => this.add(actor));
 
+    if (!this._white_dust) {
+      this._white_dust = new WhiteDust(this._stick_runner, this._game_ctx);
+    }
+    this._white_dust.attachToScene((actor) => this.add(actor));
+
     // bricks + spikes from level_ctx
     this.buildSolidsFromLevelCtx();
 
@@ -191,6 +198,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
     this._green_trail.register();
+    this._white_dust.register();
     this._spike_contact_check.register();
     this._runner_death_vfx.register();
     this._runner_state_switcher.register();
@@ -234,6 +242,10 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._green_trail.unregister();
       this._green_trail.clear();
     }
+    if (this._white_dust) {
+      this._white_dust.unregister();
+      this._white_dust.clear();
+    }
     if (this._camera_controller) {
       this._camera_controller.unregister();
     }
@@ -246,6 +258,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx, this._runner_spawn);
     this._runner_death_vfx?.clear();
     this._green_trail?.clear();
+    this._white_dust?.clear();
     this._camera_controller?.snapToTarget();
   }
 

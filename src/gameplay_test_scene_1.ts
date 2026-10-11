@@ -25,6 +25,7 @@ import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { BrickType, brickDef } from './brick_type';
 import { GreenTrail } from './green_trail';
+import { WhiteDust } from './white_dust';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -43,6 +44,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _solid_grid?: SolidGridSystem;
   private _titleLabel?: Label;
   private _green_trail?: GreenTrail;
+  private _white_dust?: WhiteDust;
   private readonly _runner_spawn = vec(320, 280);
 
   onInitialize(_engine: Engine): void {}
@@ -245,6 +247,12 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._green_trail.attachToScene((actor) => this.add(actor));
     this._green_trail.clear();
 
+    if (!this._white_dust) {
+      this._white_dust = new WhiteDust(this._stick_runner, this._game_ctx);
+    }
+    this._white_dust.attachToScene((actor) => this.add(actor));
+    this._white_dust.clear();
+
     // camera
     if (!this._camera_controller) {
       this._camera_controller = new CameraController(this, this._game_ctx);
@@ -267,6 +275,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     this._stick_runner.register(this._game_ctx);
     this._runner_move_buffer_resolve.register();
     this._green_trail.register();
+    this._white_dust.register();
     this._state_switcher.register();
     this._camera_controller.register();
   }
@@ -299,6 +308,10 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     if (this._green_trail) {
       this._green_trail.unregister();
       this._green_trail.clear();
+    }
+    if (this._white_dust) {
+      this._white_dust.unregister();
+      this._white_dust.clear();
     }
     if (this._camera_controller) {
       this._camera_controller.unregister();
