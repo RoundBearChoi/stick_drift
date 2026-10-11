@@ -9,7 +9,7 @@ import { RunnerStateName } from './states/runner_state';
 
 const POOL_SIZE = 8;
 const SPAWN_INTERVAL_TICKS = 8; // emit roughly every 8 fixed updates while running
-const LIFE_TICKS = 16;          // how long a puff stays visible
+const LIFE_TICKS = 24;          // how long a puff stays visible
 const RANDOM_X_OFFSET = 3;      // ± px around bottom-center
 const TRAIL_BIAS = 2;           // px opposite facing so it sits slightly behind the foot
 
@@ -62,7 +62,7 @@ export class WhiteDust implements Tickable {
       actor.graphics.opacity = 1;
       actor.graphics.visible = false;
 
-      const anim = new FrameBasedAnimation(source, 2); // 2 ticks per frame so 4 frames ~ 8 ticks
+      const anim = new FrameBasedAnimation(source, 4); // 4 ticks per frame — slower so the shapes read
       anim.attachToActor(actor);
 
       const slot = new DustSlot(actor, anim);
