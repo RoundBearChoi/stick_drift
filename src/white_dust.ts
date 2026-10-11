@@ -10,7 +10,7 @@ import { RunnerStateName } from './states/runner_state';
 const POOL_SIZE = 8;
 const SPAWN_INTERVAL_TICKS = 8; // emit roughly every 8 fixed updates while running
 const LIFE_TICKS = 24;          // how long a puff stays visible
-const BASE_OPACITY = 0.65;      // a bit of transparency so it doesn't sit too solid
+const BASE_OPACITY = 0.5;       // start at 50% — then get more transparent
 const RANDOM_X_OFFSET = 3;      // ± px around bottom-center
 const TRAIL_BIAS = 2;           // px opposite facing so it sits slightly behind the foot
 
@@ -143,10 +143,12 @@ export class WhiteDust implements Tickable {
       slot.life--;
       slot.animation.tick();
 
-      // fade in the last third
-      if (slot.life < LIFE_TICKS / 3) {
-        slot.actor.graphics.opacity = Math.max(0, (slot.life / (LIFE_TICKS / 3)) * BASE_OPACITY);
-      }
+      // steep transparency increase over the whole life
+      // progress 0 = just spawned, 1 = about to die
+      const progress = 1 - slot.life / LIFE_TICKS;
+      // steep curve: stays readable early, then drops hard
+      const steep = progress * progress * progress;
+      slot.actor.graphics.opacity = BASE_OPACITY * (1 - steep);
 
       if (slot.life <= 0) {
         this.turnOff(slot);
