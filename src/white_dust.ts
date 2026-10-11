@@ -8,12 +8,12 @@ import { assignZ } from './z_order';
 import { RunnerStateName } from './states/runner_state';
 
 const POOL_SIZE = 8;
-const SPAWN_INTERVAL_TICKS = 9; // emit roughly every 8 fixed updates while running
-const LIFE_TICKS = 28;          // how long a puff stays visible
-const BASE_OPACITY = 0.4;       // start at 50% — then get more transparent
-const DUST_SCALE = 0.75;        // overall size of the dust graphic (1 = native 16px)
-const RANDOM_X_OFFSET = 3;      // ± px around bottom-center
-const TRAIL_BIAS = 2;           // px opposite facing so it sits slightly behind the foot
+const SPAWN_INTERVAL_TICKS = 10;
+const LIFE_TICKS = 20;
+const BASE_OPACITY = 0.2;
+const DUST_SCALE = 1.3;
+const RANDOM_X_OFFSET = 2; // ± px around bottom-center
+const TRAIL_BIAS = 1; // px opposite facing so it sits slightly behind the foot
 
 class DustSlot {
   actor: Actor;
