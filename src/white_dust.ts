@@ -11,6 +11,7 @@ const POOL_SIZE = 8;
 const SPAWN_INTERVAL_TICKS = 9; // emit roughly every 8 fixed updates while running
 const LIFE_TICKS = 28;          // how long a puff stays visible
 const BASE_OPACITY = 0.4;       // start at 50% — then get more transparent
+const DUST_SCALE = 0.75;        // overall size of the dust graphic (1 = native 16px)
 const RANDOM_X_OFFSET = 3;      // ± px around bottom-center
 const TRAIL_BIAS = 2;           // px opposite facing so it sits slightly behind the foot
 
@@ -60,6 +61,7 @@ export class WhiteDust implements Tickable {
         height: 16,
       });
       assignZ(actor, 'runner_vfx');
+      actor.scale = vec(DUST_SCALE, DUST_SCALE); // scales from bottom-center anchor
       actor.graphics.opacity = BASE_OPACITY;
       actor.graphics.visible = false;
 
