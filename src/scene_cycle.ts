@@ -1,6 +1,5 @@
 import { Engine, Keys } from 'excalibur';
 import { GameContext } from './game_context';
-import { GameplayTestScene1 } from './gameplay_test_scene_1';
 import { GameplayTestScene2 } from './gameplay_test_scene_2';
 import { LevelEditorTestScene } from './level_editor_test_scene';
 import { TestScene1 } from './test_scene_1';
@@ -11,14 +10,12 @@ import { TestScene1 } from './test_scene_1';
 //--------------------
 
 const SCENE_CTORS = [
-  GameplayTestScene1,
   GameplayTestScene2,
   LevelEditorTestScene,
   TestScene1,
 ] as const;
 
 const SCENE_KEYS = [
-  'gameplay_test_scene_1',
   'gameplay_test_scene_2',
   'level_editor_test_scene',
   'test_scene_1',

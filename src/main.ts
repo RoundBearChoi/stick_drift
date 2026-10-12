@@ -1,7 +1,6 @@
 import { Engine, ImageFiltering, DisplayMode } from 'excalibur';
 import { loader } from './resources';
 import { GestureScene } from './gesture_scene';
-import { GameplayTestScene1 } from './gameplay_test_scene_1';
 import { GameplayTestScene2 } from './gameplay_test_scene_2';
 import { LevelEditorTestScene } from './level_editor_test_scene';
 import { TestScene1 } from './test_scene_1';
@@ -37,7 +36,6 @@ game_context.createInputInterpreter(engine);
 
 // register scenes without keeping long-lived references so that after scene_cycle does removeScene the old instance can be destroyed (GC)
 engine.add('gesture_scene', new GestureScene());
-engine.add('gameplay_test_scene_1', new GameplayTestScene1());
 engine.add('gameplay_test_scene_2', new GameplayTestScene2());
 engine.add('level_editor_test_scene', new LevelEditorTestScene());
 engine.add('test_scene_1', new TestScene1());
@@ -52,7 +50,7 @@ engine.start(loader).then(() => {
   game_context.screen_resolution_debug.setScale(resolution_scale);
   resolution_scale.setDebugRefresh(() => game_context.screen_resolution_debug.refresh());
 
-  engine.goToScene('gesture_scene', {
+  engine.goToScene('gameplay_test_scene_2', {
     sceneActivationData: game_context,
   });
 

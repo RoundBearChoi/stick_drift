@@ -31,6 +31,47 @@ import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { GreenTrail } from './green_trail';
 import { WhiteDust } from './white_dust';
+import {
+  parseLevelFile,
+  LEVEL_FILE_FORMAT,
+  LEVEL_FILE_VERSION,
+  LevelFile,
+} from './level_io';
+
+// load once across scene recreations (F2/F4 builds a fresh instance every switch)
+let defaultLevelPromise: Promise<LevelFile> | null = null;
+let defaultLevelApplied = false;
+
+async function getDefaultLevel(): Promise<LevelFile> {
+  if (!defaultLevelPromise) {
+    defaultLevelPromise = loadDefaultLevel();
+  }
+  return defaultLevelPromise;
+}
+
+async function loadDefaultLevel(): Promise<LevelFile> {
+  try {
+    const response = await fetch('./res/levels/default_level.json');
+    if (!response.ok) {
+      throw new Error(`failed to load default_level.json: ${response.status}`);
+    }
+    const text = await response.text();
+    return parseLevelFile(text);
+  } catch (err) {
+    console.error(
+      'failed to load default_level.json, falling back to empty level',
+      err
+    );
+    return {
+      format: LEVEL_FILE_FORMAT,
+      version: LEVEL_FILE_VERSION,
+      width_cells: 160,
+      height_cells: 90,
+      bricks: [],
+      spikes: [],
+    };
+  }
+}
 
 export class GameplayTestScene2 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -57,7 +98,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
   onInitialize(_engine: Engine): void {}
 
-  onActivate(context: SceneActivationContext<GameContext>): void {
+  async onActivate(context: SceneActivationContext<GameContext>): Promise<void> {
     this._game_ctx = context.data!;
     console.log('🌊 onActivate gameplay_test_scene_2');
 
@@ -72,6 +113,10 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
       this.add(this._titleLabel);
     }
+
+    // one-time load into the shared context. later activations (and the editor)
+    // see whatever is already there, including editor edits.
+    await this.ensureDefaultLevelLoaded();
 
     const level = this._game_ctx.level_ctx;
 
@@ -125,7 +170,6 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._solid_grid_system
     );
 
-    // right now runner death is only possible in this scene. gameplay_test_scene_1 has no resetGameplay
     if (!this._on_runner_death) {
       this._on_runner_death = new OnRunnerDeath(
         this._game_ctx,
@@ -204,6 +248,22 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._runner_state_switcher.register();
     this._on_runner_death.register();
     this._camera_controller.register();
+  }
+
+  private async ensureDefaultLevelLoaded(): Promise<void> {
+    const levelFile = await getDefaultLevel();
+    if (defaultLevelApplied) return;
+
+    this._game_ctx.level_ctx.replaceAll(
+      levelFile.width_cells,
+      levelFile.height_cells,
+      levelFile.bricks,
+      levelFile.spikes
+    );
+    defaultLevelApplied = true;
+    console.log(
+      `loaded default level into level_ctx (${levelFile.bricks.length} bricks, ${levelFile.spikes.length} spikes)`
+    );
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
