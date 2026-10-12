@@ -23,9 +23,17 @@ import { SolidGridSystem, CELL_SIZE } from './solid_grid_system';
 import { LevelBoundariesDebug } from './level_boundaries_debug';
 import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
-import { BrickType, brickDef } from './brick_type';
+import { brickDef } from './brick_type';
 import { GreenTrail } from './green_trail';
 import { WhiteDust } from './white_dust';
+import {
+  parseLevelFile,
+  LEVEL_FILE_FORMAT,
+  LEVEL_FILE_VERSION,
+  LevelFile,
+} from './level_io';
+import { createSpike } from './spike_creator';
+import { spikeDef } from './spike_type';
 
 export class GameplayTestScene1 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -39,17 +47,50 @@ export class GameplayTestScene1 extends Scene<GameContext> {
   private _camera_debug?: CameraDebug;
   private _grid?: GridDebug;
   private _levelBoundaries?: LevelBoundariesDebug;
-  private _bricks_16x16?: Actor[]; // keep reference to the actors
-  private _bricks_8x8?: Actor[];
+  private _solidActors: Actor[] = [];
   private _solid_grid?: SolidGridSystem;
   private _titleLabel?: Label;
   private _green_trail?: GreenTrail;
   private _white_dust?: WhiteDust;
   private readonly _runner_spawn = vec(320, 280);
 
-  onInitialize(_engine: Engine): void {}
+  private _levelFile?: LevelFile;
+  private _levelLoadPromise?: Promise<LevelFile>;
+  private _levelLoaded = false;
 
-  onActivate(context: SceneActivationContext<GameContext>): void {
+  onInitialize(_engine: Engine): void {
+    this._levelLoadPromise = this.loadDefaultLevel();
+  }
+
+  private async loadDefaultLevel(): Promise<LevelFile> {
+    try {
+      const response = await fetch('./res/levels/default_level.json');
+      if (!response.ok) {
+        throw new Error(`failed to load default_level.json: ${response.status}`);
+      }
+      const text = await response.text();
+      const levelFile = parseLevelFile(text);
+      this._levelFile = levelFile;
+      return levelFile;
+    } catch (err) {
+      console.error(
+        'failed to load default_level.json, falling back to empty level',
+        err
+      );
+      const empty: LevelFile = {
+        format: LEVEL_FILE_FORMAT,
+        version: LEVEL_FILE_VERSION,
+        width_cells: 160,
+        height_cells: 90,
+        bricks: [],
+        spikes: [],
+      };
+      this._levelFile = empty;
+      return empty;
+    }
+  }
+
+  async onActivate(context: SceneActivationContext<GameContext>): Promise<void> {
     this._game_ctx = context.data!;
     console.log('🌊 onActivate gameplay_test_scene_1');
 
@@ -65,11 +106,51 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this.add(this._titleLabel);
     }
 
-    // solid grid — create once using current game_ctx dimensions
-    if (!this._solid_grid) {
+    // consume the one-time load (await only if the fetch is still in flight)
+    const levelFile = this._levelFile ?? (await this._levelLoadPromise!);
+
+    if (!this._levelLoaded) {
+      this._game_ctx.level_ctx.replaceAll(
+        levelFile.width_cells,
+        levelFile.height_cells,
+        levelFile.bricks,
+        levelFile.spikes
+      );
+
       this._solid_grid = new SolidGridSystem(
-        this._game_ctx.level_width_cells,
-        this._game_ctx.level_height_cells
+        levelFile.width_cells,
+        levelFile.height_cells
+      );
+
+      for (const b of levelFile.bricks) {
+        const actor = createBrick(this.engine, {
+          pos: vec(b.x, b.y),
+          type: b.type,
+        });
+        this.add(actor);
+        this._solidActors.push(actor);
+
+        const { width, height } = brickDef(b.type);
+        this._solid_grid.registerRect(b.x, b.y, width, height);
+      }
+
+      for (const s of levelFile.spikes) {
+        const actor = createSpike(this.engine, {
+          spike_pos: vec(s.x, s.y),
+          spike_type: s.type,
+          spike_facing: s.facing,
+        });
+        this.add(actor);
+        this._solidActors.push(actor);
+
+        const { width, height } = spikeDef(s.type);
+        this._solid_grid.registerRect(s.x, s.y, width, height);
+        this._solid_grid.registerSpikeFace(s.x, s.y, width, height, s.facing);
+      }
+
+      this._levelLoaded = true;
+      console.log(
+        `loaded level (${levelFile.bricks.length} bricks, ${levelFile.spikes.length} spikes)`
       );
     }
 
@@ -99,7 +180,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._runner_move_buffer_resolve = new RunnerMovementBufferResolve(
         this._stick_runner,
         this._game_ctx,
-        this._solid_grid
+        this._solid_grid!
       );
     }
 
@@ -107,7 +188,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._ground_checker = new RunnerGroundChecker(
         this._stick_runner,
         this._game_ctx,
-        this._solid_grid
+        this._solid_grid!
       );
     }
 
@@ -115,7 +196,7 @@ export class GameplayTestScene1 extends Scene<GameContext> {
       this._wall_slide_check = new RunnerWallSlideCheck(
         this._stick_runner,
         this._game_ctx,
-        this._solid_grid
+        this._solid_grid!
       );
     }
 
@@ -123,103 +204,6 @@ export class GameplayTestScene1 extends Scene<GameContext> {
     // this is where the runner context is first passed to runner.
     // later it's also passed on every fixed update.
     this._stick_runner.resetRunner(this._game_ctx.runner_ctx, this._runner_spawn);
-
-    // bricks
-    if (!this._bricks_16x16) {
-      this._bricks_16x16 = [];
-
-      const type = BrickType.Brick16x16;
-      const { width, height } = brickDef(type);
-      const baseY = 280;
-
-      // tall side walls — a single 16px brick cannot satisfy the 25px overlap rule
-      const wallBrickCount = 4; // 64px
-      const wallBaseY = baseY - 8;
-      const leftWallX = 64;
-      const rightWallX = 144 + 160 + 160 + 160;
-
-      for (let i = 0; i < wallBrickCount; i++) {
-        const leftBrick = createBrick(this.engine, {
-          pos: vec(leftWallX, wallBaseY - i * height),
-          type,
-        });
-        const rightBrick = createBrick(this.engine, {
-          pos: vec(rightWallX, wallBaseY - i * height),
-          type,
-        });
-        this.add(leftBrick);
-        this.add(rightBrick);
-        this._bricks_16x16.push(leftBrick, rightBrick);
-      }
-
-      // bottom
-      const brick1 = createBrick(this.engine, {
-        pos: vec(320, baseY + 96),
-        type,
-      });
-      const brick2 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160, baseY),
-        type,
-      });
-      const brick3 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160 + width, baseY),
-        type,
-      });
-      const brick4 = createBrick(this.engine, {
-        pos: vec(144 + 160 + 160 + width + width, baseY),
-        type,
-      });
-
-      this.add(brick1);
-      this.add(brick2);
-      this.add(brick3);
-      this.add(brick4);
-
-      this._bricks_16x16.push(brick1, brick2, brick3, brick4);
-    }
-
-    // sample 8x8 wall on the bottom floor
-    if (!this._bricks_8x8) {
-      this._bricks_8x8 = [];
-
-      const type8 = BrickType.Brick8x8;
-      const { height: h8 } = brickDef(type8);
-      // 8 bricks × 8px = 64px — same height as the 16x16 side walls (25px overlap rule)
-      const sampleWallCount = 24;
-      const sampleWallX = 160;
-      // same y as the existing bottom 16x16 floor brick (baseY + 96)
-      const sampleWallBaseY = 640;
-
-      for (let i = 0; i < sampleWallCount; i++) {
-        const brick = createBrick(this.engine, {
-          pos: vec(sampleWallX, sampleWallBaseY - i * h8),
-          type: type8,
-        });
-        this.add(brick);
-        this._bricks_8x8.push(brick);
-      }
-    }
-
-    // register to solid grid for collision check
-    this._solid_grid.clearSolidData();
-    const size16 = brickDef(BrickType.Brick16x16);
-    for (const brick of this._bricks_16x16) {
-      this._solid_grid.registerRect(
-        brick.pos.x,
-        brick.pos.y,
-        size16.width,
-        size16.height
-      );
-    }
-    const size8 = brickDef(BrickType.Brick8x8);
-    for (const brick of this._bricks_8x8 ?? []) {
-      this._solid_grid.registerRect(
-        brick.pos.x,
-        brick.pos.y,
-        size8.width,
-        size8.height
-      );
-    }
 
     // grid is added to scene after the runner so it draws on top
     if (!this._grid) {
@@ -240,10 +224,10 @@ export class GameplayTestScene1 extends Scene<GameContext> {
         this._stick_runner,
         this._game_ctx,
         this.engine,
-        this._solid_grid
+        this._solid_grid!
       );
     }
-    this._green_trail.setSolidGrid(this._solid_grid);
+    this._green_trail.setSolidGrid(this._solid_grid!);
     this._green_trail.attachToScene((actor) => this.add(actor));
     this._green_trail.clear();
 
