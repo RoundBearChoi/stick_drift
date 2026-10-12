@@ -38,17 +38,6 @@ import {
   LevelFile,
 } from './level_io';
 
-// load once across scene recreations (F2/F4 builds a fresh instance every switch)
-let defaultLevelPromise: Promise<LevelFile> | null = null;
-let defaultLevelApplied = false;
-
-async function getDefaultLevel(): Promise<LevelFile> {
-  if (!defaultLevelPromise) {
-    defaultLevelPromise = loadDefaultLevel();
-  }
-  return defaultLevelPromise;
-}
-
 async function loadDefaultLevel(): Promise<LevelFile> {
   try {
     const response = await fetch('./res/levels/default_level.json');
@@ -114,9 +103,17 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this.add(this._titleLabel);
     }
 
-    // one-time load into the shared context. later activations (and the editor)
-    // see whatever is already there, including editor edits.
-    await this.ensureDefaultLevelLoaded();
+    // always reload from the file. unsaved editor changes are lost unless written back.
+    const levelFile = await loadDefaultLevel();
+    this._game_ctx.level_ctx.replaceAll(
+      levelFile.width_cells,
+      levelFile.height_cells,
+      levelFile.bricks,
+      levelFile.spikes
+    );
+    console.log(
+      `loaded default level from file (${levelFile.bricks.length} bricks, ${levelFile.spikes.length} spikes)`
+    );
 
     const level = this._game_ctx.level_ctx;
 
@@ -248,22 +245,6 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._runner_state_switcher.register();
     this._on_runner_death.register();
     this._camera_controller.register();
-  }
-
-  private async ensureDefaultLevelLoaded(): Promise<void> {
-    const levelFile = await getDefaultLevel();
-    if (defaultLevelApplied) return;
-
-    this._game_ctx.level_ctx.replaceAll(
-      levelFile.width_cells,
-      levelFile.height_cells,
-      levelFile.bricks,
-      levelFile.spikes
-    );
-    defaultLevelApplied = true;
-    console.log(
-      `loaded default level into level_ctx (${levelFile.bricks.length} bricks, ${levelFile.spikes.length} spikes)`
-    );
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
