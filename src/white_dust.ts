@@ -16,6 +16,7 @@ const DUST_SCALE = 1.3;
 const RANDOM_X_OFFSET = 2; // ± px around bottom-center (ground)
 const RANDOM_Y_OFFSET = 2; // ± px vertical jitter on walls
 const TRAIL_BIAS = 1; // px opposite facing so it sits slightly behind the foot
+const WALL_ROTATION = Math.PI / 2; // 90° clockwise for wall slides
 
 class DustSlot {
   actor: Actor;
@@ -147,23 +148,30 @@ export class WhiteDust implements Tickable {
     let x: number;
     let y: number;
     let anchor = vec(0.5, 1); // default ground
+    let rotation = 0;
+    let scale = vec(DUST_SCALE, DUST_SCALE);
 
     if (name === RunnerStateName.WALL_SLIDE && !ctx.is_grounded) {
       // wall: spawn at exclusive edge pixel, mid-height, grow into the body
+      // rotate 90° clockwise so the ground-oriented dust reads vertical
       const halfW = ctx.collider_width / 2;
       const midY = foot.y - ctx.collider_height / 2;
       const yJitter = (Math.random() * 2 - 1) * RANDOM_Y_OFFSET;
+      rotation = WALL_ROTATION;
 
       if (facingRight && ctx.wall_contact_right) {
         // right wall: first solid pixel to the right of the collider
+        // mirror after rotation so the dust orientation stays consistent relative to the wall
         x = Math.round(foot.x + halfW);
         y = Math.round(midY + yJitter);
         anchor = vec(1, 0.5); // grow leftward from the wall
+        scale = vec(-DUST_SCALE, DUST_SCALE);
       } else if (!facingRight && ctx.wall_contact_left) {
         // left wall: last solid pixel to the left of the collider
         x = Math.round(foot.x - halfW - 1);
         y = Math.round(midY + yJitter);
         anchor = vec(0, 0.5); // grow rightward from the wall
+        // positive scale (no mirror)
       } else {
         // fallback (should not happen because of shouldSpawn)
         x = Math.round(foot.x);
@@ -176,9 +184,12 @@ export class WhiteDust implements Tickable {
       x = Math.round(foot.x + jitter + bias);
       y = Math.round(foot.y);
       anchor = vec(0.5, 1);
+      // rotation and scale already at defaults
     }
 
     slot.actor.anchor = anchor;
+    slot.actor.rotation = rotation;
+    slot.actor.scale = scale;
     slot.actor.pos = vec(x, y);
     slot.actor.graphics.opacity = BASE_OPACITY;
     slot.actor.graphics.visible = true;
@@ -211,5 +222,9 @@ export class WhiteDust implements Tickable {
     slot.life = 0;
     slot.actor.graphics.opacity = 0;
     slot.actor.graphics.visible = false;
+    // reset transform so a recycled slot never leaks wall rotation/scale
+    slot.actor.rotation = 0;
+    slot.actor.scale = vec(DUST_SCALE, DUST_SCALE);
+    slot.actor.anchor = vec(0.5, 1);
   }
 }
