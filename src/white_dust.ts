@@ -152,8 +152,9 @@ export class WhiteDust implements Tickable {
     let scale = vec(DUST_SCALE, DUST_SCALE);
 
     if (name === RunnerStateName.WALL_SLIDE && !ctx.is_grounded) {
-      // wall: spawn at exclusive edge pixel, mid-height, grow into the body
+      // wall: spawn at exclusive edge pixel, mid-height
       // rotate 90° clockwise so the ground-oriented dust reads vertical
+      // anchors + mirror flipped so the graphic extends into the open space (character side)
       const halfW = ctx.collider_width / 2;
       const midY = foot.y - ctx.collider_height / 2;
       const yJitter = (Math.random() * 2 - 1) * RANDOM_Y_OFFSET;
@@ -161,17 +162,18 @@ export class WhiteDust implements Tickable {
 
       if (facingRight && ctx.wall_contact_right) {
         // right wall: first solid pixel to the right of the collider
-        // mirror after rotation so the dust orientation stays consistent relative to the wall
+        // positive scale, anchor on left edge of sprite → grows leftward into open space
         x = Math.round(foot.x + halfW);
         y = Math.round(midY + yJitter);
-        anchor = vec(1, 0.5); // grow leftward from the wall
-        scale = vec(-DUST_SCALE, DUST_SCALE);
+        anchor = vec(0, 0.5);
+        // scale stays positive
       } else if (!facingRight && ctx.wall_contact_left) {
         // left wall: last solid pixel to the left of the collider
+        // mirror + anchor on right edge of sprite → grows rightward into open space
         x = Math.round(foot.x - halfW - 1);
         y = Math.round(midY + yJitter);
-        anchor = vec(0, 0.5); // grow rightward from the wall
-        // positive scale (no mirror)
+        anchor = vec(1, 0.5);
+        scale = vec(-DUST_SCALE, DUST_SCALE);
       } else {
         // fallback (should not happen because of shouldSpawn)
         x = Math.round(foot.x);
