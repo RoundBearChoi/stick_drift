@@ -11,7 +11,7 @@ import { RunnerContext } from './runner_context';
 const POOL_SIZE = 8;
 const SPAWN_INTERVAL_TICKS = 10;
 const LIFE_TICKS = 20;
-const BASE_OPACITY = 0.4;
+const BASE_OPACITY = 0.5;
 const DUST_SCALE = 1.3;
 const RANDOM_X_OFFSET = 2; // ± px around bottom-center (ground)
 const RANDOM_Y_OFFSET = 2; // ± px vertical jitter on walls
