@@ -21,7 +21,7 @@ export const PARTICLE_SIZE = 2.2;
 export const PARTICLE_LIFE = 25; // ticks from progress 0 to 1
 const SPAWN_MAX_DIST = 20;
 const FADE_CUTOFF = 0.01;
-const START_OPACITY = 0.85; // 1 = solid at birth. lower = more transparent dots
+const START_OPACITY = 0.5;
 const LIGHT_PACK = MAX_PARTICLES * 3; // xyz per slot
 const GROUND_TRAIL_UP = -1; // px. grounded trail + light only. y-down, so subtract
 
