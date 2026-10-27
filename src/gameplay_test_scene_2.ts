@@ -204,7 +204,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
     // grid is added to scene after the runner so it draws on top
     if (!this._grid) {
-      this._grid = new GridDebug(8);
+      this._grid = new GridDebug(this._game_ctx.settings_ctx, 8);
       this.add(this._grid);
     }
 
