@@ -36,6 +36,7 @@ export class RunnerWallSlide implements RunnerState {
     runnerCtx.wall_slide_up_vector_decay_counter = 0;
     this._release_hang_started = false;
     runnerCtx.release_hang_ticks_wallslide_remaining = 0;
+    runnerCtx.wall_fall_off_hold_count = 0;
 
     runnerCtx.current_air_run_accel = 0;
     runnerCtx.air_run_update_count = 0;
@@ -77,6 +78,7 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.release_hang_ticks_wallslide_remaining = 0;
       runnerCtx.current_fall_accel = 0;
       runnerCtx.fall_update_count = 0;
+      runnerCtx.wall_fall_off_hold_count = 0;
       clearWallJumpCoyote(runnerCtx);
       runner.queueNewState(new RunnerIdle());
       return;
@@ -92,6 +94,7 @@ export class RunnerWallSlide implements RunnerState {
       runnerCtx.current_fall_accel = 0;
       runnerCtx.fall_update_count = 0;
       runnerCtx.move_down_buffer = 0;
+      runnerCtx.wall_fall_off_hold_count = 0;
       runner.queueNewState(new RunnerJump('wall'));
       return;
     }
@@ -109,29 +112,25 @@ export class RunnerWallSlide implements RunnerState {
       ? runnerCtx.wall_contact_right
       : runnerCtx.wall_contact_left;
 
-    // wall ended, or player pushed off → regular fall
-    if (!stillOnWall || pressingAway) {
-      runnerCtx.current_fall_accel = runnerCtx.current_wall_slide_down_accel;
-      runnerCtx.current_wall_slide_down_accel = 0;
-      runnerCtx.wall_slide_update_count = 0;
-      runnerCtx.release_hang_ticks_wallslide_remaining = 0;
-
-      // leftover climb goes back to air-up
-      if (runnerCtx.current_wall_slide_up_vector > 0) {
-        runnerCtx.current_air_up_vector = transferUpVectorAcrossWallSlide(
-          runnerCtx.current_wall_slide_up_vector
-        );
-        runnerCtx.air_up_vector_decay_counter = 0;
-        runnerCtx.current_wall_slide_up_vector = 0;
-        runnerCtx.wall_slide_up_vector_decay_counter = 0;
-        runnerCtx.current_fall_accel = 0;
-      }
-
-      // snapshot wall facing before air-run can flip it
-      armWallJumpCoyote(runnerCtx);
-      applyAirRun(input, runnerCtx);
-      runner.queueNewState(new RunnerFall());
+    // wall ended → fall immediately
+    if (!stillOnWall) {
+      this.peelOffWall(runner, input, runnerCtx);
       return;
+    }
+
+    // opposite hold requires minimum ticks before peel (jump already handled above)
+    if (pressingAway) {
+      runnerCtx.wall_fall_off_hold_count++;
+      if (
+        runnerCtx.wall_fall_off_hold_count >=
+        runnerCtx.wall_fall_off_hold_ticks
+      ) {
+        this.peelOffWall(runner, input, runnerCtx);
+        return;
+      }
+      // still counting — stay on wall
+    } else {
+      runnerCtx.wall_fall_off_hold_count = 0;
     }
 
     // still climbing the wall — up has priority, no down energy yet
@@ -155,6 +154,35 @@ export class RunnerWallSlide implements RunnerState {
 
     // stay on the wall
     runnerCtx.horizontal_move_buffer = runnerCtx.is_facing_right_side ? 1 : -1;
+  }
+
+  private peelOffWall(
+    runner: StickRunner,
+    input: InputInterpreter,
+    runnerCtx: RunnerContext
+  ): void {
+    runnerCtx.wall_fall_off_hold_count = 0;
+
+    runnerCtx.current_fall_accel = runnerCtx.current_wall_slide_down_accel;
+    runnerCtx.current_wall_slide_down_accel = 0;
+    runnerCtx.wall_slide_update_count = 0;
+    runnerCtx.release_hang_ticks_wallslide_remaining = 0;
+
+    // leftover climb goes back to air-up
+    if (runnerCtx.current_wall_slide_up_vector > 0) {
+      runnerCtx.current_air_up_vector = transferUpVectorAcrossWallSlide(
+        runnerCtx.current_wall_slide_up_vector
+      );
+      runnerCtx.air_up_vector_decay_counter = 0;
+      runnerCtx.current_wall_slide_up_vector = 0;
+      runnerCtx.wall_slide_up_vector_decay_counter = 0;
+      runnerCtx.current_fall_accel = 0;
+    }
+
+    // snapshot wall facing before air-run can flip it
+    armWallJumpCoyote(runnerCtx);
+    applyAirRun(input, runnerCtx);
+    runner.queueNewState(new RunnerFall());
   }
 
   private applyWallSlideReleaseCut(
