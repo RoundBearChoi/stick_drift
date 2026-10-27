@@ -9,6 +9,7 @@ import { setupSceneCycle } from './scene_cycle';
 import { ResolutionScale } from './resolution_scale';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { BloomPostProcessor } from './bloom_post_processor';
+import { loadSettings } from './settings';
 
 const engine = new Engine({
   width: NATIVE_RESOLUTION.width,
@@ -41,7 +42,7 @@ engine.add('level_editor_test_scene', new LevelEditorTestScene());
 engine.add('test_scene_1', new TestScene1());
 
 // start and pass game context into scene
-engine.start(loader).then(() => {
+engine.start(loader).then(async () => {
   // attach integer scaling after engine is ready
   resolution_scale.attachToEngine(engine);
   bloom.attach(engine);
@@ -49,6 +50,11 @@ engine.start(loader).then(() => {
   // wire resolution debug so the on-screen label stays in sync
   game_context.screen_resolution_debug.setScale(resolution_scale);
   resolution_scale.setDebugRefresh(() => game_context.screen_resolution_debug.refresh());
+
+  // seed debug flags from res/settings.json before any scene draws
+  // (hard-coded defaults stay if the file is missing or invalid)
+  const settings = await loadSettings();
+  game_context.runner_ctx.applySettings(settings);
 
   engine.goToScene('gameplay_test_scene_2', {
     sceneActivationData: game_context,
