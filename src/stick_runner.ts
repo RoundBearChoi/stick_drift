@@ -172,7 +172,8 @@ export class StickRunner extends Actor implements Tickable {
    * (on every onEnter we call playAnimationForState)
    * pass spawn pos so scene enter and death reset both start from the same place.
    */
-  resetRunner(runnerCtx: RunnerContext, spawnPos?: Vector): void {
+  resetRunner(gameCtx: GameContext, spawnPos?: Vector): void {
+    const runnerCtx = gameCtx.runner_ctx;
     this._runner_ctx = runnerCtx;
 
     if (spawnPos) {
@@ -187,22 +188,22 @@ export class StickRunner extends Actor implements Tickable {
     this.anchor = runnerCtx.anchor;
     this.syncFacing(runnerCtx);
 
-    // always attach debug actors so ctx flags can be live-toggled.
+    // always attach debug actors so settings flags can be live-toggled.
     // draw() already no-ops when the matching show_* flag is false.
     if (!this._colliderDebug) {
       this._colliderDebug = new RunnerColliderDebug(this);
     }
-    this._colliderDebug.ensure(runnerCtx);
+    this._colliderDebug.ensure(runnerCtx, gameCtx.settings);
 
     if (!this._jumpDebug) {
       this._jumpDebug = new RunnerJumpDebug(this);
     }
-    this._jumpDebug.ensure(runnerCtx);
+    this._jumpDebug.ensure(runnerCtx, gameCtx.settings);
 
     if (!this._fallDebug) {
       this._fallDebug = new RunnerFallDebug(this);
     }
-    this._fallDebug.ensure(runnerCtx);
+    this._fallDebug.ensure(runnerCtx, gameCtx.settings);
   }
 
   get currentFrameIndex(): number {
