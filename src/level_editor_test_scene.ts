@@ -98,7 +98,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
 
     // grid (8 px cells, same as gameplay)
     if (!this._grid) {
-      this._grid = new GridDebug(8);
+      this._grid = new GridDebug(this._game_ctx.settings_ctx, 8);
       this.add(this._grid);
     }
 
