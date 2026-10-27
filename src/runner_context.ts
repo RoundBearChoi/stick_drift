@@ -59,6 +59,10 @@ export class RunnerContext {
   current_wall_slide_down_accel = 0;
   wall_slide_update_count = 0;
 
+  // hold opposite direction this many ticks before peeling off wall (jump still peels instantly)
+  get wall_fall_off_hold_ticks() { return 6; }
+  wall_fall_off_hold_count = 0;
+
   current_wall_slide_up_vector = 0;
   wall_slide_up_vector_decay_counter = 0;
   get wall_slide_up_vector_decay_amount() { return 1; }
@@ -115,6 +119,7 @@ export class RunnerContext {
     this.air_run_update_count = 0;
     this.current_wall_slide_down_accel = 0;
     this.wall_slide_update_count = 0;
+    this.wall_fall_off_hold_count = 0;
     this.current_wall_slide_up_vector = 0;
     this.wall_slide_up_vector_decay_counter = 0;
     this.wall_contact_left = false;
