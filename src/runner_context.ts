@@ -60,7 +60,7 @@ export class RunnerContext {
   wall_slide_update_count = 0;
 
   // hold opposite direction this many ticks before peeling off wall (jump still peels instantly)
-  get wall_fall_off_hold_ticks() { return 6; }
+  get wall_fall_off_hold_ticks() { return 5; }
   wall_fall_off_hold_count = 0;
 
   current_wall_slide_up_vector = 0;
@@ -81,7 +81,7 @@ export class RunnerContext {
   get release_hang_time_wallslide() { return 1; }
   release_hang_ticks_wallslide_remaining = 0;
 
-  get wall_jump_coyote_ticks() { return 8; } // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
+  get wall_jump_coyote_ticks() { return 5; } // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
   wall_jump_coyote_ticks_remaining = 0;
   wall_jump_coyote_from_right = true; // facing toward the wall at the moment slide ended. air-run may flip facing before jump.
 
