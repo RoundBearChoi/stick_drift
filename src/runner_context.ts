@@ -1,5 +1,4 @@
 import { Vector, vec } from 'excalibur';
-import type { SettingsFile } from './settings';
 
 /** owned by game ctx so all runner-related numbers live in one place */
 export class RunnerContext {
@@ -22,12 +21,6 @@ export class RunnerContext {
   get collider_width() { return 20; }
   get collider_height() { return 30; }
   get wall_slide_min_overlap() { return 1; } // pixels of vertical solid overlap required to count as wall contact
-
-  // live toggle visual debug. not cleared by reset()
-  // initial values may be overridden once by applySettings() from res/settings.json
-  show_collider_debug = true;
-  show_jump_debug = true;
-  show_fall_debug = true;
 
   get max_run_speed() { return 5; }
   get run_accel_amount() { return 1; }
@@ -87,23 +80,6 @@ export class RunnerContext {
   get wall_jump_coyote_ticks() { return 8; } // after leaving wall slide, jump still seeds a wall jump for this many fall ticks.
   wall_jump_coyote_ticks_remaining = 0;
   wall_jump_coyote_from_right = true; // facing toward the wall at the moment slide ended. air-run may flip facing before jump.
-
-  /**
-   * seed the visual-debug flags from settings.json.
-   * only known boolean keys are applied; everything else is ignored.
-   * call once at startup before the first scene activates.
-   */
-  applySettings(settings: SettingsFile): void {
-    if (typeof settings.show_collider_debug === 'boolean') {
-      this.show_collider_debug = settings.show_collider_debug;
-    }
-    if (typeof settings.show_jump_debug === 'boolean') {
-      this.show_jump_debug = settings.show_jump_debug;
-    }
-    if (typeof settings.show_fall_debug === 'boolean') {
-      this.show_fall_debug = settings.show_fall_debug;
-    }
-  }
 
   // same kill is used for both physical ceiling and jump relase
   cancelUpwardMomentum(): void {

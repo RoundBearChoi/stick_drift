@@ -1,7 +1,31 @@
 /**
- * initial visual-debug flags.
- * loaded once at startup; missing keys keep the hard-coded defaults on RunnerContext.
+ * live visual-debug toggles.
+ * owned by GameContext. not cleared by any reset.
+ * initial values may be overridden once by apply() from res/settings.json.
  */
+export class Settings {
+  show_collider_debug = true;
+  show_jump_debug = true;
+  show_fall_debug = true;
+
+  /**
+   * seed known boolean keys from a settings file.
+   * missing or non-boolean keys keep the hard-coded defaults.
+   */
+  apply(file: SettingsFile): void {
+    if (typeof file.show_collider_debug === 'boolean') {
+      this.show_collider_debug = file.show_collider_debug;
+    }
+    if (typeof file.show_jump_debug === 'boolean') {
+      this.show_jump_debug = file.show_jump_debug;
+    }
+    if (typeof file.show_fall_debug === 'boolean') {
+      this.show_fall_debug = file.show_fall_debug;
+    }
+  }
+}
+
+/** partial shape of res/settings.json */
 export interface SettingsFile {
   show_collider_debug?: boolean;
   show_jump_debug?: boolean;

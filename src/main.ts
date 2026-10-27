@@ -53,8 +53,8 @@ engine.start(loader).then(async () => {
 
   // seed debug flags from res/settings.json before any scene draws
   // (hard-coded defaults stay if the file is missing or invalid)
-  const settings = await loadSettings();
-  game_context.runner_ctx.applySettings(settings);
+  const settingsFile = await loadSettings();
+  game_context.settings.apply(settingsFile);
 
   engine.goToScene('gameplay_test_scene_2', {
     sceneActivationData: game_context,

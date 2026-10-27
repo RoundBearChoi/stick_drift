@@ -1,5 +1,6 @@
 import { Actor, vec, ExcaliburGraphicsContext } from 'excalibur';
 import { RunnerContext } from './runner_context';
+import { Settings } from './settings';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { assignZ } from './z_order';
 
@@ -13,12 +14,14 @@ import { assignZ } from './z_order';
 export class RunnerColliderDebug {
   private _actor: Actor | null = null;
   private _runnerCtx: RunnerContext | null = null;
+  private _settings: Settings | null = null;
 
   constructor(private readonly host: Actor) {}
 
-  /** call once we have a RunnerContext */
-  ensure(runnerCtx: RunnerContext): void {
+  /** call once we have a RunnerContext + Settings */
+  ensure(runnerCtx: RunnerContext, settings: Settings): void {
     this._runnerCtx = runnerCtx;
+    this._settings = settings;
     if (this._actor) return;
 
     const debug = new Actor({
@@ -53,7 +56,8 @@ export class RunnerColliderDebug {
 
   private draw(ctx: ExcaliburGraphicsContext): void {
     const runnerCtx = this._runnerCtx;
-    if (!runnerCtx || !runnerCtx.show_collider_debug) return;
+    const settings = this._settings;
+    if (!runnerCtx || !settings || !settings.show_collider_debug) return;
 
     const w = runnerCtx.collider_width;
     const h = runnerCtx.collider_height;
