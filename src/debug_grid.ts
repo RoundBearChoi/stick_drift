@@ -4,18 +4,23 @@ import {
   ExcaliburGraphicsContext,
   vec,
 } from 'excalibur';
+import { SettingsContext } from './settings_context';
 import { assignZ } from './z_order';
 
 /**
  * only renders lines that intersect the current camera viewport.
  * not a Tickable — pure rendering.
+ * show_grid_debug on SettingsContext is a live toggle (same pattern as runner debugs).
  */
 export class GridDebug extends Actor {
   private cellSize: number;
   private lineColor = Color.fromRGB(140, 140, 160, 0.15);
   private lineThickness = 1;
 
-  constructor(cellSize = 8) {
+  constructor(
+    private readonly settings: SettingsContext,
+    cellSize = 8
+  ) {
     super({
       name: 'GridSystem',
     });
@@ -33,6 +38,8 @@ export class GridDebug extends Actor {
   }
 
   private drawGrid(ctx: ExcaliburGraphicsContext): void {
+    if (!this.settings.show_grid_debug) return;
+
     const camera = this.scene?.camera;
     if (!camera) return;
 

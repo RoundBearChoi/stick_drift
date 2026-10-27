@@ -7,6 +7,7 @@ export class SettingsContext {
   show_collider_debug = true;
   show_jump_debug = true;
   show_fall_debug = true;
+  show_grid_debug = true;
 
   /**
    * seed known boolean keys from a settings file.
@@ -22,6 +23,9 @@ export class SettingsContext {
     if (typeof file.show_fall_debug === 'boolean') {
       this.show_fall_debug = file.show_fall_debug;
     }
+    if (typeof file.show_grid_debug === 'boolean') {
+      this.show_grid_debug = file.show_grid_debug;
+    }
   }
 }
 
@@ -30,6 +34,7 @@ export interface SettingsFile {
   show_collider_debug?: boolean;
   show_jump_debug?: boolean;
   show_fall_debug?: boolean;
+  show_grid_debug?: boolean;
 }
 
 /**
