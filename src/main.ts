@@ -9,7 +9,7 @@ import { setupSceneCycle } from './scene_cycle';
 import { ResolutionScale } from './resolution_scale';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { BloomPostProcessor } from './bloom_post_processor';
-import { loadSettings } from './settings';
+import { loadSettings } from './settings_context';
 
 const engine = new Engine({
   width: NATIVE_RESOLUTION.width,
@@ -54,7 +54,7 @@ engine.start(loader).then(async () => {
   // seed debug flags from res/settings.json before any scene draws
   // (hard-coded defaults stay if the file is missing or invalid)
   const settingsFile = await loadSettings();
-  game_context.settings.apply(settingsFile);
+  game_context.settings_ctx.apply(settingsFile);
 
   engine.goToScene('gameplay_test_scene_2', {
     sceneActivationData: game_context,

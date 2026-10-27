@@ -1,6 +1,6 @@
 import { Actor, vec, ExcaliburGraphicsContext } from 'excalibur';
 import { RunnerContext } from './runner_context';
-import { Settings } from './settings';
+import { SettingsContext } from './settings_context';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { assignZ } from './z_order';
 
@@ -12,12 +12,12 @@ import { assignZ } from './z_order';
 export class RunnerJumpDebug {
   private _actor: Actor | null = null;
   private _runnerCtx: RunnerContext | null = null;
-  private _settings: Settings | null = null;
+  private _settings: SettingsContext | null = null;
 
   constructor(private readonly host: Actor) {}
 
   /** call once we have a RunnerContext + Settings */
-  ensure(runnerCtx: RunnerContext, settings: Settings): void {
+  ensure(runnerCtx: RunnerContext, settings: SettingsContext): void {
     this._runnerCtx = runnerCtx;
     this._settings = settings;
     if (this._actor) return;

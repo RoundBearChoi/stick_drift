@@ -193,17 +193,17 @@ export class StickRunner extends Actor implements Tickable {
     if (!this._colliderDebug) {
       this._colliderDebug = new RunnerColliderDebug(this);
     }
-    this._colliderDebug.ensure(runnerCtx, gameCtx.settings);
+    this._colliderDebug.ensure(runnerCtx, gameCtx.settings_ctx);
 
     if (!this._jumpDebug) {
       this._jumpDebug = new RunnerJumpDebug(this);
     }
-    this._jumpDebug.ensure(runnerCtx, gameCtx.settings);
+    this._jumpDebug.ensure(runnerCtx, gameCtx.settings_ctx);
 
     if (!this._fallDebug) {
       this._fallDebug = new RunnerFallDebug(this);
     }
-    this._fallDebug.ensure(runnerCtx, gameCtx.settings);
+    this._fallDebug.ensure(runnerCtx, gameCtx.settings_ctx);
   }
 
   get currentFrameIndex(): number {

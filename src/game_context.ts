@@ -7,7 +7,7 @@ import { DraculaColorScheme } from './dracula_color_scheme';
 import { InputInterpreter } from './input_interpreter';
 import { RunnerContext } from './runner_context';
 import { LevelContext } from './level_context';
-import { Settings } from './settings';
+import { SettingsContext } from './settings_context';
 
 export const NATIVE_RESOLUTION = {
   width: 640,
@@ -33,7 +33,7 @@ export class GameContext {
   readonly level_ctx = new LevelContext();
 
   /** live visual-debug toggles. seeded once from res/settings.json at startup. */
-  readonly settings = new Settings();
+  readonly settings_ctx = new SettingsContext();
 
   /**
    * editor-only view center.

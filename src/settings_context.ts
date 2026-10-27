@@ -3,7 +3,7 @@
  * owned by GameContext. not cleared by any reset.
  * initial values may be overridden once by apply() from res/settings.json.
  */
-export class Settings {
+export class SettingsContext {
   show_collider_debug = true;
   show_jump_debug = true;
   show_fall_debug = true;
