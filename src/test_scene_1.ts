@@ -65,7 +65,7 @@ export class TestScene1 extends Scene<GameContext> {
     }
 
     // deterministic start every time we enter the scene
-    this._stick_runner.resetRunner(this._game_ctx.runner_ctx);
+    this._stick_runner.resetRunner(this._game_ctx);
     this._stick_runner.register(this._game_ctx);
   }
 
