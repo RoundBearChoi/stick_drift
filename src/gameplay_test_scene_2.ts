@@ -296,7 +296,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private resetGameplay(): void {
     if (!this._stick_runner) return;
 
-    this._stick_runner.resetRunner(this._game_ctx.runner_ctx, this._runner_spawn);
+    this._stick_runner.resetRunner(this._game_ctx, this._runner_spawn);
     this._runner_death_vfx?.clear();
     this._green_trail?.clear();
     this._white_dust?.clear();
