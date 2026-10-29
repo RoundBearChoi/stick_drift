@@ -2,7 +2,7 @@ import { TerminalLoader } from './terminal_loader';
 import { debugFontSource } from './debug_font';
 /** plugin-aesprite loads + parses the files and convert them to excalibur's graphics objects */
 import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
-import { ImageSource } from 'excalibur';
+import { ImageSource, Sound } from 'excalibur';
 
 export const Resources = {
   stick_runner_idle: new AsepriteResource('./res/sprites/stick_runner_idle.aseprite'),
@@ -22,6 +22,9 @@ export const Resources = {
   white_dust: new AsepriteResource('./res/sprites/white_dust.aseprite'),
 
   land_dust: new ImageSource('./res/sprites/land_dust.png'),
+
+  jump_sound: new Sound('./res/sounds/jump.wav'),
+  land_sound: new Sound('./res/sounds/land.wav'),
 } as const;
 
 const loader = new TerminalLoader();
@@ -41,5 +44,7 @@ loader.addResource(Resources.brick_16x16);
 loader.addResource(Resources.spikes_16x16);
 loader.addResource(Resources.white_dust);
 loader.addResource(Resources.land_dust);
+loader.addResource(Resources.jump_sound);
+loader.addResource(Resources.land_sound);
 
 export { loader };
