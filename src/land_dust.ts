@@ -7,16 +7,16 @@ import { FrameBasedAnimation } from './frame_based_animation';
 import { assignZ } from './z_order';
 
 const POOL_SIZE = 4;
-const FRAME_COUNT = 5;
+const FRAME_COUNT = 6;
 const FRAME_WIDTH = 64;
 const FRAME_HEIGHT = 32;
 const ADVANCES_PER_FRAME = 3;
 const LIFE_TICKS = FRAME_COUNT * ADVANCES_PER_FRAME;
 
 // effect tunables
-const START_OPACITY = 0.85;
+const START_OPACITY = 0.5;
 const END_OPACITY = 0.0;
-const DUST_SCALE = 1.5; // uniform scale of the dust graphic (1.0 = native 64x32)
+const DUST_SCALE = 1.0;
 
 class DustSlot {
   actor: Actor;
