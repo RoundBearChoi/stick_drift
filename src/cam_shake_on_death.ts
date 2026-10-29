@@ -1,3 +1,5 @@
+import { CamShake } from './cam_shake';
+
 const DEATH_CAM_SHAKE: ReadonlyArray<readonly [number, number]> = [
   [ 6, -4], [ 6, -4],
   [-5,  3], [-5,  3],
@@ -10,7 +12,7 @@ const DEATH_CAM_SHAKE: ReadonlyArray<readonly [number, number]> = [
   [ 0,  0],
 ];
 
-export class CamShakeOnDeath {
+export class CamShakeOnDeath implements CamShake {
   private _shakeTick = -1; // -1 = inactive
   private _wasDead = false;
 

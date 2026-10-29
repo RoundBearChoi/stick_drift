@@ -10,6 +10,7 @@ import {
   chaseSpeedFromOverflowX,
   chaseSpeedFromOverflowY,
 } from './camera_chase_speed';
+import { CamShake } from './cam_shake';
 import { CamShakeOnDeath } from './cam_shake_on_death';
 
 /**
@@ -34,6 +35,7 @@ export class CameraController implements Tickable {
   private _hasBase = false;
 
   private readonly _deathShake = new CamShakeOnDeath();
+  private readonly _shakes: CamShake[] = [this._deathShake];
 
   constructor(
     private readonly scene: Scene,
@@ -48,7 +50,7 @@ export class CameraController implements Tickable {
     const desired = this.getDesiredTargetPos();
     if (!desired) return;
 
-    this._deathShake.reset_cam_shake();
+    this.reset_cam_shakes();
 
     this._baseX = Math.round(desired.x);
     this._baseY = Math.round(desired.y);
@@ -114,6 +116,12 @@ export class CameraController implements Tickable {
       this._followTarget.pos.x,
       this._followTarget.pos.y + this.targetOffsetY
     );
+  }
+
+  private reset_cam_shakes(): void {
+    for (const s of this._shakes) {
+      s.reset_cam_shake();
+    }
   }
 
   register(): void {
