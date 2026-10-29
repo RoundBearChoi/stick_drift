@@ -13,9 +13,10 @@ const FRAME_HEIGHT = 32;
 const ADVANCES_PER_FRAME = 3;
 const LIFE_TICKS = FRAME_COUNT * ADVANCES_PER_FRAME;
 
+// effect tunables
 const START_OPACITY = 0.85;
 const END_OPACITY = 0.0;
-const DUST_SCALE = 1.2;
+const DUST_SCALE = 1.5; // uniform scale of the dust graphic (1.0 = native 64x32)
 
 class DustSlot {
   actor: Actor;
