@@ -1,10 +1,9 @@
 import { CamShake } from './cam_shake';
 
 const LAND_CAM_SHAKE: ReadonlyArray<readonly [number, number]> = [
-  [ 2, -1], [ 2, -1],
-  [-1,  1], [-1,  1],
-  [ 1,  0], [ 1,  0],
-  [-1,  0],
+  [ 1, -1], [ 1, -1],
+  [-1,  0], [-1,  0],
+  [ 1,  0],
   [ 0,  0],
 ];
 
