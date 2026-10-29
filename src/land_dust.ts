@@ -1,4 +1,4 @@
-import { Actor, vec, ImageSource, SpriteSheet, Animation } from 'excalibur';
+import { Actor, vec } from 'excalibur';
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
@@ -49,23 +49,12 @@ export class LandDust implements Tickable {
   attachToScene(sceneAdd: (actor: Actor) => void): void {
     if (this._built) return;
 
-    const image = Resources.land_dust as ImageSource;
-    if (!image.isLoaded()) {
-      console.warn('land_dust image not loaded');
+    const resource = Resources.land_dust;
+    const source = resource.getAnimation();
+    if (!source) {
+      console.warn('land_dust animation not loaded');
       return;
     }
-
-    const spriteSheet = SpriteSheet.fromImageSource({
-      image,
-      grid: {
-        rows: 1,
-        columns: FRAME_COUNT,
-        spriteWidth: FRAME_WIDTH,
-        spriteHeight: FRAME_HEIGHT,
-      },
-    });
-
-    const sourceAnim = Animation.fromSpriteSheet(spriteSheet, [0, 1, 2, 3, 4], 100); // speed ignored, we use FrameBasedAnimation
 
     for (let i = 0; i < POOL_SIZE; i++) {
       const actor = new Actor({
@@ -79,7 +68,7 @@ export class LandDust implements Tickable {
       actor.graphics.opacity = START_OPACITY;
       actor.graphics.visible = false;
 
-      const anim = new FrameBasedAnimation(sourceAnim, ADVANCES_PER_FRAME);
+      const anim = new FrameBasedAnimation(source, ADVANCES_PER_FRAME);
       anim.attachToActor(actor);
 
       const slot = new DustSlot(actor, anim);
