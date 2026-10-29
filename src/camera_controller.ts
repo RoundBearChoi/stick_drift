@@ -11,7 +11,7 @@ import {
   chaseSpeedFromOverflowY,
 } from './camera_chase_speed';
 
-const DEATH_SHAKE: ReadonlyArray<readonly [number, number]> = [
+const DEFAULT_CAM_SHAKE: ReadonlyArray<readonly [number, number]> = [
   [ 6, -4], [ 6, -4],
   [-5,  3], [-5,  3],
   [ 3, -2], [ 3, -2],
@@ -113,7 +113,7 @@ export class CameraController implements Tickable {
     cam.pos.x = this._baseX + shake_x;
     cam.pos.y = this._baseY + shake_y;
 
-    if (this._shakeTick >= 0 && this._shakeTick < DEATH_SHAKE.length) {
+    if (this._shakeTick >= 0 && this._shakeTick < DEFAULT_CAM_SHAKE.length) {
       this._shakeTick++;
     }
   }
@@ -145,7 +145,7 @@ export class CameraController implements Tickable {
   }
 
   private currentShake(): readonly [number, number] {
-    if (this._shakeTick < 0 || this._shakeTick >= DEATH_SHAKE.length) return [0, 0];
-    return DEATH_SHAKE[this._shakeTick];
+    if (this._shakeTick < 0 || this._shakeTick >= DEFAULT_CAM_SHAKE.length) return [0, 0];
+    return DEFAULT_CAM_SHAKE[this._shakeTick];
   }
 }
