@@ -48,7 +48,7 @@ export class CameraController implements Tickable {
     const desired = this.getDesiredTargetPos();
     if (!desired) return;
 
-    this._deathShake.reset();
+    this._deathShake.reset_cam_shake();
 
     this._baseX = Math.round(desired.x);
     this._baseY = Math.round(desired.y);

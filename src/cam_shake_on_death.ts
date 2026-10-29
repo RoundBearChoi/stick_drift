@@ -29,10 +29,8 @@ export class CamShakeOnDeath {
     return offset;
   }
 
-  /** Call from snapToTarget / resets so a mid-shake does not leak. */
-  reset(): void {
+  reset_cam_shake(): void {
     this._shakeTick = -1;
-    // _wasDead is refreshed on the next update()
   }
 
   private currentOffset(): readonly [number, number] {
