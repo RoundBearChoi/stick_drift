@@ -16,7 +16,7 @@ const LIFE_TICKS = FRAME_COUNT * ADVANCES_PER_FRAME;
 // effect tunables
 const START_OPACITY = 0.5;
 const END_OPACITY = 0.0;
-const DUST_SCALE = 1.0;
+const DUST_SCALE = 1.05;
 
 class DustSlot {
   actor: Actor;
