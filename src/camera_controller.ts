@@ -11,17 +11,7 @@ import {
   chaseSpeedFromOverflowY,
 } from './camera_chase_speed';
 
-// hand-sampled exp curve
 const DEATH_SHAKE: ReadonlyArray<readonly [number, number]> = [
-  /*[8, -5], [8, -5],
-  [-6,  4], [-6,  4],
-  [ 4, -2], [ 4, -2],
-  [-3,  2], [-3,  2],
-  [ 2, -1], [ 2, -1],
-  [-1,  1], [-1,  1],
-  [ 1,  0], [ 1,  0],
-  [-1,  0], [-1,  0],
-  [ 0,  0],*/
   [ 6, -4], [ 6, -4],
   [-5,  3], [-5,  3],
   [ 3, -2], [ 3, -2],
