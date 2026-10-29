@@ -13,6 +13,7 @@ import {
 import { CamShake } from './cam_shake';
 import { CamShakeOnDeath } from './cam_shake_on_death';
 import { CamShakeOnLand } from './cam_shake_on_land';
+import { soundController } from './sound_controller';
 
 /**
  * future-friendly stuff:
@@ -39,6 +40,9 @@ export class CameraController implements Tickable {
   private readonly _landShake = new CamShakeOnLand();
   private readonly _shakes: CamShake[] = [this._deathShake, this._landShake];
 
+  // rising-edge detection for land SFX (independent of cam shake)
+  private _wasGroundedForSound = true;
+
   constructor(
     private readonly scene: Scene,
     private readonly gameCtx: GameContext
@@ -53,6 +57,7 @@ export class CameraController implements Tickable {
     if (!desired) return;
 
     this.reset_cam_shakes();
+    this._wasGroundedForSound = true; // avoid a land sound on the next tick after a reset
 
     this._baseX = Math.round(desired.x);
     this._baseY = Math.round(desired.y);
@@ -95,12 +100,18 @@ export class CameraController implements Tickable {
     this._baseX = Math.round(this._baseX);
     this._baseY = Math.round(this._baseY);
 
+    const grounded = this.gameCtx.runner_ctx.is_grounded;
+
+    // land SFX on rising edge only
+    if (grounded && !this._wasGroundedForSound) {
+      soundController.playLand();
+    }
+    this._wasGroundedForSound = grounded;
+
     const [death_x, death_y] = this._deathShake.update(
       this.gameCtx.runner_ctx.is_dead
     );
-    const [land_x, land_y] = this._landShake.update(
-      this.gameCtx.runner_ctx.is_grounded
-    );
+    const [land_x, land_y] = this._landShake.update(grounded);
     cam.pos.x = this._baseX + death_x + land_x;
     cam.pos.y = this._baseY + death_y + land_y;
   }
