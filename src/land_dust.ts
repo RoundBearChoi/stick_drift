@@ -1,4 +1,4 @@
-import { Actor, vec, Animation, AnimationStrategy } from 'excalibur';
+import { Actor, vec, Animation, AnimationStrategy, Color, Rectangle } from 'excalibur';
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
@@ -7,39 +7,34 @@ import { FrameBasedAnimation } from './frame_based_animation';
 import { assignZ } from './z_order';
 
 const POOL_SIZE = 4;
-const FRAME_COUNT = 5;                 // must match the sprite sheet
+const FRAME_COUNT = 5;
 const FRAME_WIDTH = 64;
 const FRAME_HEIGHT = 32;
-const ADVANCES_PER_FRAME = 3;          // how many fixed ticks = 1 animation frame
+const ADVANCES_PER_FRAME = 3;
 const LIFE_TICKS = FRAME_COUNT * ADVANCES_PER_FRAME;
 
-const START_OPACITY = 0.85;
+const START_OPACITY = 0.9;
 const END_OPACITY = 0.0;
-
-const DUST_SCALE = 1.0;                // 64x32 sheet already covers left+right of the 20px collider
+const DUST_SCALE = 1.5; // temporarily bigger so it's hard to miss
 
 class DustSlot {
   actor: Actor;
-  animation: FrameBasedAnimation;
+  animation: FrameBasedAnimation | null = null;
   life = 0;
   active = false;
 
-  constructor(actor: Actor, animation: FrameBasedAnimation) {
+  constructor(actor: Actor, animation: FrameBasedAnimation | null) {
     this.actor = actor;
     this.animation = animation;
   }
 }
 
-/**
- * One-shot dust impact spawned at the runner's bottom-center
- * on every landing (rising edge of is_grounded).
- * Sprite sheet is already left/right symmetrical, so no facing flip is needed.
- */
 export class LandDust implements Tickable {
   private _slots: DustSlot[] = [];
   private _cursor = 0;
   private _built = false;
-  private _wasGrounded = true;         // start true so spawn/reset does not trigger
+  private _wasGrounded = true;
+  private _useFallbackRect = false;
 
   constructor(
     private readonly runner: StickRunner,
@@ -51,24 +46,26 @@ export class LandDust implements Tickable {
 
     const resource = Resources.land_dust;
     const sheet = resource.getSpriteSheet();
-    if (!sheet) {
-      console.warn('land_dust sprite sheet not loaded');
-      return;
-    }
+    console.log('[LandDust] getSpriteSheet()', sheet);
 
-    // Build a source Animation from the sheet (indices 0..FRAME_COUNT-1).
-    // FrameBasedAnimation will drive the actual speed; the duration here is ignored.
-    const source = Animation.fromSpriteSheet(
-      sheet,
-      Array.from({ length: FRAME_COUNT }, (_, i) => i),
-      100,
-      AnimationStrategy.Loop
-    );
+    let source: Animation | null = null;
+    if (sheet && sheet.sprites && sheet.sprites.length >= FRAME_COUNT) {
+      console.log('[LandDust] sheet has', sheet.sprites.length, 'sprites');
+      source = Animation.fromSpriteSheet(
+        sheet,
+        Array.from({ length: FRAME_COUNT }, (_, i) => i),
+        100,
+        AnimationStrategy.Loop
+      );
+    } else {
+      console.warn('[LandDust] sprite sheet missing or too few frames — using solid rect fallback');
+      this._useFallbackRect = true;
+    }
 
     for (let i = 0; i < POOL_SIZE; i++) {
       const actor = new Actor({
         name: 'LandDust',
-        anchor: vec(0.5, 1),               // bottom-center (same as runner)
+        anchor: vec(0.5, 1),
         width: FRAME_WIDTH,
         height: FRAME_HEIGHT,
       });
@@ -77,8 +74,18 @@ export class LandDust implements Tickable {
       actor.graphics.opacity = START_OPACITY;
       actor.graphics.visible = false;
 
-      const anim = new FrameBasedAnimation(source, ADVANCES_PER_FRAME);
-      anim.attachToActor(actor);
+      let anim: FrameBasedAnimation | null = null;
+      if (source) {
+        anim = new FrameBasedAnimation(source, ADVANCES_PER_FRAME);
+        anim.attachToActor(actor);
+      } else {
+        // solid cyan rect so we can see the spawn even if ASE is bad
+        actor.graphics.use(new Rectangle({
+          width: 32,
+          height: 16,
+          color: Color.Cyan,
+        }));
+      }
 
       const slot = new DustSlot(actor, anim);
       this._slots.push(slot);
@@ -86,6 +93,7 @@ export class LandDust implements Tickable {
     }
 
     this._built = true;
+    console.log('[LandDust] pool built, fallback=', this._useFallbackRect);
   }
 
   clear(): void {
@@ -102,8 +110,8 @@ export class LandDust implements Tickable {
 
     this.age();
 
-    // rising edge only — same idea as CamShakeOnLand
     if (ctx.is_grounded && !this._wasGrounded) {
+      console.log('[LandDust] rising edge — spawning');
       this.spawn();
     }
     this._wasGrounded = ctx.is_grounded;
@@ -118,12 +126,14 @@ export class LandDust implements Tickable {
   }
 
   private spawn(): void {
-    if (!this._built || this._slots.length === 0) return;
+    if (!this._built || this._slots.length === 0) {
+      console.warn('[LandDust] spawn skipped — not built');
+      return;
+    }
 
     const slot = this._slots[this._cursor];
     this._cursor = (this._cursor + 1) % this._slots.length;
 
-    // runner.pos is already bottom-center (anchor 0.5, 1)
     slot.actor.pos = this.runner.pos.clone();
     slot.actor.anchor = vec(0.5, 1);
     slot.actor.rotation = 0;
@@ -131,9 +141,12 @@ export class LandDust implements Tickable {
     slot.actor.graphics.opacity = START_OPACITY;
     slot.actor.graphics.visible = true;
 
-    slot.animation.reset();
+    if (slot.animation) {
+      slot.animation.reset();
+    }
     slot.life = LIFE_TICKS;
     slot.active = true;
+    console.log('[LandDust] spawned at', slot.actor.pos.x, slot.actor.pos.y);
   }
 
   private age(): void {
@@ -141,9 +154,10 @@ export class LandDust implements Tickable {
       if (!slot.active) continue;
 
       slot.life--;
-      slot.animation.tick();
+      if (slot.animation) {
+        slot.animation.tick();
+      }
 
-      // linear fade from START_OPACITY → END_OPACITY over the full life
       const progress = 1 - slot.life / LIFE_TICKS;
       const opacity = START_OPACITY + (END_OPACITY - START_OPACITY) * progress;
       slot.actor.graphics.opacity = opacity;
