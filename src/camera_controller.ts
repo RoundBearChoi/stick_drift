@@ -12,6 +12,7 @@ import {
 } from './camera_chase_speed';
 import { CamShake } from './cam_shake';
 import { CamShakeOnDeath } from './cam_shake_on_death';
+import { CamShakeOnLand } from './cam_shake_on_land';
 
 /**
  * future-friendly stuff:
@@ -35,7 +36,8 @@ export class CameraController implements Tickable {
   private _hasBase = false;
 
   private readonly _deathShake = new CamShakeOnDeath();
-  private readonly _shakes: CamShake[] = [this._deathShake];
+  private readonly _landShake = new CamShakeOnLand();
+  private readonly _shakes: CamShake[] = [this._deathShake, this._landShake];
 
   constructor(
     private readonly scene: Scene,
@@ -93,11 +95,14 @@ export class CameraController implements Tickable {
     this._baseX = Math.round(this._baseX);
     this._baseY = Math.round(this._baseY);
 
-    const [shake_x, shake_y] = this._deathShake.update(
+    const [death_x, death_y] = this._deathShake.update(
       this.gameCtx.runner_ctx.is_dead
     );
-    cam.pos.x = this._baseX + shake_x;
-    cam.pos.y = this._baseY + shake_y;
+    const [land_x, land_y] = this._landShake.update(
+      this.gameCtx.runner_ctx.is_grounded
+    );
+    cam.pos.x = this._baseX + death_x + land_x;
+    cam.pos.y = this._baseY + death_y + land_y;
   }
 
   /**
