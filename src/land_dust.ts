@@ -1,4 +1,4 @@
-import { Actor, vec } from 'excalibur';
+import { Actor, vec, Animation, AnimationStrategy } from 'excalibur';
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
@@ -50,11 +50,20 @@ export class LandDust implements Tickable {
     if (this._built) return;
 
     const resource = Resources.land_dust;
-    const source = resource.getAnimation();
-    if (!source) {
-      console.warn('land_dust animation not loaded');
+    const sheet = resource.getSpriteSheet();
+    if (!sheet) {
+      console.warn('land_dust sprite sheet not loaded');
       return;
     }
+
+    // Build a source Animation from the sheet (indices 0..FRAME_COUNT-1).
+    // FrameBasedAnimation will drive the actual speed; the duration here is ignored.
+    const source = Animation.fromSpriteSheet(
+      sheet,
+      Array.from({ length: FRAME_COUNT }, (_, i) => i),
+      100,
+      AnimationStrategy.Loop
+    );
 
     for (let i = 0; i < POOL_SIZE; i++) {
       const actor = new Actor({
