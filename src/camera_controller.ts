@@ -10,18 +10,7 @@ import {
   chaseSpeedFromOverflowX,
   chaseSpeedFromOverflowY,
 } from './camera_chase_speed';
-
-const DEFAULT_CAM_SHAKE: ReadonlyArray<readonly [number, number]> = [
-  [ 6, -4], [ 6, -4],
-  [-5,  3], [-5,  3],
-  [ 3, -2], [ 3, -2],
-  [-2,  1], [-2,  1],
-  [ 1, -1], [ 1, -1],
-  [-1,  1], [-1,  1],
-  [ 1,  0], [ 1,  0],
-  [-1,  0], [-1,  0],
-  [ 0,  0],
-];
+import { CamShakeOnDeath } from './cam_shake_on_death';
 
 /**
  * future-friendly stuff:
@@ -44,8 +33,7 @@ export class CameraController implements Tickable {
   private _baseY = 0;
   private _hasBase = false;
 
-  private _shakeTick = -1; // -1 means inactive
-  private _wasDead = false; // flag so that cam shake starts once, instead of every tick while the runner stays dead
+  private readonly _deathShake = new CamShakeOnDeath();
 
   constructor(
     private readonly scene: Scene,
@@ -60,8 +48,7 @@ export class CameraController implements Tickable {
     const desired = this.getDesiredTargetPos();
     if (!desired) return;
 
-    this._shakeTick = -1;
-    this._wasDead = this.gameCtx.runner_ctx.is_dead;
+    this._deathShake.reset();
 
     this._baseX = Math.round(desired.x);
     this._baseY = Math.round(desired.y);
@@ -73,11 +60,6 @@ export class CameraController implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
-    const dead = this.gameCtx.runner_ctx.is_dead;
-    if (dead && !this._wasDead) this._shakeTick = 0;
-    if (!dead) this._shakeTick = -1;
-    this._wasDead = dead;
-
     const desired = this.getDesiredTargetPos();
     if (!desired) return;
 
@@ -109,13 +91,11 @@ export class CameraController implements Tickable {
     this._baseX = Math.round(this._baseX);
     this._baseY = Math.round(this._baseY);
 
-    const [shake_x, shake_y] = this.currentShake();
+    const [shake_x, shake_y] = this._deathShake.update(
+      this.gameCtx.runner_ctx.is_dead
+    );
     cam.pos.x = this._baseX + shake_x;
     cam.pos.y = this._baseY + shake_y;
-
-    if (this._shakeTick >= 0 && this._shakeTick < DEFAULT_CAM_SHAKE.length) {
-      this._shakeTick++;
-    }
   }
 
   /**
@@ -142,10 +122,5 @@ export class CameraController implements Tickable {
 
   unregister(): void {
     this.gameCtx.unregisterTickable(this);
-  }
-
-  private currentShake(): readonly [number, number] {
-    if (this._shakeTick < 0 || this._shakeTick >= DEFAULT_CAM_SHAKE.length) return [0, 0];
-    return DEFAULT_CAM_SHAKE[this._shakeTick];
   }
 }
