@@ -2,7 +2,6 @@ import { Actor, vec, Animation, AnimationStrategy, ImageSource, SpriteSheet } fr
 import { Tickable } from './tickable';
 import { GameContext } from './game_context';
 import { StickRunner } from './stick_runner';
-import { Resources } from './resources';
 import { FrameBasedAnimation } from './frame_based_animation';
 import { assignZ } from './z_order';
 
@@ -43,14 +42,24 @@ export class LandDust implements Tickable {
   attachToScene(sceneAdd: (actor: Actor) => void): void {
     if (this._built) return;
 
-    const image = Resources.land_dust as ImageSource;
-    if (!image.isLoaded()) {
-      console.warn('[LandDust] image not loaded');
+    // Image is optional for now so a missing/bad PNG does not hang the loader
+    const image = (this.gameCtx as any).land_dust as ImageSource | undefined;
+    // Prefer the shared Resources if it exists
+    let img: ImageSource | null = null;
+    try {
+      // @ts-ignore — may have been removed from Resources
+      img = (require('./resources').Resources.land_dust) as ImageSource;
+    } catch {
+      img = null;
+    }
+
+    if (!img || !img.isLoaded()) {
+      console.warn('[LandDust] PNG not available — dust disabled');
       return;
     }
 
     const sheet = SpriteSheet.fromImageSource({
-      image,
+      image: img,
       grid: {
         rows: 1,
         columns: FRAME_COUNT,
@@ -87,7 +96,6 @@ export class LandDust implements Tickable {
     }
 
     this._built = true;
-    console.log('[LandDust] PNG sheet loaded, pool ready');
   }
 
   clear(): void {
