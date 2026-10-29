@@ -1,7 +1,8 @@
 import { TerminalLoader } from './terminal_loader';
 import { debugFontSource } from './debug_font';
 /** plugin-aesprite loads + parses the files and convert them to excalibur's graphics objects */
-import { AsepriteResource, AsepriteSpriteSheet } from '@excaliburjs/plugin-aseprite';
+import { AsepriteResource } from '@excaliburjs/plugin-aseprite';
+import { ImageSource } from 'excalibur';
 
 export const Resources = {
   stick_runner_idle: new AsepriteResource('./res/sprites/stick_runner_idle.aseprite'),
@@ -20,7 +21,7 @@ export const Resources = {
 
   white_dust: new AsepriteResource('./res/sprites/white_dust.aseprite'),
 
-  land_dust: new AsepriteResource('./res/sprites/land_dust.aseprite'),
+  land_dust: new ImageSource('./res/sprites/land_dust.png'),
 } as const;
 
 const loader = new TerminalLoader();
