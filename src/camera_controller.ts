@@ -25,12 +25,12 @@ import { RunnerStateName } from './states/runner_state';
  */
 export class CameraController implements Tickable {
   /** horizontal deadzone radius (only move when |dx| exceeds this) */
-  deadzoneX = 64 + 32;
+  deadzoneX = 64;
 
   /** vertical deadzone radius (only move when |dy| exceeds this) */
   deadzoneY = 28;
 
-  targetOffsetY = -32; // this is negative because y increases downward in excalibur.
+  targetOffsetY = -20; // this is negative because y increases downward in excalibur.
 
   // look-ahead tunables
   maxLookAheadX = 64;
