@@ -14,6 +14,8 @@ import { CamShake } from './cam_shake';
 import { CamShakeOnDeath } from './cam_shake_on_death';
 import { CamShakeOnLand } from './cam_shake_on_land';
 import { soundController } from './sound_controller';
+import { StickRunner } from './stick_runner';
+import { RunnerStateName } from './states/runner_state';
 
 /**
  * future-friendly stuff:
@@ -156,23 +158,36 @@ export class CameraController implements Tickable {
       return;
     }
 
-    // Horizontal: hold facing, including while wall-sliding
-    const facingX = ctx.is_facing_right_side ? 1 : -1;
-    this.heldFacingX = facingX;
+    const runner = this._followTarget as StickRunner;
+    const isWallSliding = runner?.stateName === RunnerStateName.WALL_SLIDE;
 
-    const targetX = this.heldFacingX * this.maxLookAheadX;
+    // Horizontal movement intent / actual momentum
+    const movingHorizontally =
+      Math.abs(ctx.horizontal_move_buffer) > 0 ||
+      Math.abs(ctx.current_run_accel) > 0 ||
+      Math.abs(ctx.current_air_run_accel) > 0;
 
-    // Detect reverse: current offset and new target have opposite signs
-    const reversing =
-      this.lookAheadOffsetX !== 0 &&
-      Math.sign(this.lookAheadOffsetX) !== Math.sign(targetX);
-
-    if (reversing) {
-      // decay through zero
+    // Decay horizontal look-ahead when not moving horizontally or on wall slide
+    if (isWallSliding || !movingHorizontally) {
       this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, 0, this.lookAheadDecayX);
     } else {
-      // build toward the held facing max
-      this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, targetX, this.lookAheadStepX);
+      // Build or reverse only while actively moving horizontally
+      const facingX = ctx.is_facing_right_side ? 1 : -1;
+      this.heldFacingX = facingX;
+
+      const targetX = this.heldFacingX * this.maxLookAheadX;
+
+      const reversing =
+        this.lookAheadOffsetX !== 0 &&
+        Math.sign(this.lookAheadOffsetX) !== Math.sign(targetX);
+
+      if (reversing) {
+        // decay through zero
+        this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, 0, this.lookAheadDecayX);
+      } else {
+        // build toward the held facing max
+        this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, targetX, this.lookAheadStepX);
+      }
     }
 
     this.lookAheadOffsetX = Math.round(
