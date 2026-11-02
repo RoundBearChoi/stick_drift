@@ -167,11 +167,17 @@ export class CameraController implements Tickable {
       Math.abs(ctx.current_run_accel) > 0 ||
       Math.abs(ctx.current_air_run_accel) > 0;
 
-    // Decay horizontal look-ahead when not moving horizontally or on wall slide
-    if (isWallSliding || !movingHorizontally) {
+    // Runner is inside the horizontal deadzone relative to the camera base
+    // (measured without the look-ahead offset itself)
+    const inDeadzoneX =
+      this._hasBase &&
+      Math.abs(this._followTarget.pos.x - this._baseX) <= this.deadzoneX;
+
+    // Decay horizontal look-ahead when not moving horizontally, on wall slide, or inside deadzone
+    if (isWallSliding || !movingHorizontally || inDeadzoneX) {
       this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, 0, this.lookAheadDecayX);
     } else {
-      // Build or reverse only while actively moving horizontally
+      // Build or reverse only while actively moving horizontally and outside the deadzone
       const facingX = ctx.is_facing_right_side ? 1 : -1;
       this.heldFacingX = facingX;
 
