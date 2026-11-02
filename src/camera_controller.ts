@@ -23,18 +23,34 @@ import { soundController } from './sound_controller';
  */
 export class CameraController implements Tickable {
   /** horizontal deadzone radius (only move when |dx| exceeds this) */
-  deadzoneX = 64+32;
+  deadzoneX = 64 + 32;
 
   /** vertical deadzone radius (only move when |dy| exceeds this) */
   deadzoneY = 28;
 
   targetOffsetY = -32; // this is negative because y increases downward in excalibur.
 
+  // look-ahead tunables
+  maxLookAheadX = 64;
+  maxLookAheadY = 28;
+  airborneExtraY = 20;
+
+  lookAheadStepX = 1;
+  lookAheadDecayX = 1;
+  lookAheadStepY = 1;
+  lookAheadDecayY = 1;
+
   private _followTarget: Actor | null = null;
 
   private _baseX = 0;
   private _baseY = 0;
   private _hasBase = false;
+
+  private lookAheadOffsetX = 0;
+  private lookAheadOffsetY = 0;
+
+  /** last non-zero horizontal facing we want to hold (1 or -1) */
+  private heldFacingX = 1;
 
   private readonly _deathShake = new CamShakeOnDeath();
   private readonly _landShake = new CamShakeOnLand();
@@ -69,6 +85,8 @@ export class CameraController implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
+    this.updateLookAhead();
+
     const desired = this.getDesiredTargetPos();
     if (!desired) return;
 
@@ -116,21 +134,92 @@ export class CameraController implements Tickable {
     cam.pos.y = this._baseY + death_y + land_y;
   }
 
+  private moveToward(current: number, target: number, step: number): number {
+    if (current === target) return current;
+    const diff = target - current;
+    const dir = Math.sign(diff);
+    const abs = Math.abs(diff);
+    return current + dir * Math.min(abs, step);
+  }
+
+  private clamp(v: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, v));
+  }
+
+  private updateLookAhead(): void {
+    const ctx = this.gameCtx.runner_ctx;
+    if (!this._followTarget || ctx.is_dead) {
+      this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, 0, this.lookAheadDecayX);
+      this.lookAheadOffsetY = this.moveToward(this.lookAheadOffsetY, 0, this.lookAheadDecayY);
+      this.lookAheadOffsetX = Math.round(this.lookAheadOffsetX);
+      this.lookAheadOffsetY = Math.round(this.lookAheadOffsetY);
+      return;
+    }
+
+    // Horizontal: hold facing, including while wall-sliding
+    const facingX = ctx.is_facing_right_side ? 1 : -1;
+    this.heldFacingX = facingX;
+
+    const targetX = this.heldFacingX * this.maxLookAheadX;
+
+    // Detect reverse: current offset and new target have opposite signs
+    const reversing =
+      this.lookAheadOffsetX !== 0 &&
+      Math.sign(this.lookAheadOffsetX) !== Math.sign(targetX);
+
+    if (reversing) {
+      // decay through zero
+      this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, 0, this.lookAheadDecayX);
+    } else {
+      // build toward the held facing max
+      this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, targetX, this.lookAheadStepX);
+    }
+
+    this.lookAheadOffsetX = Math.round(
+      this.clamp(this.lookAheadOffsetX, -this.maxLookAheadX, this.maxLookAheadX)
+    );
+
+    // Vertical: extra offset while jumping or falling
+    const airborne = !ctx.is_grounded;
+    const jumping =
+      airborne && (ctx.current_air_up_vector > 0 || ctx.min_jump_ticks_remaining > 0);
+    const falling =
+      airborne &&
+      !jumping &&
+      (ctx.current_fall_accel > 0 || ctx.current_wall_slide_down_accel > 0);
+
+    let targetY = 0;
+    if (jumping) {
+      // look a bit higher (negative Y in Excalibur)
+      targetY = -(this.maxLookAheadY + this.airborneExtraY);
+    } else if (falling) {
+      // look a bit lower
+      targetY = this.maxLookAheadY + this.airborneExtraY;
+    }
+
+    this.lookAheadOffsetY = this.moveToward(this.lookAheadOffsetY, targetY, this.lookAheadStepY);
+    this.lookAheadOffsetY = Math.round(
+      this.clamp(
+        this.lookAheadOffsetY,
+        -(this.maxLookAheadY + this.airborneExtraY),
+        this.maxLookAheadY + this.airborneExtraY
+      )
+    );
+  }
+
   /**
    * calculate the position camera wants to sit on.
-   * currently: target.pos + (0, targetOffsetY)
+   * target.pos + look-ahead offsets + targetOffsetY
    *
-   * later add:
-   * - look-ahead based on facing / velocity
-   * - different offsets while airborne
-   * - soft focus points for cutscenes
+   * look-ahead is applied here so the existing deadzone / chase logic
+   * continues to operate on the offset target.
    */
   getDesiredTargetPos(): Vector | null {
     if (!this._followTarget) return null;
 
     return vec(
-      this._followTarget.pos.x,
-      this._followTarget.pos.y + this.targetOffsetY
+      this._followTarget.pos.x + this.lookAheadOffsetX,
+      this._followTarget.pos.y + this.targetOffsetY + this.lookAheadOffsetY
     );
   }
 
