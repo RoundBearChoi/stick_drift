@@ -244,6 +244,12 @@ export class CameraController implements Tickable {
     );
   }
 
+  /** logical camera base position the deadzone is relative to (excludes shakes) */
+  get basePos(): Vector | null {
+    if (!this._hasBase) return null;
+    return vec(this._baseX, this._baseY);
+  }
+
   private reset_cam_shakes(): void {
     for (const s of this._shakes) {
       s.reset_cam_shake();

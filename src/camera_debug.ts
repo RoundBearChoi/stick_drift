@@ -56,6 +56,22 @@ export class CameraDebug extends Actor {
       ctx.drawLine(vec(0, 0), cam.pos, transparent_red, 1);
     }
 
+    // deadzone box around the logical camera base (not the shaken cam.pos)
+    const base = this.cameraController.basePos;
+    if (base) {
+      const halfW = this.cameraController.deadzoneX;
+      const halfH = this.cameraController.deadzoneY;
+      const left = base.x - halfW;
+      const right = base.x + halfW;
+      const top = base.y - halfH;
+      const bottom = base.y + halfH;
+
+      ctx.drawLine(vec(left, top), vec(right, top), transparent_red, 1);
+      ctx.drawLine(vec(right, top), vec(right, bottom), transparent_red, 1);
+      ctx.drawLine(vec(right, bottom), vec(left, bottom), transparent_red, 1);
+      ctx.drawLine(vec(left, bottom), vec(left, top), transparent_red, 1);
+    }
+
     // existing desired-target X + line
     const desired = this.cameraController.getDesiredTargetPos();
     if (!desired) return;
