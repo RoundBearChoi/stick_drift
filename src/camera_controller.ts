@@ -25,21 +25,21 @@ import { RunnerStateName } from './states/runner_state';
  */
 export class CameraController implements Tickable {
   /** horizontal deadzone radius (only move when |dx| exceeds this) */
-  deadzoneX = 64;
+  deadzoneX = 50;
 
   /** vertical deadzone radius (only move when |dy| exceeds this) */
-  deadzoneY = 28;
+  deadzoneY = 30;
 
   targetOffsetY = -20; // this is negative because y increases downward in excalibur.
 
   // look-ahead tunables
-  maxLookAheadX = 64;
-  maxLookAheadY = 28;
+  maxLookAheadX = 60;
+  maxLookAheadY = 40;
   airborneExtraY = 20;
 
-  lookAheadStepX = 1;
+  lookAheadStepX = 2;
   lookAheadDecayX = 1;
-  lookAheadStepY = 1;
+  lookAheadStepY = 2;
   lookAheadDecayY = 1;
 
   private _followTarget: Actor | null = null;
