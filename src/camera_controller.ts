@@ -48,8 +48,8 @@ export class CameraController implements Tickable {
   private _baseY = 0;
   private _hasBase = false;
 
-  private lookAheadOffsetX = 0;
-  private lookAheadOffsetY = 0;
+  private currentLookAheadX = 0;
+  private currentLookAheadY = 0;
 
   /** last non-zero horizontal facing we want to hold (1 or -1) */
   private heldFacingX = 1;
@@ -93,6 +93,7 @@ export class CameraController implements Tickable {
     if (!desired) return;
 
     const cam = this.scene.camera;
+
     if (!this._hasBase) {
       this._baseX = Math.round(cam.pos.x);
       this._baseY = Math.round(cam.pos.y);
@@ -151,10 +152,10 @@ export class CameraController implements Tickable {
   private updateLookAhead(): void {
     const ctx = this.gameCtx.runner_ctx;
     if (!this._followTarget || ctx.is_dead) {
-      this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, 0, this.lookAheadDecayX);
-      this.lookAheadOffsetY = this.moveToward(this.lookAheadOffsetY, 0, this.lookAheadDecayY);
-      this.lookAheadOffsetX = Math.round(this.lookAheadOffsetX);
-      this.lookAheadOffsetY = Math.round(this.lookAheadOffsetY);
+      this.currentLookAheadX = this.moveToward(this.currentLookAheadX, 0, this.lookAheadDecayX);
+      this.currentLookAheadY = this.moveToward(this.currentLookAheadY, 0, this.lookAheadDecayY);
+      this.currentLookAheadX = Math.round(this.currentLookAheadX);
+      this.currentLookAheadY = Math.round(this.currentLookAheadY);
       return;
     }
 
@@ -175,7 +176,7 @@ export class CameraController implements Tickable {
 
     // Decay horizontal look-ahead when not moving horizontally, on wall slide, or inside deadzone
     if (isWallSliding || !movingHorizontally || inDeadzoneX) {
-      this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, 0, this.lookAheadDecayX);
+      this.currentLookAheadX = this.moveToward(this.currentLookAheadX, 0, this.lookAheadDecayX);
     } else {
       // Build or reverse only while actively moving horizontally and outside the deadzone
       const facingX = ctx.is_facing_right_side ? 1 : -1;
@@ -184,20 +185,20 @@ export class CameraController implements Tickable {
       const targetX = this.heldFacingX * this.maxLookAheadX;
 
       const reversing =
-        this.lookAheadOffsetX !== 0 &&
-        Math.sign(this.lookAheadOffsetX) !== Math.sign(targetX);
+        this.currentLookAheadX !== 0 &&
+        Math.sign(this.currentLookAheadX) !== Math.sign(targetX);
 
       if (reversing) {
         // decay through zero
-        this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, 0, this.lookAheadDecayX);
+        this.currentLookAheadX = this.moveToward(this.currentLookAheadX, 0, this.lookAheadDecayX);
       } else {
         // build toward the held facing max
-        this.lookAheadOffsetX = this.moveToward(this.lookAheadOffsetX, targetX, this.lookAheadStepX);
+        this.currentLookAheadX = this.moveToward(this.currentLookAheadX, targetX, this.lookAheadStepX);
       }
     }
 
-    this.lookAheadOffsetX = Math.round(
-      this.clamp(this.lookAheadOffsetX, -this.maxLookAheadX, this.maxLookAheadX)
+    this.currentLookAheadX = Math.round(
+      this.clamp(this.currentLookAheadX, -this.maxLookAheadX, this.maxLookAheadX)
     );
 
     // Vertical: extra offset while jumping or falling
@@ -218,10 +219,10 @@ export class CameraController implements Tickable {
       targetY = this.maxLookAheadY + this.airborneExtraY;
     }
 
-    this.lookAheadOffsetY = this.moveToward(this.lookAheadOffsetY, targetY, this.lookAheadStepY);
-    this.lookAheadOffsetY = Math.round(
+    this.currentLookAheadY = this.moveToward(this.currentLookAheadY, targetY, this.lookAheadStepY);
+    this.currentLookAheadY = Math.round(
       this.clamp(
-        this.lookAheadOffsetY,
+        this.currentLookAheadY,
         -(this.maxLookAheadY + this.airborneExtraY),
         this.maxLookAheadY + this.airborneExtraY
       )
@@ -239,8 +240,8 @@ export class CameraController implements Tickable {
     if (!this._followTarget) return null;
 
     return vec(
-      this._followTarget.pos.x + this.lookAheadOffsetX,
-      this._followTarget.pos.y + this.targetOffsetY + this.lookAheadOffsetY
+      this._followTarget.pos.x + this.currentLookAheadX,
+      this._followTarget.pos.y + this.targetOffsetY + this.currentLookAheadY
     );
   }
 
