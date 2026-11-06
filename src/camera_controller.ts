@@ -28,19 +28,19 @@ export class CameraController implements Tickable {
   deadzoneX = 50;
 
   /** vertical deadzone radius (only move when |dy| exceeds this) */
-  deadzoneY = 30;
+  deadzoneY = 40;
 
   targetOffsetY = -20; // this is negative because y increases downward in excalibur.
 
   // look-ahead tunables
   maxLookAheadX = 60;
-  maxLookAheadY = 40;
+  maxLookAheadY = 70;
   airborneExtraY = 20;
 
   lookAheadStepX = 2;
   lookAheadDecayX = 1;
-  lookAheadStepY = 2;
-  lookAheadDecayY = 1;
+  lookAheadStepY = 3;
+  lookAheadDecayY = 2;
 
   private _followTarget: Actor | null = null;
 
@@ -108,13 +108,13 @@ export class CameraController implements Tickable {
 
     // resolve horizontal first, then vertical. pure axis-aligned integer moves.
     if (overflowX > 0) {
-      const step = chaseSpeedFromOverflowX(overflowX);
-      this._baseX += Math.sign(rawDx) * Math.min(Math.abs(rawDx), step);
+      const chaseSpeedX = chaseSpeedFromOverflowX(overflowX);
+      this._baseX += Math.sign(rawDx) * Math.min(Math.abs(rawDx), chaseSpeedX);
     }
 
     if (overflowY > 0) {
-      const step = chaseSpeedFromOverflowY(overflowY);
-      this._baseY += Math.sign(rawDy) * Math.min(Math.abs(rawDy), step);
+      const chaseSpeedY = chaseSpeedFromOverflowY(overflowY);
+      this._baseY += Math.sign(rawDy) * Math.min(Math.abs(rawDy), chaseSpeedY);
     }
 
     // keep whole numbers (this is defensive. when you put in integers nothing happens in Math.round)
