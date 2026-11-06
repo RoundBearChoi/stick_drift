@@ -24,7 +24,7 @@ export class RunnerController implements Tickable {
       this.gameCtx.runner_ctx
     );
 
-    this.runner.syncFacing(this.gameCtx.runner_ctx);
+    this.runner.syncGraphicToFacing(this.gameCtx.runner_ctx);
   }
 
   register(): void {

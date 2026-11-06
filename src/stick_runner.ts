@@ -55,7 +55,7 @@ export class StickRunner extends Actor implements Tickable {
    * apply ctx facing to the actor graphic.
    * scale.x = -1 flips around the bottom-center anchor.
    */
-  syncFacing(runnerCtx: RunnerContext): void {
+  syncGraphicToFacing(runnerCtx: RunnerContext): void {
     const scaleX = runnerCtx.is_facing_right_side ? 1 : -1;
     if (this.scale.x === scaleX) return;
 
@@ -65,7 +65,7 @@ export class StickRunner extends Actor implements Tickable {
     // keep the debug box un-mirrored (collider is facing-independent)
     if (this._colliderDebug)
     {
-      this._colliderDebug?.syncFacing(this.scale.x);
+      this._colliderDebug?.syncDebugRenderToFacing(this.scale.x);
     }
   }
 
@@ -186,7 +186,7 @@ export class StickRunner extends Actor implements Tickable {
     this._queued_state = null;
     this.applyState(new RunnerIdle(), runnerCtx);
     this.anchor = runnerCtx.anchor;
-    this.syncFacing(runnerCtx);
+    this.syncGraphicToFacing(runnerCtx);
 
     // always attach debug actors so settings flags can be live-toggled.
     // draw() already no-ops when the matching show_* flag is false.

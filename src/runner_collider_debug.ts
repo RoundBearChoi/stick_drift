@@ -37,7 +37,7 @@ export class RunnerColliderDebug {
       this.draw(ctx);
     };
 
-    // start un-mirrored (kept in sync by syncFacing)
+    // start un-mirrored (kept in sync by syncDebugRenderToFacing)
     debug.scale.x = this.host.scale.x;
 
     this.host.addChild(debug);
@@ -48,7 +48,7 @@ export class RunnerColliderDebug {
    * keep the debug box un-mirrored when the runner faces left/right.
    * parent.scale.x * child.scale.x = +1 in both directions.
    */
-  syncFacing(parentScaleX: number): void {
+  syncDebugRenderToFacing(parentScaleX: number): void {
     if (this._actor) {
       this._actor.scale.x = parentScaleX;
     }
