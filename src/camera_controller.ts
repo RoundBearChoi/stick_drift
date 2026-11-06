@@ -150,8 +150,8 @@ export class CameraController implements Tickable {
   }
 
   private updateLookAhead(): void {
-    const ctx = this.gameCtx.runner_ctx;
-    if (!this._followTarget || ctx.is_dead) {
+    const runner_ctx = this.gameCtx.runner_ctx;
+    if (!this._followTarget || runner_ctx.is_dead) {
       this.currentLookAheadX = this.moveToward(this.currentLookAheadX, 0, this.lookAheadDecayX);
       this.currentLookAheadY = this.moveToward(this.currentLookAheadY, 0, this.lookAheadDecayY);
       this.currentLookAheadX = Math.round(this.currentLookAheadX);
@@ -164,9 +164,9 @@ export class CameraController implements Tickable {
 
     // Horizontal movement intent / actual momentum
     const movingHorizontally =
-      Math.abs(ctx.horizontal_move_buffer) > 0 ||
-      Math.abs(ctx.current_run_accel) > 0 ||
-      Math.abs(ctx.current_air_run_accel) > 0;
+      Math.abs(runner_ctx.horizontal_move_buffer) > 0 ||
+      Math.abs(runner_ctx.current_run_accel) > 0 ||
+      Math.abs(runner_ctx.current_air_run_accel) > 0;
 
     // Runner is inside the horizontal deadzone relative to the camera base
     // (measured without the look-ahead offset itself)
@@ -179,7 +179,7 @@ export class CameraController implements Tickable {
       this.currentLookAheadX = this.moveToward(this.currentLookAheadX, 0, this.lookAheadDecayX);
     } else {
       // Build or reverse only while actively moving horizontally and outside the deadzone
-      const facingX = ctx.is_facing_right_side ? 1 : -1;
+      const facingX = runner_ctx.is_facing_right_side ? 1 : -1;
       this.heldFacingX = facingX;
 
       const targetX = this.heldFacingX * this.maxLookAheadX;
@@ -202,13 +202,13 @@ export class CameraController implements Tickable {
     );
 
     // Vertical: extra offset while jumping or falling
-    const airborne = !ctx.is_grounded;
+    const airborne = !runner_ctx.is_grounded;
     const jumping =
-      airborne && (ctx.current_air_up_vector > 0 || ctx.min_jump_ticks_remaining > 0);
+      airborne && (runner_ctx.current_air_up_vector > 0 || runner_ctx.min_jump_ticks_remaining > 0);
     const falling =
       airborne &&
       !jumping &&
-      (ctx.current_fall_accel > 0 || ctx.current_wall_slide_down_accel > 0);
+      (runner_ctx.current_fall_accel > 0 || runner_ctx.current_wall_slide_down_accel > 0);
 
     let targetY = 0;
     if (jumping) {
