@@ -11,10 +11,10 @@ out vec4 fragColor;
 /*
 dot collapses p, u_seed shifts it, sin multiplication scrambles it, fract keeps 0 <= result < 1
 sin's range-reduction pi and polynomial are GPU/driver-specific, so this is not stable across machines
-IMPORTANT: though we're looking for randomness in our effects, this hash function isn't random at all.
+IMPORTANT: though we're looking for randomness in our effects, this somewhat_rand_hash function isn't random at all.
 it's just that a user can't easily derive runner position -> effect
 */
-float hash(vec2 p) {
+float somewhat_rand_hash(vec2 p) {
   return fract(sin(dot(p, vec2(284.1, 737.775)) + u_seed) * 13801.2685);
 }
 
@@ -62,23 +62,23 @@ void main() {
   */
   for (int i = 0; i < max_particles; i++) {
     float fi = float(i);
-    float random_angle_radian = hash(vec2(fi, u_seed)) * 6.2831853; // random angle
+    float random_angle_radian = somewhat_rand_hash(vec2(fi, u_seed)) * 6.2831853; // random angle
 
     vec2 random_dir = vec2(cos(random_angle_radian), sin(random_angle_radian));
     random_dir.y += 0.35;
     random_dir = normalize(random_dir);
 
-    float random_speed = mix(0.5, 80.0, hash(vec2(fi, 19.2)));
-    float random_size = mix(0.2, 1.2, hash(vec2(fi, 7.7)));
+    float random_speed = mix(0.5, 80.0, somewhat_rand_hash(vec2(fi, 19.2)));
+    float random_size = mix(0.2, 1.2, somewhat_rand_hash(vec2(fi, 7.7)));
 
     vec2 current_particle_pos = floor(origin + random_dir * random_speed * travel);
     vec2 delta = abs(quad_cell_pos - current_particle_pos);
 
     if (max(delta.x, delta.y) < random_size) {
       is_inside = true;
-      random_color = hash(vec2(fi, 4.4));
-      float random_death_time = mix(0.005, 0.999, hash(vec2(fi, 11.3)));
-      float random_fade_length = mix(0.1, 0.6, hash(vec2(fi, 23.7)));
+      random_color = somewhat_rand_hash(vec2(fi, 4.4));
+      float random_death_time = mix(0.005, 0.999, somewhat_rand_hash(vec2(fi, 11.3)));
+      float random_fade_length = mix(0.1, 0.6, somewhat_rand_hash(vec2(fi, 23.7)));
       cell_opacity = 1.0 - smoothstep(random_death_time - random_fade_length, random_death_time, p);
     }
 
