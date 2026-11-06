@@ -89,6 +89,8 @@ export class GreenTrail implements Tickable {
   progress_per_px = 0.03;
   curve = 0.9; // 1 = linear. 2 pushes the offset toward the front of the step
 
+  /* ParticleSlot is a small data holder that tracks whether a particle effect is active, how far along it is, which Actor it is tied to. 
+   * _slots array is a collection of these holders. */
   private _slots: ParticleSlot[] = [];
   private _cursor = 0;
   private _prev_point: Vector | null = null;
