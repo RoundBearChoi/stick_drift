@@ -92,6 +92,7 @@ export class GreenTrail implements Tickable {
   /* ParticleSlot is a small data holder that tracks whether a particle effect is active, how far along it is, which Actor it is tied to. 
    * _slots array is a collection of these holders. */
   private _slots: ParticleSlot[] = [];
+
   private _cursor = 0;
   private _prev_point: Vector | null = null;
   private _prev_side: ContactSide = 'none';
