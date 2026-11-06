@@ -18,7 +18,7 @@ export function seedJumpRunMomentumFromStandstill(runnerCtx: RunnerContext): voi
 }
 
 /**
- * IMPORTANT: allow runner to wall jump even after a few ticks coming off a wall.
+ * allow runner to wall jump even after a few ticks coming off a wall.
  * remember the wall side so a later fall jump still kicks away from it.
  * call before applyAirRun on the leave-slide tick — air-run may flip facing.
  */
@@ -50,7 +50,7 @@ export function seedWallJumpFromSlide(runnerCtx: RunnerContext): void {
   const awayDir = facingWallRight ? -1 : 1;
   runnerCtx.is_facing_right_side = awayDir > 0;
 
-  // IMPORTANT: wall jump start kick is NOT allowed to exceed max run speed
+  // wall jump start kick is NOT allowed to exceed max run speed
   const speed = Math.min(
     runnerCtx.wall_jump_start_accel,
     runnerCtx.max_run_speed
@@ -119,7 +119,10 @@ export function applyAirRun(
   input: InputInterpreter,
   runnerCtx: RunnerContext
 ): void {
+  
+  // boolean flag that is true while runner is still inside the short “pushed-away-from-wall” window after a wall jump
   const awayLock = runnerCtx.wall_jump_away_ticks_remaining > 0;
+  
   const left = input.isHeld(InputAction.MOVE_LEFT);
   const right = input.isHeld(InputAction.MOVE_RIGHT);
   const applyStep = shouldApplyAirRunStep(runnerCtx);
