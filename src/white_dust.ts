@@ -85,19 +85,19 @@ export class WhiteDust implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
-    const ctx = this.gameCtx.runner_ctx;
-    if (ctx.is_dead) {
+    const runner_ctx = this.gameCtx.runner_ctx;
+    if (runner_ctx.is_dead) {
       this.clear();
       return;
     }
 
     this.age();
 
-    if (this.shouldSpawn(ctx)) {
+    if (this.shouldSpawn(runner_ctx)) {
       this._spawn_counter++;
       if (this._spawn_counter >= SPAWN_INTERVAL_TICKS) {
         this._spawn_counter = 0;
-        this.spawn(ctx);
+        this.spawn(runner_ctx);
       }
     } else {
       this._spawn_counter = 0;
@@ -112,13 +112,13 @@ export class WhiteDust implements Tickable {
     this.gameCtx.unregisterTickable(this);
   }
 
-  private shouldSpawn(ctx: RunnerContext): boolean {
-    if (ctx.is_dead) return false;
+  private shouldSpawn(runner_ctx: RunnerContext): boolean {
+    if (runner_ctx.is_dead) return false;
 
     const name = this.runner.stateName;
 
     // grounded run / accel / decel
-    if (ctx.is_grounded) {
+    if (runner_ctx.is_grounded) {
       return (
         name === RunnerStateName.RUN ||
         name === RunnerStateName.RUN_ACCEL ||
@@ -128,14 +128,14 @@ export class WhiteDust implements Tickable {
 
     // wall slide: only the facing wall, so we never double-spawn when squeezed
     if (name === RunnerStateName.WALL_SLIDE) {
-      const facingRight = ctx.is_facing_right_side;
-      return facingRight ? ctx.wall_contact_right : ctx.wall_contact_left;
+      const facingRight = runner_ctx.is_facing_right_side;
+      return facingRight ? runner_ctx.wall_contact_right : runner_ctx.wall_contact_left;
     }
 
     return false;
   }
 
-  private spawn(ctx: RunnerContext): void {
+  private spawn(runner_ctx: RunnerContext): void {
     if (!this._built || this._slots.length === 0) return;
 
     const slot = this._slots[this._cursor];
@@ -143,7 +143,7 @@ export class WhiteDust implements Tickable {
 
     const foot = this.runner.pos;
     const name = this.runner.stateName;
-    const facingRight = ctx.is_facing_right_side;
+    const facingRight = runner_ctx.is_facing_right_side;
 
     let x: number;
     let y: number;
@@ -151,23 +151,23 @@ export class WhiteDust implements Tickable {
     let rotation = 0;
     let scale = vec(DUST_SCALE, DUST_SCALE);
 
-    if (name === RunnerStateName.WALL_SLIDE && !ctx.is_grounded) {
+    if (name === RunnerStateName.WALL_SLIDE && !runner_ctx.is_grounded) {
       // wall: spawn at exclusive edge pixel, mid-height
       // rotate 90° clockwise so the ground-oriented dust reads vertical
       // anchors + mirror flipped so the graphic extends into the open space (character side)
-      const halfW = ctx.collider_width / 2;
-      const midY = foot.y - ctx.collider_height / 2;
+      const halfW = runner_ctx.collider_width / 2;
+      const midY = foot.y - runner_ctx.collider_height / 2;
       const yJitter = (Math.random() * 2 - 1) * RANDOM_Y_OFFSET;
       rotation = WALL_ROTATION;
 
-      if (facingRight && ctx.wall_contact_right) {
+      if (facingRight && runner_ctx.wall_contact_right) {
         // right wall: first solid pixel to the right of the collider
         // positive scale, anchor on left edge of sprite → grows leftward into open space
         x = Math.round(foot.x + halfW);
         y = Math.round(midY + yJitter);
         anchor = vec(0, 0.5);
         // scale stays positive
-      } else if (!facingRight && ctx.wall_contact_left) {
+      } else if (!facingRight && runner_ctx.wall_contact_left) {
         // left wall: last solid pixel to the left of the collider
         // mirror + anchor on right edge of sprite → grows rightward into open space
         x = Math.round(foot.x - halfW - 1);
