@@ -96,18 +96,18 @@ export class LandDust implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
-    const ctx = this.gameCtx.runner_ctx;
-    if (ctx.is_dead) {
+    const runner_ctx = this.gameCtx.runner_ctx;
+    if (runner_ctx.is_dead) {
       this.clear();
       return;
     }
 
     this.age();
 
-    if (ctx.is_grounded && !this._wasGrounded) {
+    if (runner_ctx.is_grounded && !this._wasGrounded) {
       this.spawn();
     }
-    this._wasGrounded = ctx.is_grounded;
+    this._wasGrounded = runner_ctx.is_grounded;
   }
 
   register(): void {
