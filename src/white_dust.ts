@@ -85,7 +85,9 @@ export class WhiteDust implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
-    const runner_ctx = this.gameCtx.runner_ctx;
+    // get runner ctx first
+	const runner_ctx = this.gameCtx.runner_ctx;
+
     if (runner_ctx.is_dead) {
       this.clear();
       return;
