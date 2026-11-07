@@ -38,7 +38,7 @@ export class StickRunner extends Actor implements Tickable {
     });
     assignZ(this, 'runner');
 
-    // onEnter cannot be called here. at construction time runner does not have access to runner context.
+    // onEnter cannot be called here. at construction runner does not have access to runner context.
     // constructor only creates the object and sets placeholder state. no animation is attached yet.
     // onEnter is called either on scene start/reset or when a queued state is committed.
   }
@@ -78,10 +78,7 @@ export class StickRunner extends Actor implements Tickable {
     this._queued_state = newState;
   }
 
-  /**
-   * called by RunnerStateSwitcher after the current state's onFixedUpdate returns.
-   * no-ops when nothing is queued.
-   */
+  // called by RunnerStateSwitcher after the current state's onFixedUpdate returns.
   commitQueuedState(runnerCtx: RunnerContext): void {
     if (!this._queued_state) return;
 

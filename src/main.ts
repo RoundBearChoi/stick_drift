@@ -56,6 +56,7 @@ engine.start(loader).then(async () => {
   const settingsFile = await loadSettings();
   game_context.settings_ctx.apply(settingsFile);
 
+  // pass game_context to scene
   engine.goToScene('gameplay_test_scene_2', {
     sceneActivationData: game_context,
   });

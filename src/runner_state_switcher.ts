@@ -14,7 +14,8 @@ export class RunnerStateSwitcher implements Tickable {
 
   fixedUpdate(_dt: number): void {
     if (this.gameCtx.runner_ctx.is_dead) return;
-    this.runner.commitQueuedState(this.gameCtx.runner_ctx);
+    
+	this.runner.commitQueuedState(this.gameCtx.runner_ctx);
   }
 
   register(): void {
