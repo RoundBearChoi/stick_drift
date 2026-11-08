@@ -80,7 +80,7 @@ class GreenTrailLight extends Actor {
  * drawn 1px up so the dot and its light sit on the sole instead of the solid.
  * wall: checkWallSlideContact on that side, then the exclusive mid-edge pixel.
  * a toe or a corner graze still counts as contact, so it does not trail.
- * probes the post-move foot itself. does not read ctx contact flags or stateName.
+ * probes the post-move foot itself. does not read runner_ctx contact flags or stateName.
  *
  * dots are a shared Rectangle on the default rectangle batch. fade is graphics.opacity.
  */
@@ -151,8 +151,9 @@ export class GreenTrail implements Tickable {
   }
 
   fixedUpdate(_dt: number): void {
-    const ctx = this.gameCtx.runner_ctx;
-    if (ctx.is_dead) {
+    const runner_ctx = this.gameCtx.runner_ctx;
+    
+	if (runner_ctx.is_dead) {
       this.clear();
       return;
     }
@@ -160,7 +161,8 @@ export class GreenTrail implements Tickable {
     this.age();
 
     const sample = this.sample(this.runner.pos);
-    if (
+    
+	if (
       this._prev_point &&
       sample.point &&
       this._prev_side !== 'none' &&
@@ -188,19 +190,19 @@ export class GreenTrail implements Tickable {
    * squeezed between two solids, keep the facing wall only.
    */
   private sample(foot: Vector): { side: ContactSide; point: Vector | null } {
-    const ctx = this.gameCtx.runner_ctx;
-    const grounded = checkIsGrounded(foot.x, foot.y, ctx, this._solid_grid);
+    const runner_ctx = this.gameCtx.runner_ctx;
+    const grounded = checkIsGrounded(foot.x, foot.y, runner_ctx, this._solid_grid);
     const sole_center = this._solid_grid.isSolidAtWorldSpace(foot.x, foot.y);
     if (grounded && sole_center) {
       return { side: 'ground', point: foot.clone() };
     }
     if (grounded) return { side: 'none', point: null };
 
-    const halfW = ctx.collider_width / 2;
-    const midY = foot.y - ctx.collider_height / 2;
-    const walls = checkWallSlideContact(foot.x, foot.y, ctx, this._solid_grid);
-    const left = walls.left && !(walls.right && ctx.is_facing_right_side);
-    const right = walls.right && !(walls.left && !ctx.is_facing_right_side);
+    const halfW = runner_ctx.collider_width / 2;
+    const midY = foot.y - runner_ctx.collider_height / 2;
+    const walls = checkWallSlideContact(foot.x, foot.y, runner_ctx, this._solid_grid);
+    const left = walls.left && !(walls.right && runner_ctx.is_facing_right_side);
+    const right = walls.right && !(walls.left && !runner_ctx.is_facing_right_side);
 
     if (left) {
       const x = foot.x - halfW - 1; // last solid pixel left of the collider
