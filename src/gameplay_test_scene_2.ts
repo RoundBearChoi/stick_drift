@@ -240,19 +240,19 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this.resetGameplay();
 
     // IMPORTANT: order matters.
-    this._game_ctx.registerTickable(this._runner_controller);
-    this._game_ctx.registerTickable(this._runner_ground_checker);
-    this._game_ctx.registerTickable(this._wall_slide_check);
-    this._game_ctx.registerTickable(this._stick_runner);
-    this._game_ctx.registerTickable(this._runner_move_buffer_resolve);
-    this._game_ctx.registerTickable(this._green_trail);
-    this._game_ctx.registerTickable(this._white_dust);
-    this._game_ctx.registerTickable(this._land_dust);
-    this._game_ctx.registerTickable(this._spike_contact_check);
-    this._game_ctx.registerTickable(this._runner_death_vfx);
-    this._game_ctx.registerTickable(this._runner_state_switcher);
-    this._game_ctx.registerTickable(this._on_runner_death);
-    this._game_ctx.registerTickable(this._camera_controller);
+    this._game_ctx.register_tickable(this._runner_controller);
+    this._game_ctx.register_tickable(this._runner_ground_checker);
+    this._game_ctx.register_tickable(this._wall_slide_check);
+    this._game_ctx.register_tickable(this._stick_runner);
+    this._game_ctx.register_tickable(this._runner_move_buffer_resolve);
+    this._game_ctx.register_tickable(this._green_trail);
+    this._game_ctx.register_tickable(this._white_dust);
+    this._game_ctx.register_tickable(this._land_dust);
+    this._game_ctx.register_tickable(this._spike_contact_check);
+    this._game_ctx.register_tickable(this._runner_death_vfx);
+    this._game_ctx.register_tickable(this._runner_state_switcher);
+    this._game_ctx.register_tickable(this._on_runner_death);
+    this._game_ctx.register_tickable(this._camera_controller);
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
@@ -261,46 +261,46 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
   onDeactivate(): void {
     if (this._stick_runner) {
-      this._game_ctx.unregisterTickable(this._stick_runner);
+      this._game_ctx.remove_tickable(this._stick_runner);
     }
     if (this._runner_controller) {
-      this._game_ctx.unregisterTickable(this._runner_controller);
+      this._game_ctx.remove_tickable(this._runner_controller);
     }
     if (this._runner_state_switcher) {
-      this._game_ctx.unregisterTickable(this._runner_state_switcher);
+      this._game_ctx.remove_tickable(this._runner_state_switcher);
     }
     if (this._runner_move_buffer_resolve) {
-      this._game_ctx.unregisterTickable(this._runner_move_buffer_resolve);
+      this._game_ctx.remove_tickable(this._runner_move_buffer_resolve);
     }
     if (this._runner_ground_checker) {
-      this._game_ctx.unregisterTickable(this._runner_ground_checker);
+      this._game_ctx.remove_tickable(this._runner_ground_checker);
     }
     if (this._wall_slide_check) {
-      this._game_ctx.unregisterTickable(this._wall_slide_check);
+      this._game_ctx.remove_tickable(this._wall_slide_check);
     }
     if (this._spike_contact_check) {
-      this._game_ctx.unregisterTickable(this._spike_contact_check);
+      this._game_ctx.remove_tickable(this._spike_contact_check);
     }
     if (this._runner_death_vfx) {
-      this._game_ctx.unregisterTickable(this._runner_death_vfx);
+      this._game_ctx.remove_tickable(this._runner_death_vfx);
     }
     if (this._on_runner_death) {
-      this._game_ctx.unregisterTickable(this._on_runner_death);
+      this._game_ctx.remove_tickable(this._on_runner_death);
     }
     if (this._green_trail) {
-      this._game_ctx.unregisterTickable(this._green_trail);
+      this._game_ctx.remove_tickable(this._green_trail);
       this._green_trail.clear();
     }
     if (this._white_dust) {
-      this._game_ctx.unregisterTickable(this._white_dust);
+      this._game_ctx.remove_tickable(this._white_dust);
       this._white_dust.clear();
     }
     if (this._land_dust) {
-      this._game_ctx.unregisterTickable(this._land_dust);
+      this._game_ctx.remove_tickable(this._land_dust);
       this._land_dust.clear();
     }
     if (this._camera_controller) {
-      this._game_ctx.unregisterTickable(this._camera_controller);
+      this._game_ctx.remove_tickable(this._camera_controller);
     }
   }
 

@@ -89,11 +89,11 @@ export class GameContext {
     console.log('✅ WebAudio unlocked');
   }
 
-  registerTickable(tickable: Tickable): void {
+  register_tickable(tickable: Tickable): void {
     this._tickables.add(tickable);
   }
 
-  unregisterTickable(tickable: Tickable): void {
+  remove_tickable(tickable: Tickable): void {
     this._tickables.delete(tickable);
   }
 

@@ -168,7 +168,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     if (!this._camMover) {
       this._camMover = new LevelEditorCamMover(this, this._game_ctx);
     }
-    this._game_ctx.registerTickable(this._camMover);
+    this._game_ctx.register_tickable(this._camMover);
 
     // restore last editor view (defaults to native center on first visit)
     this.camera.pos.x = this._game_ctx.editor_cam_x;
@@ -211,7 +211,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     this._game_ctx.editor_cam_y = Math.round(this.camera.pos.y);
 
     if (this._camMover) {
-      this._game_ctx.unregisterTickable(this._camMover);
+      this._game_ctx.remove_tickable(this._camMover);
     }
     this._selectTool?.cancelDrag();
     this._placeTool?.cancelDrag();
