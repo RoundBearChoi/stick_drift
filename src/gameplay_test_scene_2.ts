@@ -280,7 +280,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     if (!this._stick_runner) return;
 
     this._stick_runner.resetRunner(this._game_ctx, this._runner_spawn);
-    this._runner_death_vfx?.clear();
+    this._runner_death_vfx?.clear_runner_death_vfx();
     this._green_trail?.clear_green_trail();
     this._white_dust?.clear_white_dust();
     this._land_dust?.clear_land_dust();
@@ -293,14 +293,17 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     for (const actor of this._bricks) {
       actor.kill();
     }
-    for (const actor of this._spikes) {
+    
+	for (const actor of this._spikes) {
       actor.kill();
     }
-    this._bricks = [];
+    
+	this._bricks = [];
     this._spikes = [];
 
     const level = this._game_ctx.level_ctx;
-    if (!this._solid_grid_system) return;
+    
+	if (!this._solid_grid_system) return;
 
     this._solid_grid_system.clearSolidData();
 
@@ -314,14 +317,17 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
     for (const s of level.spikes) {
       const def = spikeDef(s.type);
-      const actor = createSpike(this.engine, {
+      
+	  const actor = createSpike(this.engine, {
         spike_pos: vec(s.x, s.y),
         spike_type: s.type,
         spike_facing: s.facing,
       });
-      this.add(actor);
+      
+	  this.add(actor);
       this._spikes.push(actor);
-      this._solid_grid_system.registerRect(s.x, s.y, def.width, def.height);
+      
+	  this._solid_grid_system.registerRect(s.x, s.y, def.width, def.height);
       this._solid_grid_system.registerSpikeFace(s.x, s.y, def.width, def.height, s.facing);
     }
 
@@ -334,6 +340,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     if (!this._solid_grid_system) {
       throw new Error('SolidGrid not created yet. Activate the scene first.');
     }
+
     return this._solid_grid_system;
   }
 }

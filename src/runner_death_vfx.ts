@@ -28,7 +28,7 @@ export class RunnerDeathVfx implements Tickable {
     if (dead && !this._was_dead) {
       this.onDeathStarted();
     } else if (!dead && this._was_dead) {
-      this.clear();
+      this.clear_runner_death_vfx();
     }
 
     if (dead) this._splatter.tick();
@@ -39,7 +39,7 @@ export class RunnerDeathVfx implements Tickable {
    * call from resetGameplay so the respawn frame does not draw both
    * the restored runner and a still-visible splat.
    */
-  clear(): void {
+  clear_runner_death_vfx(): void {
     this._splatter.stop();
     this.runner.graphics.visible = true;
     this._was_dead = false;
