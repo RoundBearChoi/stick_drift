@@ -42,17 +42,21 @@ import {
 async function loadDefaultLevel(): Promise<LevelFile> {
   try {
     const response = await fetch('./res/levels/default_level.json');
-    if (!response.ok) {
+    
+	if (!response.ok) {
       throw new Error(`failed to load default_level.json: ${response.status}`);
     }
-    const text = await response.text();
-    return parseLevelFile(text);
+   
+	const text = await response.text();
+    
+	return parseLevelFile(text);
   } catch (err) {
     console.error(
       'failed to load default_level.json, falling back to empty level',
       err
     );
-    return {
+    
+	return {
       format: LEVEL_FILE_FORMAT,
       version: LEVEL_FILE_VERSION,
       width_cells: 160,
@@ -100,20 +104,24 @@ export class GameplayTestScene2 extends Scene<GameContext> {
         pos: vec(8, 8),
         font: createDebugFont(),
       });
-      this._titleLabel.color = DraculaColorScheme.cyan;
+      
+	  this._titleLabel.color = DraculaColorScheme.cyan;
       this._titleLabel.get(TransformComponent)!.coordPlane = CoordPlane.Screen;
-      this.add(this._titleLabel);
+      
+	  this.add(this._titleLabel);
     }
 
     // always reload from the file. unsaved editor changes are lost unless written back.
     const levelFile = await loadDefaultLevel();
-    this._game_ctx.level_ctx.replaceAll(
+    
+	this._game_ctx.level_ctx.replaceAll(
       levelFile.width_cells,
       levelFile.height_cells,
       levelFile.bricks,
       levelFile.spikes
     );
-    console.log(
+    
+	console.log(
       `loaded default level from file (${levelFile.bricks.length} bricks, ${levelFile.spikes.length} spikes)`
     );
 
@@ -127,7 +135,8 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._stick_runner = new StickRunner({
         pos: this._runner_spawn.clone(),
       });
-      this.add(this._stick_runner);
+      
+	  this.add(this._stick_runner);
     }
 
     if (!this._runner_controller) {
@@ -183,7 +192,8 @@ export class GameplayTestScene2 extends Scene<GameContext> {
         this.engine
       );
     }
-    this._runner_death_vfx.attachToScene((actor) => this.add(actor));
+    
+	this._runner_death_vfx.attachToScene((actor) => this.add(actor));
 
     if (!this._green_trail) {
       this._green_trail = new GreenTrail(
@@ -193,18 +203,21 @@ export class GameplayTestScene2 extends Scene<GameContext> {
         this._solid_grid_system
       );
     }
-    this._green_trail.setSolidGrid(this._solid_grid_system);
+    
+	this._green_trail.setSolidGrid(this._solid_grid_system);
     this._green_trail.attachToScene((actor) => this.add(actor));
 
     if (!this._white_dust) {
       this._white_dust = new WhiteDust(this._stick_runner, this._game_ctx);
     }
-    this._white_dust.attachToScene((actor) => this.add(actor));
+    
+	this._white_dust.attachToScene((actor) => this.add(actor));
 
     if (!this._land_dust) {
       this._land_dust = new LandDust(this._stick_runner, this._game_ctx);
     }
-    this._land_dust.attachToScene((actor) => this.add(actor));
+    
+	this._land_dust.attachToScene((actor) => this.add(actor));
 
     // bricks + spikes from level_ctx
     this.buildSolidsFromLevelCtx();
@@ -221,7 +234,8 @@ export class GameplayTestScene2 extends Scene<GameContext> {
         level.width_px,
         level.height_px
       );
-      this.add(this._levelBoundaries);
+      
+	  this.add(this._levelBoundaries);
     }
 
     // camera
