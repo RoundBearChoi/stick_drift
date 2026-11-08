@@ -240,19 +240,19 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this.resetGameplay();
 
     // IMPORTANT: order matters.
-    this._runner_controller.register();
-    this._runner_ground_checker.register();
-    this._wall_slide_check.register();
-    this._stick_runner.register(this._game_ctx);
-    this._runner_move_buffer_resolve.register();
-    this._green_trail.register();
-    this._white_dust.register();
-    this._land_dust.register();
-    this._spike_contact_check.register();
-    this._runner_death_vfx.register();
-    this._runner_state_switcher.register();
-    this._on_runner_death.register();
-    this._camera_controller.register();
+    this._runner_controller.register_fixed_update();
+    this._runner_ground_checker.register_fixed_update();
+    this._wall_slide_check.register_fixed_update();
+    this._stick_runner.register_fixed_update(this._game_ctx);
+    this._runner_move_buffer_resolve.register_fixed_update();
+    this._green_trail.register_fixed_update();
+    this._white_dust.register_fixed_update();
+    this._land_dust.register_fixed_update();
+    this._spike_contact_check.register_fixed_update();
+    this._runner_death_vfx.register_fixed_update();
+    this._runner_state_switcher.register_fixed_update();
+    this._on_runner_death.register_fixed_update();
+    this._camera_controller.register_fixed_update();
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
@@ -264,43 +264,43 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._stick_runner.unregister(this._game_ctx);
     }
     if (this._runner_controller) {
-      this._runner_controller.unregister();
+      this._runner_controller.unregister_fixed_update();
     }
     if (this._runner_state_switcher) {
-      this._runner_state_switcher.unregister();
+      this._runner_state_switcher.unregister_fixed_update();
     }
     if (this._runner_move_buffer_resolve) {
-      this._runner_move_buffer_resolve.unregister();
+      this._runner_move_buffer_resolve.unregister_fixed_update();
     }
     if (this._runner_ground_checker) {
-      this._runner_ground_checker.unregister();
+      this._runner_ground_checker.unregister_fixed_update();
     }
     if (this._wall_slide_check) {
-      this._wall_slide_check.unregister();
+      this._wall_slide_check.unregister_fixed_update();
     }
     if (this._spike_contact_check) {
-      this._spike_contact_check.unregister();
+      this._spike_contact_check.unregister_fixed_update();
     }
     if (this._runner_death_vfx) {
-      this._runner_death_vfx.unregister();
+      this._runner_death_vfx.unregister_fixed_update();
     }
     if (this._on_runner_death) {
-      this._on_runner_death.unregister();
+      this._on_runner_death.unregister_fixed_update();
     }
     if (this._green_trail) {
-      this._green_trail.unregister();
+      this._green_trail.unregister_fixed_update();
       this._green_trail.clear();
     }
     if (this._white_dust) {
-      this._white_dust.unregister();
+      this._white_dust.unregister_fixed_update();
       this._white_dust.clear();
     }
     if (this._land_dust) {
-      this._land_dust.unregister();
+      this._land_dust.unregister_fixed_update();
       this._land_dust.clear();
     }
     if (this._camera_controller) {
-      this._camera_controller.unregister();
+      this._camera_controller.unregister_fixed_update();
     }
   }
 

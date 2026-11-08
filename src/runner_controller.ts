@@ -27,11 +27,11 @@ export class RunnerController implements Tickable {
     this.runner.syncGraphicToFacing(this.gameCtx.runner_ctx);
   }
 
-  register(): void {
+  register_fixed_update(): void {
     this.gameCtx.registerTickable(this);
   }
 
-  unregister(): void {
+  unregister_fixed_update(): void {
     this.gameCtx.unregisterTickable(this);
   }
 }

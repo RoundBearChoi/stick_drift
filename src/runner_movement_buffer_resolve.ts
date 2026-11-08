@@ -115,11 +115,11 @@ export class RunnerMovementBufferResolve implements Tickable {
     }
   }
 
-  register(): void {
+  register_fixed_update(): void {
     this.gameCtx.registerTickable(this);
   }
 
-  unregister(): void {
+  unregister_fixed_update(): void {
     this.gameCtx.unregisterTickable(this);
   }
 }
