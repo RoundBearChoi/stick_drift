@@ -66,7 +66,7 @@ export class TestScene1 extends Scene<GameContext> {
 
     // deterministic start every time we enter the scene
     this._stick_runner.resetRunner(this._game_ctx);
-    this._stick_runner.register_fixed_update(this._game_ctx);
+    this._game_ctx.registerTickable(this._stick_runner);
   }
 
   onPostUpdate(engine: Engine, elapsed: number): void {
@@ -76,7 +76,7 @@ export class TestScene1 extends Scene<GameContext> {
   onDeactivate(): void {
     // clean up so the runner stops being ticked after leaving the scene
     if (this._stick_runner) {
-      this._stick_runner.unregister(this._game_ctx);
+      this._game_ctx.unregisterTickable(this._stick_runner);
     }
   }
 }

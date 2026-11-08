@@ -151,14 +151,6 @@ export class StickRunner extends Actor implements Tickable {
     this._frame_based_animation?.tick();
   }
 
-  register_fixed_update(gameCtx: GameContext): void {
-    gameCtx.registerTickable(this);
-  }
-
-  unregister(gameCtx: GameContext): void {
-    gameCtx.unregisterTickable(this);
-  }
-
   setAnimationSpeed(advancesPerFrame: number): void {
     this._frame_based_animation?.setSpeed(advancesPerFrame);
   }
