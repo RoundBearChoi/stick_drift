@@ -79,7 +79,7 @@ export class WhiteDust implements Tickable {
     this._built = true;
   }
 
-  clear(): void {
+  clear_white_dust(): void {
     this._spawn_counter = 0;
     for (const slot of this._slots) this.turnOff(slot);
   }
@@ -89,7 +89,7 @@ export class WhiteDust implements Tickable {
 	const runner_ctx = this.gameCtx.runner_ctx;
 
     if (runner_ctx.is_dead) {
-      this.clear();
+      this.clear_white_dust();
       return;
     }
 
