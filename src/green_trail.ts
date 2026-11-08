@@ -160,19 +160,19 @@ export class GreenTrail implements Tickable {
 
     this.age();
 
-    const sample = this.sample(this.runner.pos);
+    const contact_pos = this.sample_contact(this.runner.pos);
     
 	if (
       this._prev_point &&
-      sample.point &&
+      contact_pos.point &&
       this._prev_side !== 'none' &&
-      sample.side === this._prev_side
+      contact_pos.side === this._prev_side
     ) {
-      this.stamp(this._prev_point, sample.point, sample.side);
+      this.stamp(this._prev_point, contact_pos.point, contact_pos.side);
     }
 
-    this._prev_point = sample.point?.clone() ?? null;
-    this._prev_side = sample.side;
+    this._prev_point = contact_pos.point?.clone() ?? null;
+    this._prev_side = contact_pos.side;
     this.pushLight();
   }
 
@@ -189,7 +189,7 @@ export class GreenTrail implements Tickable {
    * wall is air-only: a grounded side scrape is not a wall slide.
    * squeezed between two solids, keep the facing wall only.
    */
-  private sample(foot: Vector): { side: ContactSide; point: Vector | null } {
+  private sample_contact(foot: Vector): { side: ContactSide; point: Vector | null } {
     const runner_ctx = this.gameCtx.runner_ctx;
     const grounded = checkIsGrounded(foot.x, foot.y, runner_ctx, this._solid_grid);
     const sole_center = this._solid_grid.isSolidAtWorldSpace(foot.x, foot.y);
