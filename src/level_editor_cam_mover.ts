@@ -38,12 +38,4 @@ export class LevelEditorCamMover implements Tickable {
     cam.pos.x = Math.round(cam.pos.x);
     cam.pos.y = Math.round(cam.pos.y);
   }
-
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
 }
