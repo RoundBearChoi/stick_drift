@@ -176,14 +176,6 @@ export class GreenTrail implements Tickable {
     this.pushLight();
   }
 
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
-
   /**
    * ground wins, so a landing does not also paint the wall.
    * wall is air-only: a grounded side scrape is not a wall slide.
