@@ -100,12 +100,4 @@ export class RunnerWallSlideCheck implements Tickable {
     ctx.wall_contact_left = contact.left;
     ctx.wall_contact_right = contact.right;
   }
-
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
 }
