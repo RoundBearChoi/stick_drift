@@ -60,12 +60,4 @@ export class RunnerDeathVfx implements Tickable {
       // we're simply scrambling the numbers. no actual randomness here
     );
   }
-
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
 }

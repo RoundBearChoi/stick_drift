@@ -25,12 +25,4 @@ export class OnRunnerDeath implements Tickable {
     this._current_death_ticks = 0;
     this.onReset();
   }
-
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
 }

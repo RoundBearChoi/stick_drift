@@ -106,12 +106,4 @@ export class RunnerSpikeContactCheck implements Tickable {
 
     //console.log('💀 runner hit a spiked face');
   }
-
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
 }

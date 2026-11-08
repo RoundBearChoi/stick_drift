@@ -17,12 +17,4 @@ export class RunnerStateSwitcher implements Tickable {
     
 	this.runner.commitQueuedState(this.gameCtx.runner_ctx);
   }
-
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
 }
