@@ -269,7 +269,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     if (this._spike_contact_check)			{ this._game_ctx.remove_tickable(this._spike_contact_check); }
     if (this._runner_death_vfx)				{ this._game_ctx.remove_tickable(this._runner_death_vfx); }
     if (this._on_runner_death)				{ this._game_ctx.remove_tickable(this._on_runner_death); }
-    if (this._green_trail)					{ this._game_ctx.remove_tickable(this._green_trail);	this._green_trail.clear(); }
+    if (this._green_trail)					{ this._game_ctx.remove_tickable(this._green_trail);	this._green_trail.clear_green_trail(); }
     if (this._white_dust)					{ this._game_ctx.remove_tickable(this._white_dust);		this._white_dust.clear(); }
     if (this._land_dust)					{ this._game_ctx.remove_tickable(this._land_dust);		this._land_dust.clear(); }
     if (this._camera_controller)			{ this._game_ctx.remove_tickable(this._camera_controller); }
@@ -281,7 +281,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 
     this._stick_runner.resetRunner(this._game_ctx, this._runner_spawn);
     this._runner_death_vfx?.clear();
-    this._green_trail?.clear();
+    this._green_trail?.clear_green_trail();
     this._white_dust?.clear();
     this._land_dust?.clear();
     this._camera_controller?.snapToTarget();

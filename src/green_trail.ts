@@ -143,7 +143,7 @@ export class GreenTrail implements Tickable {
   }
 
   /** drop the segment so a respawn does not draw a line back to the end point. */
-  clear(): void {
+  clear_green_trail(): void {
     this._prev_point = null;
     this._prev_side = 'none';
     for (const slot of this._slots) this.turn_off(slot);
@@ -154,7 +154,7 @@ export class GreenTrail implements Tickable {
     const runner_ctx = this.gameCtx.runner_ctx;
     
 	if (runner_ctx.is_dead) {
-      this.clear();
+      this.clear_green_trail();
       return;
     }
 
