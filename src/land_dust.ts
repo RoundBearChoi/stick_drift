@@ -90,7 +90,7 @@ export class LandDust implements Tickable {
     this._built = true;
   }
 
-  clear(): void {
+  clear_land_dust(): void {
     this._wasGrounded = true;
     for (const slot of this._slots) this.turnOff(slot);
   }
@@ -98,7 +98,7 @@ export class LandDust implements Tickable {
   fixedUpdate(_dt: number): void {
     const runner_ctx = this.gameCtx.runner_ctx;
     if (runner_ctx.is_dead) {
-      this.clear();
+      this.clear_land_dust();
       return;
     }
 
