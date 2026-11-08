@@ -106,14 +106,6 @@ export class WhiteDust implements Tickable {
     }
   }
 
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
-
   private shouldSpawn(runner_ctx: RunnerContext): boolean {
     if (runner_ctx.is_dead) return false;
 

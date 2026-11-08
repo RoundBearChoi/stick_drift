@@ -110,14 +110,6 @@ export class LandDust implements Tickable {
     this._wasGrounded = runner_ctx.is_grounded;
   }
 
-  register_fixed_update(): void {
-    this.gameCtx.registerTickable(this);
-  }
-
-  unregister_fixed_update(): void {
-    this.gameCtx.unregisterTickable(this);
-  }
-
   private spawn(): void {
     if (!this._built || this._slots.length === 0) return;
 
