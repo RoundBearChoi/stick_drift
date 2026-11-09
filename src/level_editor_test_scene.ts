@@ -227,7 +227,7 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     e.stopPropagation();
     this._ioBusy = true;
 
-    const job = e.code === 'KeyS' ? this.saveLevel() : this.loadLevel();
+    const job = e.code === 'KeyS' ? this.saveLevel() : this.load_level_to_level_ctx();
     void job.finally(() => {
       this._ioBusy = false;
     });
@@ -246,10 +246,11 @@ export class LevelEditorTestScene extends Scene<GameContext> {
     }
   }
 
-  private async loadLevel(): Promise<void> {
+  private async load_level_to_level_ctx(): Promise<void> {
     try {
       const file = await loadLevelFile();
-      if (!file) return;
+      
+	  if (!file) return;
 
       this._game_ctx.level_ctx.replaceAll(
         file.width_cells,
@@ -257,12 +258,14 @@ export class LevelEditorTestScene extends Scene<GameContext> {
         file.bricks,
         file.spikes
       );
-      this._selectTool?.clear();
+      
+	  this._selectTool?.clear();
       this._placeTool?.cancelDrag();
       this._nearestMouse?.setGuideDots([]);
       this.rebuildSolidActors();
       this.syncLevelBoundsVisuals();
-      console.log(
+      
+	  console.log(
         `loaded level (${file.bricks.length} bricks, ${file.spikes.length} spikes)`
       );
     } catch (err) {
