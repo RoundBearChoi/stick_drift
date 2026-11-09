@@ -101,7 +101,7 @@ export class LevelContext {
     type: BrickType = DEFAULT_BRICK_TYPE
   ): arrBrickPlacement {
     const placed: arrBrickPlacement = {
-      id: this._nextId++,
+      id: this._nextId++, // increase id by 1 every time so each element has a unique id
       x,
       y,
       type,
