@@ -39,7 +39,7 @@ import {
   LevelFile,
 } from './level_io';
 
-async function loadDefaultLevel(): Promise<LevelFile> {
+async function load_default_level_from_file(): Promise<LevelFile> {
   try {
     const response = await fetch('./res/levels/default_level.json');
     
@@ -112,7 +112,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     }
 
     // always reload from the file. unsaved editor changes are lost unless written back.
-    const levelFile = await loadDefaultLevel();
+    const levelFile = await load_default_level_from_file();
     
 	this._game_ctx.level_ctx.replaceAll(
       levelFile.width_cells,
