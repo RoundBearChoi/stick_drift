@@ -40,7 +40,7 @@ export class LevelContext {
    * level size in cells.
    * hard-coded for now (2× native resolution → 1280×720 so the camera has room to chase).
    * scenes / level loaders can overwrite these when starting a level.
-   * IMPORTANT: change only at scene/level start — not mid-frame.
+   * IMPORTANT: do not change cell count mid-frame.
    */
   width_cells = 160;
   height_cells = 90;
@@ -53,6 +53,7 @@ export class LevelContext {
   bricks: arrBrickPlacement[] = [];
   spikes: arrSpikePlacement[] = []; // authoritative list of spikes for the current level.
 
+  // 0 is falsy in JavaScript so we start at 1 — 'if (id)' or 'id || fallback' would treat 0 as missing
   private _nextId = 1;
 
   get width_px(): number {
@@ -63,7 +64,7 @@ export class LevelContext {
     return this.height_cells * CELL_SIZE;
   }
 
-  clear(): void {
+  clear_level_elements(): void {
     this.bricks.length = 0;
     this.spikes.length = 0;
   }
@@ -80,12 +81,16 @@ export class LevelContext {
   ): void {
     this.width_cells = width_cells;
     this.height_cells = height_cells;
-    this.clear();
-    this._nextId = 1;
-    for (const b of bricks) {
+    
+	this.clear_level_elements();
+    
+	this._nextId = 1;
+    
+	for (const b of bricks) {
       this.addBrick(b.x, b.y, b.type);
     }
-    for (const s of spikes) {
+    
+	for (const s of spikes) {
       this.addSpike(s.x, s.y, s.type, s.facing);
     }
   }
@@ -101,8 +106,10 @@ export class LevelContext {
       y,
       type,
     };
-    this.bricks.push(placed);
-    return placed;
+    
+	this.bricks.push(placed);
+    
+	return placed;
   }
 
   addSpike(
@@ -118,8 +125,10 @@ export class LevelContext {
       type,
       facing,
     };
-    this.spikes.push(placed);
-    return placed;
+    
+	this.spikes.push(placed);
+    
+	return placed;
   }
 
   /**
