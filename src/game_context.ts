@@ -107,15 +107,15 @@ export class GameContext {
     }
 
     // count fixed updates so we know we can clear input after at least 1 fixed update
-    let steps = 0;
+    let fixed_update_count = 0;
 
-    this._fixed_timestep.step(realElapsed, (dt) => {
-      steps++;
+    this._fixed_timestep.update_steps(realElapsed, (dt) => {
+      fixed_update_count++;
       this.fixedUpdate(engine, dt);
     });
 
     // clear input only after at least one fixed step has run
-    if (this._input_interpreter && steps > 0) {
+    if (this._input_interpreter && fixed_update_count > 0) {
       this._input_interpreter.endFrame();
     }
   }

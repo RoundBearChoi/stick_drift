@@ -13,13 +13,15 @@ export class FixedTimestep {
    * calls onFixedUpdate 0 or more times at exactly fixedDt.
    * return the leftover accumulator (useful for interpolation).
    */
-  step(realElapsedMs: number, onFixedUpdate: (dt: number) => void): number {
+  update_steps(realElapsedMs: number, onFixedUpdate: (dt: number) => void): number {
     this.accumulator += realElapsedMs;
 
     let time_steps = 0;
     while (this.accumulator >= this.fixedDt && time_steps < this.maxStepsPerFrame) {
       onFixedUpdate(this.fixedDt);
+
       this.accumulator -= this.fixedDt;
+
       time_steps++;
     }
 
