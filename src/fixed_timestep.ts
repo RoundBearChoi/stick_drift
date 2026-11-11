@@ -16,11 +16,11 @@ export class FixedTimestep {
   step(realElapsedMs: number, onFixedUpdate: (dt: number) => void): number {
     this.accumulator += realElapsedMs;
 
-    let steps = 0;
-    while (this.accumulator >= this.fixedDt && steps < this.maxStepsPerFrame) {
+    let time_steps = 0;
+    while (this.accumulator >= this.fixedDt && time_steps < this.maxStepsPerFrame) {
       onFixedUpdate(this.fixedDt);
       this.accumulator -= this.fixedDt;
-      steps++;
+      time_steps++;
     }
 
     return this.accumulator;
