@@ -74,17 +74,18 @@ export class LandDust implements Tickable {
         width: FRAME_WIDTH,
         height: FRAME_HEIGHT,
       });
-      assignZ(actor, 'runner_vfx');
+      
+	  assignZ(actor, 'runner_vfx');
       actor.scale = vec(DUST_SCALE, DUST_SCALE);
       actor.graphics.opacity = START_OPACITY;
       actor.graphics.visible = false;
 
       const anim = new FrameBasedAnimation(source, ADVANCES_PER_FRAME);
-      anim.attachToActor(actor);
-
+	  anim.attachToActor(actor);
       const slot = new DustSlot(actor, anim);
       this._slots.push(slot);
-      sceneAdd(actor);
+	  
+	  sceneAdd(actor);
     }
 
     this._built = true;
@@ -92,14 +93,16 @@ export class LandDust implements Tickable {
 
   clear_land_dust(): void {
     this._wasGrounded = true;
-    for (const slot of this._slots) this.turnOff(slot);
+    
+	for (const slot of this._slots) this.turnOff(slot);
   }
 
   fixedUpdate(_dt: number): void {
     const runner_ctx = this.gameCtx.runner_ctx;
-    if (runner_ctx.is_dead) {
-      this.clear_land_dust();
-      return;
+    
+	if (runner_ctx.is_dead) {
+		this.clear_land_dust();
+		return;
     }
 
     this.age();
@@ -107,7 +110,8 @@ export class LandDust implements Tickable {
     if (runner_ctx.is_grounded && !this._wasGrounded) {
       this.spawn();
     }
-    this._wasGrounded = runner_ctx.is_grounded;
+    
+	this._wasGrounded = runner_ctx.is_grounded;
   }
 
   private spawn(): void {
