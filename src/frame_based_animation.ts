@@ -47,7 +47,8 @@ export class FrameBasedAnimation {
     // pingpong: 0 -> 1 -> 2 -> 3 -> 2 -> 1 -> 0 -> 1 ...
     // pingPong / freeze / end can be re-added when needed.
     const next = (this._animation.currentFrameIndex + 1) % frameCount;
-    this._animation.goToFrame(next);
+    
+	this._animation.goToFrame(next);
   }
 
   private syncGraphic(): void {
@@ -58,7 +59,8 @@ export class FrameBasedAnimation {
        * every time we advance one animation frame we're telling excalibur “sprite for this actor has changed so use that sprite.”
        */
       this._owner.graphics.use(frame.graphic);
-      applySpriteRenderOffset(this._owner);
+      
+	  applySpriteRenderOffset(this._owner);
     }
   }
 
