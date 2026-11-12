@@ -121,7 +121,8 @@ export class GreenTrail implements Tickable {
       name: 'green-trail-light',
       fragmentSource: FRAGMENT,
     });
-    this._light.graphics.material = this._light_material;
+    
+	this._light.graphics.material = this._light_material;
     sceneAdd(this._light);
 
     for (let i = 0; i < MAX_PARTICLES; i++) {
@@ -131,7 +132,8 @@ export class GreenTrail implements Tickable {
         width: PARTICLE_SIZE,
         height: PARTICLE_SIZE,
       });
-      assignZ(actor, 'runner_vfx');
+      
+	  assignZ(actor, 'runner_vfx');
       actor.graphics.use(DOT);
       actor.graphics.opacity = 0;
       actor.graphics.visible = false;
@@ -185,10 +187,12 @@ export class GreenTrail implements Tickable {
     const runner_ctx = this.gameCtx.runner_ctx;
     const grounded = checkIsGrounded(foot.x, foot.y, runner_ctx, this._solid_grid);
     const sole_center = this._solid_grid.isSolidAtWorldSpace(foot.x, foot.y);
-    if (grounded && sole_center) {
+    
+	if (grounded && sole_center) {
       return { side: 'ground', point: foot.clone() };
     }
-    if (grounded) return { side: 'none', point: null };
+    
+	if (grounded) return { side: 'none', point: null };
 
     const halfW = runner_ctx.collider_width / 2;
     const midY = foot.y - runner_ctx.collider_height / 2;
@@ -198,44 +202,54 @@ export class GreenTrail implements Tickable {
 
     if (left) {
       const x = foot.x - halfW - 1; // last solid pixel left of the collider
-      if (this._solid_grid.isSolidAtWorldSpace(x, midY)) {
+      
+	  if (this._solid_grid.isSolidAtWorldSpace(x, midY)) {
         return { side: 'left', point: vec(x, midY) };
       }
     }
-    if (right) {
+    
+	if (right) {
       const x = foot.x + halfW; // first solid pixel right of the collider
       if (this._solid_grid.isSolidAtWorldSpace(x, midY)) {
         return { side: 'right', point: vec(x, midY) };
       }
     }
-    return { side: 'none', point: null };
+    
+	return { side: 'none', point: null };
   }
 
   private age(): void {
     const step = 1 / PARTICLE_LIFE;
-    for (const slot of this._slots) {
+    
+	for (const slot of this._slots) {
       if (!slot.is_playing) continue;
-      slot.progress += step;
-      if (slot.progress >= 1) {
+      
+	  slot.progress += step;
+      
+	  if (slot.progress >= 1) {
         this.turn_off(slot);
         continue;
       }
-      this.applyFade(slot);
+      
+	  this.applyFade(slot);
     }
   }
 
   private stamp(from: Vector, to: Vector, side: ContactSide): void {
     const delta = to.sub(from);
     const dist = delta.magnitude;
-    if (dist < 1 || dist > SPAWN_MAX_DIST) return;
+    
+	if (dist < 1 || dist > SPAWN_MAX_DIST) return;
 
     const steps = Math.max(1, Math.round(dist / this.spacing));
-    for (let i = 1; i <= steps; i++) {
+    
+	for (let i = 1; i <= steps; i++) {
       const px = (dist * i) / steps;
       const progress = this.birth_progress(px);
-      if (progress >= 1) continue;
+      
+	  if (progress >= 1) continue;
       const t = i / steps;
-      this.turn_on(from.x + delta.x * t, from.y + delta.y * t, progress, side);
+	  this.turn_on(from.x + delta.x * t, from.y + delta.y * t, progress, side);
     }
   }
 
@@ -245,21 +259,25 @@ export class GreenTrail implements Tickable {
    */
   private birth_progress(px_from_prev: number): number {
     if (this.curve === 1) return px_from_prev * this.progress_per_px;
-    return Math.pow(px_from_prev, this.curve) * this.progress_per_px;
+    
+	return Math.pow(px_from_prev, this.curve) * this.progress_per_px;
   }
 
   private turn_on(x: number, y: number, progress: number, side: ContactSide): void {
     const slot = this._slots[this._cursor];
-    this._cursor = (this._cursor + 1) % MAX_PARTICLES;
+    
+	this._cursor = (this._cursor + 1) % MAX_PARTICLES;
 
     slot.is_playing = true;
     slot.progress = progress;
-    // grow the quad into the body, same as the floor dots sitting on the sole
+    
+	// grow the quad into the body, same as the floor dots sitting on the sole
     slot.actor.anchor =
       side === 'left' ? vec(0, 0.5) : side === 'right' ? vec(1, 0.5) : vec(0.5, 1);
     // grounded trail sits on the exclusive solid pixel. draw 1px up into the sole.
     // light reads this pos, so the halo moves with the dot. walls stay put.
-    const drawY = side === 'ground' ? Math.round(y) - GROUND_TRAIL_UP : Math.round(y);
+    
+	const drawY = side === 'ground' ? Math.round(y) - GROUND_TRAIL_UP : Math.round(y);
     slot.actor.pos = vec(Math.round(x), drawY);
     this.applyFade(slot);
   }
@@ -280,19 +298,24 @@ export class GreenTrail implements Tickable {
   /** snapshot the living slots. the frag rebuilds the halos from this. no gpu state. */
   private pushLight(): void {
     const material = this._light_material;
-    if (!material) return;
+    
+	if (!material) return;
 
     const packed = this._packed;
-    let n = 0;
-    for (const slot of this._slots) {
+	let n = 0;
+    
+	for (const slot of this._slots) {
       if (!slot.is_playing) continue;
-      const base = n * 3;
-      packed[base] = slot.actor.pos.x;
+      
+	  const base = n * 3;
+      
+	  packed[base] = slot.actor.pos.x;
       packed[base + 1] = slot.actor.pos.y;
       packed[base + 2] = slot.progress;
       n++;
     }
-    for (let i = n * 3; i < LIGHT_PACK; i++) packed[i] = -1;
+    
+	for (let i = n * 3; i < LIGHT_PACK; i++) packed[i] = -1;
 
     const cam = this.engine.currentScene.camera.pos;
     const originX = cam.x - NATIVE_RESOLUTION.width / 2;
@@ -305,10 +328,12 @@ export class GreenTrail implements Tickable {
       );
       shader.trySetUniformFloatVector('u_origin', vec(originX, originY));
       shader.trySetUniformInt('u_count', n);
-      const ok =
+      
+	  const ok =
         shader.trySetUniformFloatArray('u_particles[0]', packed) ||
         shader.trySetUniformFloatArray('u_particles', packed);
-      if (!ok && !this._warned_uniform) {
+      
+	  if (!ok && !this._warned_uniform) {
         this._warned_uniform = true;
         console.warn('green trail light: u_particles uniform was not set');
       }
@@ -316,7 +341,8 @@ export class GreenTrail implements Tickable {
 
     // sit on the camera so the field cannot be culled off in world space
     const light = this._light;
-    if (light) {
+    
+	if (light) {
       light.pos = vec(cam.x, cam.y);
       light.graphics.visible = true;
     }
