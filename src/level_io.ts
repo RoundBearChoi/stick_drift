@@ -66,21 +66,21 @@ interface LevelFilePickerWindow {
 }
 
 /**
- * plain level data. no actors, no runtime ids.
+ * plain level_ctx data. no actors, no runtime ids.
  * gameplay can load this same file later and ignore anything editor-only.
  */
-export function toLevelFile(level: LevelContext): LevelFile {
+export function toLevelFile(level_ctx: LevelContext): LevelFile {
   return {
     format: LEVEL_FILE_FORMAT,
     version: LEVEL_FILE_VERSION,
-    width_cells: level.width_cells,
-    height_cells: level.height_cells,
-    bricks: level.bricks.map((b) => ({
+    width_cells: level_ctx.width_cells,
+    height_cells: level_ctx.height_cells,
+    bricks: level_ctx.bricks.map((b) => ({
       x: b.x,
       y: b.y,
       type: b.type,
     })),
-    spikes: level.spikes.map((s) => ({
+    spikes: level_ctx.spikes.map((s) => ({
       x: s.x,
       y: s.y,
       type: s.type,
@@ -89,8 +89,8 @@ export function toLevelFile(level: LevelContext): LevelFile {
   };
 }
 
-export function serializeLevel(level: LevelContext): string {
-  const file = toLevelFile(level);
+export function serializeLevel(level_ctx: LevelContext): string {
+  const file = toLevelFile(level_ctx);
   const raw = {
     format: file.format,
     version: file.version,
@@ -113,17 +113,17 @@ export function parseLevelFile(text: string): LevelFile {
   try {
     raw = JSON.parse(text);
   } catch {
-    throw new Error('level file is not valid JSON');
+    throw new Error('level_ctx file is not valid JSON');
   }
 
   if (!isRecord(raw)) {
-    throw new Error('level file must be a JSON object');
+    throw new Error('level_ctx file must be a JSON object');
   }
   if (raw.format !== LEVEL_FILE_FORMAT) {
-    throw new Error(`unsupported level format: ${String(raw.format)}`);
+    throw new Error(`unsupported level_ctx format: ${String(raw.format)}`);
   }
   if (raw.version !== LEVEL_FILE_VERSION) {
-    throw new Error(`unsupported level version: ${String(raw.version)}`);
+    throw new Error(`unsupported level_ctx version: ${String(raw.version)}`);
   }
 
   const width_cells = expectPositiveInt(raw.width_cells, 'width_cells');
@@ -142,13 +142,13 @@ export function parseLevelFile(text: string): LevelFile {
 }
 
 /**
- * open the browser save dialog and write the current level.
+ * open the browser save dialog and write the current level_ctx.
  * call this directly from a keydown handler. a later game-loop poll is not a user gesture,
  * and Chromium will refuse the picker.
  * returns false if the user cancels. Firefox has no save picker, so it downloads level.json.
  */
-export async function saveLevelFile(level: LevelContext): Promise<boolean> {
-  const json = serializeLevel(level);
+export async function saveLevelFile(level_ctx: LevelContext): Promise<boolean> {
+  const json = serializeLevel(level_ctx);
   const picker = filePickerWindow().showSaveFilePicker;
   if (!picker) {
     downloadLevelFile(json);
@@ -157,7 +157,7 @@ export async function saveLevelFile(level: LevelContext): Promise<boolean> {
 
   try {
     const handle = await picker({
-      suggestedName: 'level.json',
+      suggestedName: 'level_ctx.json',
       types: LEVEL_FILE_TYPES,
     });
     const writable = await handle.createWritable();
@@ -241,7 +241,7 @@ function downloadLevelFile(json: string): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'level.json';
+  link.download = 'level_ctx.json';
   document.body.appendChild(link);
   link.click();
   link.remove();
