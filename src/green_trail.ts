@@ -318,11 +318,11 @@ export class GreenTrail implements Tickable {
       }
     });
 
-    const light = this._green_glow;
+    const green_glow = this._green_glow;
     
-	if (light) {
-      light.pos = vec(cam.x, cam.y);
-      light.graphics.visible = true;
+	if (green_glow) {
+      green_glow.pos = vec(cam.x, cam.y);
+      green_glow.graphics.visible = true;
     }
   }
 }
