@@ -70,6 +70,7 @@ class GreenGlow extends Actor {
   }
 }
 
+// the whole effect (green dot + green glow)
 export class GreenTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
   progress_per_px = 0.03;
@@ -111,6 +112,7 @@ export class GreenTrail implements Tickable {
     
 	sceneAdd(this._green_glow);
 
+	// 'GreenDot' is the green pixels without lighting
     for (let i = 0; i < MAX_PARTICLES; i++) {
       const actor = new Actor({
         name: 'GreenDot',
