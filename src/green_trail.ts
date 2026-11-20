@@ -113,17 +113,19 @@ export class GreenTrail implements Tickable {
     this._solid_grid = solid_grid;
   }
 
-  attachToScene(sceneAdd: (actor: Actor) => void): void {
+  attach_green_trail_to_scene(sceneAdd: (actor: Actor) => void): void {
     if (this._built) return;
 
     this._light = new GreenTrailLight();
-    this._light_material = this.engine.graphicsContext.createMaterial({
+    
+	this._light_material = this.engine.graphicsContext.createMaterial({
       name: 'green-trail-light',
       fragmentSource: FRAGMENT,
     });
     
 	this._light.graphics.material = this._light_material;
-    sceneAdd(this._light);
+    
+	sceneAdd(this._light);
 
     for (let i = 0; i < MAX_PARTICLES; i++) {
       const actor = new Actor({

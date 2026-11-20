@@ -205,7 +205,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     }
     
 	this._green_trail.setSolidGrid(this._solid_grid_system);
-    this._green_trail.attachToScene((actor) => this.add(actor));
+    this._green_trail.attach_green_trail_to_scene((actor) => this.add(actor));
 
     if (!this._white_dust) {
       this._white_dust = new WhiteDust(this._stick_runner, this._game_ctx);
