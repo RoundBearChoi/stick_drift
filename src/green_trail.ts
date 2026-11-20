@@ -14,7 +14,7 @@ import { SolidGridSystem } from './solid_grid_system';
 import { checkIsGrounded } from './runner_ground_checker';
 import { checkWallSlideContact } from './runner_wall_slide_check';
 import { assignZ, Z_ORDER } from './z_order';
-import FRAGMENT from './green_trail_light.frag';
+import FRAGMENT from './green_trail.frag';
 
 export const MAX_PARTICLES = 100;
 export const PARTICLE_SIZE = 1.75;
@@ -55,7 +55,7 @@ class ParticleSlot {
   }
 }
 
-// actor that draws soft green glow around the trail dots
+// actor that draws soft green glow around green dots
 class GreenGlow extends Actor {
   constructor() {
     super({
@@ -64,8 +64,10 @@ class GreenGlow extends Actor {
       width: NATIVE_RESOLUTION.width,
       height: NATIVE_RESOLUTION.height,
     });
+
     assignZ(this, 'runner_shader_effects');
-    this.graphics.use(LIGHT_QUAD);
+    
+	this.graphics.use(LIGHT_QUAD);
     this.graphics.forceOnScreen = true;
   }
 }
@@ -83,7 +85,7 @@ export class GreenTrail implements Tickable {
   private _prev_side: ContactSide = 'none';
   private _built = false;
   private _green_glow: GreenGlow | null = null;
-  private _light_material: Material | null = null;
+  private _green_glow_material: Material | null = null;
   private _packed = new Array<number>(LIGHT_PACK).fill(-1);
   private _warned_uniform = false;
 
@@ -103,12 +105,12 @@ export class GreenTrail implements Tickable {
 
     this._green_glow = new GreenGlow();
     
-	this._light_material = this.engine.graphicsContext.createMaterial({
-      name: 'green-trail-light',
+	this._green_glow_material = this.engine.graphicsContext.createMaterial({
+      name: 'green-glow',
       fragmentSource: FRAGMENT,
     });
     
-	this._green_glow.graphics.material = this._light_material;
+	this._green_glow.graphics.material = this._green_glow_material;
     
 	sceneAdd(this._green_glow);
 
@@ -138,7 +140,7 @@ export class GreenTrail implements Tickable {
     this._prev_point = null;
     this._prev_side = 'none';
     for (const slot of this._slots) this.turn_off(slot);
-    this.pushLight();
+    this.pushGlow();
   }
 
   fixedUpdate(_dt: number): void {
@@ -164,7 +166,7 @@ export class GreenTrail implements Tickable {
 
     this._prev_point = contact_point.point?.clone() ?? null;
     this._prev_side = contact_point.side;
-    this.pushLight();
+    this.pushGlow();
   }
 
   // get exact contact point (either ground or wall)
@@ -275,8 +277,8 @@ export class GreenTrail implements Tickable {
   }
 
   // upload current state of active trail particles to GPU so green glow shader can render soft halos
-  private pushLight(): void {
-    const material = this._light_material;
+  private pushGlow(): void {
+    const material = this._green_glow_material;
     
 	if (!material) return;
 
@@ -316,7 +318,7 @@ export class GreenTrail implements Tickable {
 	  if (!ok && !this._warned_uniform) {
         this._warned_uniform = true;
         
-		console.warn('green trail light: u_particles uniform was not set');
+		console.warn('green glow: u_particles uniform was not set');
       }
     });
 
