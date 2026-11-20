@@ -39,7 +39,6 @@ const LIGHT_QUAD = new Rectangle({
   color: Color.White,
 });
 
-/** full until 0.2, then smoothstep to 0. scaled by START_OPACITY. */
 function fadeFromProgress(p: number): number {
   const t = Math.min(1, Math.max(0, (p - 0.2) / 0.8));
   const s = t * t * (3 - 2 * t);
@@ -56,10 +55,6 @@ class ParticleSlot {
   }
 }
 
-/**
- * camera-sized field in world space, above the dots.
- * each fragment rebuilds every halo from the uploaded snapshot.
- */
 class GreenTrailLight extends Actor {
   constructor() {
     super({
@@ -74,23 +69,11 @@ class GreenTrailLight extends Actor {
   }
 }
 
-/**
- * one birth per pixel of a contact step whose center sits on a solid.
- * ground: full-width sole probe, then the exclusive bottom-center pivot,
- * drawn 1px up so the dot and its light sit on the sole instead of the solid.
- * wall: checkWallSlideContact on that side, then the exclusive mid-edge pixel.
- * a toe or a corner graze still counts as contact, so it does not trail.
- * probes the post-move foot itself. does not read runner_ctx contact flags or stateName.
- *
- * dots are a shared Rectangle on the default rectangle batch. fade is graphics.opacity.
- */
 export class GreenTrail implements Tickable {
   spacing = 2; // px between births. 1 = one dot per pixel of the step
   progress_per_px = 0.03;
   curve = 0.9; // 1 = linear. 2 pushes the offset toward the front of the step
 
-  /* ParticleSlot is a small data holder that tracks whether a particle effect is active, how far along it is, which Actor it is tied to. 
-   * _slots array is a collection of these holders. */
   private _slots: ParticleSlot[] = [];
 
   private _cursor = 0;
@@ -139,14 +122,15 @@ export class GreenTrail implements Tickable {
       actor.graphics.use(rectangle);
       actor.graphics.opacity = 0;
       actor.graphics.visible = false;
-      this._slots.push(new ParticleSlot(actor));
+      
+	  this._slots.push(new ParticleSlot(actor));
       sceneAdd(actor);
     }
 
     this._built = true;
   }
 
-  /** drop the segment so a respawn does not draw a line back to the end point. */
+  // drop the segment so a respawn does not draw a line back to the end point
   clear_green_trail(): void {
     this._prev_point = null;
     this._prev_side = 'none';
@@ -164,28 +148,25 @@ export class GreenTrail implements Tickable {
 
     this.age();
 
-    const contact_pos = this.sample_contact(this.runner.pos);
+    const contact_point = this.get_contact_point(this.runner.pos);
     
 	if (
       this._prev_point &&
-      contact_pos.point &&
+      contact_point.point &&
       this._prev_side !== 'none' &&
-      contact_pos.side === this._prev_side
+      contact_point.side === this._prev_side
     ) {
-      this.stamp(this._prev_point, contact_pos.point, contact_pos.side);
+      this.stamp(this._prev_point, contact_point.point, contact_point.side);
     }
 
-    this._prev_point = contact_pos.point?.clone() ?? null;
-    this._prev_side = contact_pos.side;
+    this._prev_point = contact_point.point?.clone() ?? null;
+    this._prev_side = contact_point.side;
     this.pushLight();
   }
 
-  /**
-   * ground wins, so a landing does not also paint the wall.
-   * wall is air-only: a grounded side scrape is not a wall slide.
-   * squeezed between two solids, keep the facing wall only.
-   */
-  private sample_contact(foot: Vector): { side: ContactSide; point: Vector | null } {
+  // get exact contact point (either ground or wall)
+  // ground always wins
+  private get_contact_point(foot: Vector): { side: ContactSide; point: Vector | null } {
     const runner_ctx = this.gameCtx.runner_ctx;
     const grounded = checkIsGrounded(foot.x, foot.y, runner_ctx, this._solid_grid);
     const sole_center = this._solid_grid.isSolidAtWorldSpace(foot.x, foot.y);
@@ -255,10 +236,6 @@ export class GreenTrail implements Tickable {
     }
   }
 
-  /**
-   * px_from_prev = 0 stays at progress 0.
-   * curve 1 is i * progress_per_px. curve 2 loads the offset toward the new foot.
-   */
   private birth_progress(px_from_prev: number): number {
     if (this.curve === 1) return px_from_prev * this.progress_per_px;
     
@@ -273,11 +250,8 @@ export class GreenTrail implements Tickable {
     slot.is_playing = true;
     slot.progress = progress;
     
-	// grow the quad into the body, same as the floor dots sitting on the sole
     slot.actor.anchor =
       side === 'left' ? vec(0, 0.5) : side === 'right' ? vec(1, 0.5) : vec(0.5, 1);
-    // grounded trail sits on the exclusive solid pixel. draw 1px up into the sole.
-    // light reads this pos, so the halo moves with the dot. walls stay put.
     
 	const drawY = side === 'ground' ? Math.round(y) - GROUND_TRAIL_UP : Math.round(y);
     slot.actor.pos = vec(Math.round(x), drawY);
@@ -297,7 +271,6 @@ export class GreenTrail implements Tickable {
     slot.actor.graphics.visible = fade > FADE_CUTOFF;
   }
 
-  /** snapshot the living slots. the frag rebuilds the halos from this. no gpu state. */
   private pushLight(): void {
     const material = this._light_material;
     
@@ -341,7 +314,6 @@ export class GreenTrail implements Tickable {
       }
     });
 
-    // sit on the camera so the field cannot be culled off in world space
     const light = this._light;
     
 	if (light) {
