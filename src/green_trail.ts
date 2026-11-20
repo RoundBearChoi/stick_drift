@@ -27,7 +27,7 @@ const GROUND_TRAIL_UP = -1; // px. grounded trail + light only. y-down, so subtr
 
 type ContactSide = 'none' | 'ground' | 'left' | 'right';
 
-const DOT = new Rectangle({
+const rectangle = new Rectangle({
   width: PARTICLE_SIZE,
   height: PARTICLE_SIZE,
   color: Color.fromHex('#50fa7b'),
@@ -134,7 +134,7 @@ export class GreenTrail implements Tickable {
       });
       
 	  assignZ(actor, 'runner_vfx');
-      actor.graphics.use(DOT);
+      actor.graphics.use(rectangle);
       actor.graphics.opacity = 0;
       actor.graphics.visible = false;
       this._slots.push(new ParticleSlot(actor));
