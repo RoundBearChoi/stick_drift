@@ -294,7 +294,8 @@ export class GreenTrail implements Tickable {
 	  packed[base] = slot.actor.pos.x;
       packed[base + 1] = slot.actor.pos.y;
       packed[base + 2] = slot.progress;
-      n++;
+      
+	  n++;
     }
     
 	for (let i = n * 3; i < LIGHT_PACK; i++) packed[i] = -1;
