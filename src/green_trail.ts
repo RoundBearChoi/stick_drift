@@ -55,10 +55,11 @@ class ParticleSlot {
   }
 }
 
-class GreenTrailLight extends Actor {
+// actor that draws soft green glow around the trail dots
+class GreenGlow extends Actor {
   constructor() {
     super({
-      name: 'GreenTrailLight',
+      name: 'GreenGlow',
       anchor: vec(0.5, 0.5),
       width: NATIVE_RESOLUTION.width,
       height: NATIVE_RESOLUTION.height,
@@ -80,7 +81,7 @@ export class GreenTrail implements Tickable {
   private _prev_point: Vector | null = null;
   private _prev_side: ContactSide = 'none';
   private _built = false;
-  private _light: GreenTrailLight | null = null;
+  private _green_glow: GreenGlow | null = null;
   private _light_material: Material | null = null;
   private _packed = new Array<number>(LIGHT_PACK).fill(-1);
   private _warned_uniform = false;
@@ -99,16 +100,16 @@ export class GreenTrail implements Tickable {
   attach_green_trail_to_scene(sceneAdd: (actor: Actor) => void): void {
     if (this._built) return;
 
-    this._light = new GreenTrailLight();
+    this._green_glow = new GreenGlow();
     
 	this._light_material = this.engine.graphicsContext.createMaterial({
       name: 'green-trail-light',
       fragmentSource: FRAGMENT,
     });
     
-	this._light.graphics.material = this._light_material;
+	this._green_glow.graphics.material = this._light_material;
     
-	sceneAdd(this._light);
+	sceneAdd(this._green_glow);
 
     for (let i = 0; i < MAX_PARTICLES; i++) {
       const actor = new Actor({
@@ -271,12 +272,14 @@ export class GreenTrail implements Tickable {
     slot.actor.graphics.visible = fade > FADE_CUTOFF;
   }
 
+  // upload current state of active trail particles to GPU so green glow shader can render soft halos
   private pushLight(): void {
     const material = this._light_material;
     
 	if (!material) return;
 
     const packed = this._packed;
+	
 	let n = 0;
     
 	for (const slot of this._slots) {
@@ -310,11 +313,12 @@ export class GreenTrail implements Tickable {
       
 	  if (!ok && !this._warned_uniform) {
         this._warned_uniform = true;
-        console.warn('green trail light: u_particles uniform was not set');
+        
+		console.warn('green trail light: u_particles uniform was not set');
       }
     });
 
-    const light = this._light;
+    const light = this._green_glow;
     
 	if (light) {
       light.pos = vec(cam.x, cam.y);
