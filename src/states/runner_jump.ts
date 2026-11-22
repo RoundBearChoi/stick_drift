@@ -7,7 +7,7 @@ import { RunnerIdle } from './runner_idle';
 import { RunnerWallSlide } from './runner_wall_slide';
 import { applyAirRun } from '../runner_air_run';
 import { canEnterWallSlide } from '../runner_wall_slide_check';
-import { soundController } from '../sound_controller';
+import { soundPlayer } from '../sound_controller';
 
 export type JumpOrigin = 'ground' | 'wall';
 
@@ -28,7 +28,7 @@ export class RunnerJump implements RunnerState {
     );
 
     // play jump SFX (covers both ground and wall jumps)
-    soundController.playJump();
+    soundPlayer.playJump();
 
     // states should only write to upward energy
     runnerCtx.current_air_up_vector = runnerCtx.jump_up_starting_momentum;

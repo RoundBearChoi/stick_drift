@@ -11,7 +11,7 @@ import { RunnerColliderDebug } from './runner_collider_debug';
 import { RunnerJumpDebug } from './runner_jump_debug';
 import { RunnerFallDebug } from './runner_fall_debug';
 import { assignZ } from './z_order';
-import { soundController } from './sound_controller';
+import { soundPlayer } from './sound_controller';
 
 export interface RunnerOptions {
   pos?: Vector;
@@ -157,7 +157,7 @@ export class StickRunner extends Actor implements Tickable {
     if (this._runner_ctx) {
       const grounded = this._runner_ctx.is_grounded;
       if (grounded && !this._wasGroundedForSound) {
-        soundController.playLand();
+        soundPlayer.playLand();
       }
       this._wasGroundedForSound = grounded;
     }
