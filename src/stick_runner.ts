@@ -11,7 +11,7 @@ import { RunnerColliderDebug } from './runner_collider_debug';
 import { RunnerJumpDebug } from './runner_jump_debug';
 import { RunnerFallDebug } from './runner_fall_debug';
 import { assignZ } from './z_order';
-import { soundPlayer } from './sound_controller';
+import { soundPlayer } from './sound_player';
 
 export interface RunnerOptions {
   pos?: Vector;

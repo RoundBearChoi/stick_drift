@@ -7,7 +7,7 @@ import { RunnerIdle } from './runner_idle';
 import { RunnerWallSlide } from './runner_wall_slide';
 import { applyAirRun } from '../runner_air_run';
 import { canEnterWallSlide } from '../runner_wall_slide_check';
-import { soundPlayer } from '../sound_controller';
+import { soundPlayer } from '../sound_player';
 
 export type JumpOrigin = 'ground' | 'wall';
 
