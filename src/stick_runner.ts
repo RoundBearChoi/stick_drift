@@ -11,6 +11,7 @@ import { RunnerColliderDebug } from './runner_collider_debug';
 import { RunnerJumpDebug } from './runner_jump_debug';
 import { RunnerFallDebug } from './runner_fall_debug';
 import { assignZ } from './z_order';
+import { soundController } from './sound_controller';
 
 export interface RunnerOptions {
   pos?: Vector;
@@ -31,6 +32,9 @@ export class StickRunner extends Actor implements Tickable {
   private _colliderDebug: RunnerColliderDebug | null = null;
   private _jumpDebug: RunnerJumpDebug | null = null;
   private _fallDebug: RunnerFallDebug | null = null;
+
+  // rising-edge detection for land SFX
+  private _wasGroundedForSound = true;
 
   constructor(options: RunnerOptions = {}) {
     super({
@@ -148,6 +152,16 @@ export class StickRunner extends Actor implements Tickable {
 
   fixedUpdate(_dt: number): void {
     if (this._runner_ctx?.is_dead) return;
+
+    // land SFX on rising edge only
+    if (this._runner_ctx) {
+      const grounded = this._runner_ctx.is_grounded;
+      if (grounded && !this._wasGroundedForSound) {
+        soundController.playLand();
+      }
+      this._wasGroundedForSound = grounded;
+    }
+
     this._frame_based_animation?.tick();
   }
 
@@ -171,6 +185,9 @@ export class StickRunner extends Actor implements Tickable {
 
     // clear shared simulation buffers so nothing leaks across scene visits
     runnerCtx.reset();
+
+    // avoid a land sound on the next tick after a reset
+    this._wasGroundedForSound = true;
 
     this._queued_state = null;
     this.applyState(new RunnerIdle(), runnerCtx);
