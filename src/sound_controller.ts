@@ -16,4 +16,5 @@ class SoundController {
   }
 }
 
+// lives at the top level of the module, not inside a class or function
 export const soundController = new SoundController();
