@@ -41,7 +41,7 @@ export class LandDust implements Tickable {
     private readonly gameCtx: GameContext
   ) {}
 
-  attachToScene(sceneAdd: (actor: Actor) => void): void {
+  attach_land_dust_to_scene(sceneAdd: (actor: Actor) => void): void {
     if (this._built) return;
 
     const image = Resources.land_dust as ImageSource;

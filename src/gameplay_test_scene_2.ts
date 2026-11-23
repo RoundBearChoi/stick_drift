@@ -217,7 +217,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._land_dust = new LandDust(this._stick_runner, this._game_ctx);
     }
     
-	this._land_dust.attachToScene((actor) => this.add(actor));
+	this._land_dust.attach_land_dust_to_scene((actor) => this.add(actor));
 
     // bricks + spikes from level_ctx
     this.buildSolidsFromLevelCtx();
