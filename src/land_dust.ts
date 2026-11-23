@@ -108,13 +108,13 @@ export class LandDust implements Tickable {
     this.age();
 
     if (runner_ctx.is_grounded && !this._wasGrounded) {
-      this.spawn();
+      this.spawn_land_dust();
     }
     
 	this._wasGrounded = runner_ctx.is_grounded;
   }
 
-  private spawn(): void {
+  private spawn_land_dust(): void {
     if (!this._built || this._slots.length === 0) return;
 
     const slot = this._slots[this._cursor];
