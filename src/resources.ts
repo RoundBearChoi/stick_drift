@@ -19,7 +19,7 @@ export const Resources = {
   brick_16x16: new AsepriteResource('./res/sprites/16x16_brick.aseprite'),
   spikes_16x16: new AsepriteResource('./res/sprites/16x16_spikes.aseprite'),
 
-  white_dust: new AsepriteResource('./res/sprites/white_dust.aseprite'),
+  run_dust: new AsepriteResource('./res/sprites/run_dust.aseprite'),
 
   land_dust: new ImageSource('./res/sprites/land_dust.png'),
 
@@ -42,7 +42,7 @@ loader.addResource(Resources.work_in_progress);
 loader.addResource(Resources.brick_8x8);
 loader.addResource(Resources.brick_16x16);
 loader.addResource(Resources.spikes_16x16);
-loader.addResource(Resources.white_dust);
+loader.addResource(Resources.run_dust);
 loader.addResource(Resources.land_dust);
 loader.addResource(Resources.jump_sound);
 loader.addResource(Resources.land_sound);

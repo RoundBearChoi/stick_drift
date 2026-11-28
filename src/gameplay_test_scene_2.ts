@@ -30,7 +30,7 @@ import { spikeDef } from './spike_type';
 import { createDebugFont } from './debug_font';
 import { DraculaColorScheme } from './dracula_color_scheme';
 import { GreenTrail } from './green_trail';
-import { WhiteDust } from './white_dust';
+import { RunDust } from './run_dust';
 import { LandDust } from './land_dust';
 import {
   loadLevelFromFile,
@@ -62,7 +62,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
   private _solid_grid_system?: SolidGridSystem;
   private _titleLabel?: Label;
   private _green_trail?: GreenTrail;
-  private _white_dust?: WhiteDust;
+  private _run_dust?: RunDust;
   private _land_dust?: LandDust;
 
   onInitialize(_engine: Engine): void {}
@@ -198,11 +198,11 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 	this._green_trail.setSolidGrid(this._solid_grid_system);
     this._green_trail.attach_green_trail_to_scene((actor) => this.add(actor));
 
-    if (!this._white_dust) {
-      this._white_dust = new WhiteDust(this._stick_runner, this._game_ctx);
+    if (!this._run_dust) {
+      this._run_dust = new RunDust(this._stick_runner, this._game_ctx);
     }
     
-	this._white_dust.attachToScene((actor) => this.add(actor));
+	this._run_dust.attachToScene((actor) => this.add(actor));
 
     if (!this._land_dust) {
       this._land_dust = new LandDust(this._stick_runner, this._game_ctx);
@@ -251,7 +251,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._game_ctx.register_tickable(this._stick_runner);
     this._game_ctx.register_tickable(this._runner_move_buffer_resolve);
     this._game_ctx.register_tickable(this._green_trail);
-    this._game_ctx.register_tickable(this._white_dust);
+    this._game_ctx.register_tickable(this._run_dust);
     this._game_ctx.register_tickable(this._land_dust);
     this._game_ctx.register_tickable(this._spike_contact_check);
     this._game_ctx.register_tickable(this._runner_death_vfx);
@@ -275,7 +275,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     if (this._runner_death_vfx)				{ this._game_ctx.remove_tickable(this._runner_death_vfx); }
     if (this._on_runner_death)				{ this._game_ctx.remove_tickable(this._on_runner_death); }
     if (this._green_trail)					{ this._game_ctx.remove_tickable(this._green_trail);	this._green_trail.clear_green_trail(); }
-    if (this._white_dust)					{ this._game_ctx.remove_tickable(this._white_dust);		this._white_dust.clear_white_dust(); }
+    if (this._run_dust)					{ this._game_ctx.remove_tickable(this._run_dust);		this._run_dust.clear_run_dust(); }
     if (this._land_dust)					{ this._game_ctx.remove_tickable(this._land_dust);		this._land_dust.clear_land_dust(); }
     if (this._camera_controller)			{ this._game_ctx.remove_tickable(this._camera_controller); }
   }
@@ -287,7 +287,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     this._stick_runner.resetRunner(this._game_ctx, this._runner_spawn);
     this._runner_death_vfx?.clear_runner_death_vfx();
     this._green_trail?.clear_green_trail();
-    this._white_dust?.clear_white_dust();
+    this._run_dust?.clear_run_dust();
     this._land_dust?.clear_land_dust();
     this._camera_controller?.snapToTarget();
   }

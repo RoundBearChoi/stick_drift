@@ -35,7 +35,7 @@ class DustSlot {
  * while grounded in a run-related state, or while wall-sliding.
  * uses runner_vfx z-order.
  */
-export class WhiteDust implements Tickable {
+export class RunDust implements Tickable {
   private _slots: DustSlot[] = [];
   private _cursor = 0;
   private _spawn_counter = 0;
@@ -49,16 +49,16 @@ export class WhiteDust implements Tickable {
   attachToScene(sceneAdd: (actor: Actor) => void): void {
     if (this._built) return;
 
-    const resource = Resources.white_dust;
+    const resource = Resources.run_dust;
     const source = resource.getAnimation();
     if (!source) {
-      console.warn('white_dust animation not loaded');
+      console.warn('run_dust animation not loaded');
       return;
     }
 
     for (let i = 0; i < POOL_SIZE; i++) {
       const actor = new Actor({
-        name: 'WhiteDust',
+        name: 'RunDust',
         anchor: vec(0.5, 1), // bottom-center default; overridden per spawn for walls
         width: 16,
         height: 16,
@@ -79,7 +79,7 @@ export class WhiteDust implements Tickable {
     this._built = true;
   }
 
-  clear_white_dust(): void {
+  clear_run_dust(): void {
     this._spawn_counter = 0;
     for (const slot of this._slots) this.turnOff(slot);
   }
@@ -89,7 +89,7 @@ export class WhiteDust implements Tickable {
 	const runner_ctx = this.gameCtx.runner_ctx;
 
     if (runner_ctx.is_dead) {
-      this.clear_white_dust();
+      this.clear_run_dust();
       return;
     }
 
