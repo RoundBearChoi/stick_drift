@@ -104,6 +104,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       };
     }
 
+	// load level into level ctx. this is the single source of truth for level data
 	this._game_ctx.level_ctx.replaceAll(
       levelFile.width_cells,
       levelFile.height_cells,
