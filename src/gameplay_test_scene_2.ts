@@ -33,39 +33,13 @@ import { GreenTrail } from './green_trail';
 import { WhiteDust } from './white_dust';
 import { LandDust } from './land_dust';
 import {
-  parseLevelFile,
+  loadLevelFromFile,
   LEVEL_FILE_FORMAT,
   LEVEL_FILE_VERSION,
   LevelFile,
 } from './level_io';
 
-async function load_default_level_from_file(): Promise<LevelFile> {
-  try {
-    const response = await fetch('./res/levels/default_level.json');
-    
-	if (!response.ok) {
-      throw new Error(`failed to load default_level.json: ${response.status}`);
-    }
-   
-	const text = await response.text();
-    
-	return parseLevelFile(text);
-  } catch (err) {
-    console.error(
-      'failed to load default_level.json, falling back to empty level',
-      err
-    );
-    
-	return {
-      format: LEVEL_FILE_FORMAT,
-      version: LEVEL_FILE_VERSION,
-      width_cells: 160,
-      height_cells: 90,
-      bricks: [],
-      spikes: [],
-    };
-  }
-}
+const DEFAULT_LEVEL_FILENAME = 'default_level.json';
 
 export class GameplayTestScene2 extends Scene<GameContext> {
   private _game_ctx!: GameContext;
@@ -112,8 +86,24 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     }
 
     // always reload from the file. unsaved editor changes are lost unless written back.
-    const levelFile = await load_default_level_from_file();
-    
+    let levelFile: LevelFile;
+    try {
+      levelFile = await loadLevelFromFile(DEFAULT_LEVEL_FILENAME);
+    } catch (err) {
+      console.error(
+        `failed to load ${DEFAULT_LEVEL_FILENAME}, falling back to empty level`,
+        err
+      );
+      levelFile = {
+        format: LEVEL_FILE_FORMAT,
+        version: LEVEL_FILE_VERSION,
+        width_cells: 160,
+        height_cells: 90,
+        bricks: [],
+        spikes: [],
+      };
+    }
+
 	this._game_ctx.level_ctx.replaceAll(
       levelFile.width_cells,
       levelFile.height_cells,

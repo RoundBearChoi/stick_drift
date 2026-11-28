@@ -142,6 +142,19 @@ export function parseLevelFile(text: string): LevelFile {
 }
 
 /**
+ * load a level file from res/levels/ by filename.
+ * throws on network or parse failure.
+ */
+export async function loadLevelFromFile(filename: string): Promise<LevelFile> {
+  const response = await fetch(`./res/levels/${filename}`);
+  if (!response.ok) {
+    throw new Error(`failed to load ${filename}: ${response.status}`);
+  }
+  const text = await response.text();
+  return parseLevelFile(text);
+}
+
+/**
  * open the browser save dialog and write the current level_ctx.
  * call this directly from a keydown handler. a later game-loop poll is not a user gesture,
  * and Chromium will refuse the picker.
