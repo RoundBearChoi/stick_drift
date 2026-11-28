@@ -116,10 +116,10 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       `loaded default level from file (${levelFile.bricks.length} bricks, ${levelFile.spikes.length} spikes)`
     );
 
-    const level = this._game_ctx.level_ctx;
+    const level_ctx = this._game_ctx.level_ctx;
 
     // solid grid — always rebuild from current level dimensions + bricks + spikes
-    this._solid_grid_system = new SolidGridSystem(level.width_cells, level.height_cells);
+    this._solid_grid_system = new SolidGridSystem(level_ctx.width_cells, level_ctx.height_cells);
 
     // stick runner
     if (!this._stick_runner) {
@@ -222,8 +222,8 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     // level boundaries debug
     if (!this._levelBoundaries) {
       this._levelBoundaries = new LevelBoundariesDebug(
-        level.width_px,
-        level.height_px
+        level_ctx.width_px,
+        level_ctx.height_px
       );
       
 	  this.add(this._levelBoundaries);
@@ -306,13 +306,13 @@ export class GameplayTestScene2 extends Scene<GameContext> {
 	this._bricks = [];
     this._spikes = [];
 
-    const level = this._game_ctx.level_ctx;
+    const level_ctx = this._game_ctx.level_ctx;
     
 	if (!this._solid_grid_system) return;
 
     this._solid_grid_system.clearSolidData();
 
-    for (const b of level.bricks) {
+    for (const b of level_ctx.bricks) {
       const def = brickDef(b.type);
       const actor = createBrick(this.engine, { pos: vec(b.x, b.y), type: b.type });
       this.add(actor);
@@ -320,7 +320,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
       this._solid_grid_system.registerRect(b.x, b.y, def.width, def.height);
     }
 
-    for (const s of level.spikes) {
+    for (const s of level_ctx.spikes) {
       const def = spikeDef(s.type);
       
 	  const actor = createSpike(this.engine, {
@@ -337,7 +337,7 @@ export class GameplayTestScene2 extends Scene<GameContext> {
     }
 
     console.log(
-      `🧱 gameplay_test_scene_2 loaded ${level.bricks.length} brick(s) + ${level.spikes.length} spike(s) from level_ctx`
+      `🧱 gameplay_test_scene_2 loaded ${level_ctx.bricks.length} brick(s) + ${level_ctx.spikes.length} spike(s) from level_ctx`
     );
   }
 
